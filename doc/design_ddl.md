@@ -1,0 +1,86 @@
+#<center>天工异彩项目设计</center>
+
+##用户系统
+
+CREATE DATABASE IF NOT EXISTS PillarsPhenomVFX DEFAULT CHARSET utf8;
+
+Create Table `user` (
+	`user_id` int unsigned NOT NULL AUTO_INCREMENT,
+	`user_code` char(32) not null unique,#计算生成的唯一识别符
+	`password` char(32) not null,
+	`display_name` char(20) not null,
+	`picture` mediumtext not null,#头像照片的base64编码
+	`email` char(30) not null unique,
+	`phone` char(20) not null,
+	`status` tinyint unsigned NOT NULL,#标识用户当期状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`user_id`),
+	INDEX(`email`),
+	INDEX(`user_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+用户注销账号是只做逻辑删除，即标记status为1。
+
+用户指定硬盘路径之后，对该路径进行解析，获取所有的Material（素材）及素材的MetaData（元数据），每个Material可能有几十个元信息
+Create Table `material` (
+    `material_id` int unsigned NOT NULL ANTO_INCREMENT,
+    `material_code` char(32) not null unique,#计算生成的唯一识别符
+    `material_path` varchar(2047) not null,#存储素材的路径
+    `material_name` varchar(255) not null,#素材的名称
+    `material_type` char(16) not null,#素材的类型
+    `material_encoded_path`varchar(2047) not null,#存储素材转码后的路径
+    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`material_id`),
+	INDEX(`material_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+MaterialMetaData是一个MongoDB的数据库，存储MaterialCode对应的Material所拥有的很多条MetaData
+MaterialMetadata
+{
+    _id MongoDB自动生成
+    MetaDataCode: string #32位长
+    MetaDataIndex: int #该metadata在原来MetaData中的index
+    MaterialCode: string #32位长
+    MetaDataName: string #任意位长
+    MetaDataValue: string #任意位长
+    Status: int #0代表正常，1代表被删除
+    InsertDatetime #记录添加时间
+    UpdateDatetime #记录修改时间，实际上只有删除的时候会修改
+}
+每个shot是material的一段，该表由EDL文件解析获得，EDL解析的程序需要自己写
+Create Table `shot` (
+    `shot_id` int unsigned NOT NULL ANTO_INCREMENT,
+    `shot_code` char(32) not null unique,#计算生成的唯一识别符
+    `material_code` char(32) not null,#该shot对应的Material code
+    `in_point` char(11) not null,#该shot的入点，格式为00:00:00:00
+    `out_point` char(11) not null,#该shot的出点，格式为00:00:00:00
+    `field_name` varchar(32) not null,#该shot拍摄的场地
+    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`shot_id`),
+	INDEX(`field_name`),
+	INDEX(`shot_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+存储shot（镜头）的缩略图
+Create Table `thumbnail` (
+    `thumbnail_id` int unsigned NOT NULL ANTO_INCREMENT,
+    `thumbnail_code` char(32) not null unique,#计算生成的唯一识别符
+    `shot_code` char(32) not null,#对应的镜头
+    `thumbnail_image` BLOB not null,
+    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`thumbnail_id`),
+	INDEX(`shot_code`),
+	INDEX(`thumbnail_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+    
+
+
+
+
+    
+
+    
