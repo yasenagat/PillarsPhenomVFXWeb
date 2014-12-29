@@ -64,7 +64,7 @@ Create Table `shot` (
 	INDEX(`shot_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-存储shot（镜头）的缩略图
+存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
 Create Table `thumbnail` (
     `thumbnail_id` int unsigned NOT NULL ANTO_INCREMENT,
     `thumbnail_code` char(32) not null unique,#计算生成的唯一识别符
@@ -76,6 +76,38 @@ Create Table `thumbnail` (
 	INDEX(`shot_code`),
 	INDEX(`thumbnail_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+接下来讲需求发给若干个接包方
+Create Table `award` (
+    `award_id` int unsigned NOT NULL ANTO_INCREMENT,
+    `award_code` char(32) not null unique,#计算生成的唯一识别符
+    `shot_code` char(32) not null,#对应的镜头
+    `recieve_user_code` char(32) not null,#接包方用户名
+    `require` varchar(2047) not null,#对于制作的具体说明
+    `target_path_base` varchar(2047) not null,#目标基础路径
+    `addition_path` varchar(2047) not null,#提供额外的辅助信息的路径
+    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`thumbnail_id`),
+	INDEX(`shot_code`),
+	INDEX(`thumbnail_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+接包方处理完之后上传到文件夹并在Daily里面进行记录
+Create Table `daily` (
+    `daily_id` int unsigned NOT NULL ANTO_INCREMENT,
+    `daily_code` char(32) not null unique,#计算生成的唯一识别符
+    `shot_code` char(32) not null,#对应的镜头
+    `award_code` char(32) not null,#对应的哪个包
+    `target_path` varchar(2047) not null,#目标路径
+    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`thumbnail_id`),
+	INDEX(`shot_code`),
+	INDEX(`thumbnail_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+权限管理
     
 
 
