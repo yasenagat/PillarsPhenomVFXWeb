@@ -1,22 +1,23 @@
 package mysqlUtility
 
 import (
+	"PillarsPhenomVFXWeb/pillarsLog"
 	"database/sql"
 )
 
-// begin with capitial wordd so it can be accessed by outer
-var DBConn *sql.DB
-
-func init() {
-	DBConn = ConnectToDB()
-}
-
-func ConnectToDB() *sql.DB {
-	// connection already exist
-	if DBConn != nil {
-		return DBConn
+func TransactionOperation(tx *sql.Tx, err error) (bool, error) {
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return false, err
 	}
-
-	// connection not exist
-	prpertyMap := utility
+	err = tx.Commit()
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		err = tx.Rollback()
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+		return false, err
+	}
+	return true, err
 }
