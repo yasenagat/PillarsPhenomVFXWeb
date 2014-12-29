@@ -102,7 +102,7 @@ Create Table `daily` (
     `target_path` varchar(2047) not null,#目标路径
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`daily_id`),
+	PRIMARY KEY (`thumbnail_id`),
 	INDEX(`shot_code`),
 	INDEX(`award_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
