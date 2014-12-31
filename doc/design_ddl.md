@@ -30,6 +30,7 @@ Create Table `material` (
 	`material_name` varchar(255) not null,#素材的名称
 	`material_type` char(16) not null,#素材的类型
 	`material_encoded_path`varchar(2047) not null,#存储素材转码后的路径
+	`status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
 	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`material_id`),
@@ -57,8 +58,9 @@ Create Table `shot` (
     `in_point` char(11) not null,#该shot的入点，格式为00:00:00:00
     `out_point` char(11) not null,#该shot的出点，格式为00:00:00:00
     `field_name` varchar(32) not null,#该shot拍摄的场地
+    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`shot_id`),
 	INDEX(`field_name`),
 	INDEX(`shot_code`)
@@ -70,8 +72,9 @@ Create Table `thumbnail` (
     `thumbnail_code` char(32) not null unique,#计算生成的唯一识别符
     `shot_code` char(32) not null,#对应的镜头
     `thumbnail_image` BLOB not null,
+    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`thumbnail_id`),
 	INDEX(`shot_code`),
 	INDEX(`thumbnail_code`)
@@ -86,8 +89,9 @@ Create Table `award` (
     `require` varchar(2047) not null,#对于制作的具体说明
     `target_path_base` varchar(2047) not null,#目标基础路径
     `addition_path` varchar(2047) not null,#提供额外的辅助信息的路径
+    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`award_id`),
 	INDEX(`shot_code`),
 	INDEX(`award_code`)
@@ -100,8 +104,9 @@ Create Table `daily` (
     `shot_code` char(32) not null,#对应的镜头
     `award_code` char(32) not null,#对应的哪个包
     `target_path` varchar(2047) not null,#目标路径
+    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`daily_id`),
 	INDEX(`shot_code`),
 	INDEX(`award_code`)

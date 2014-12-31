@@ -5,6 +5,8 @@ import (
 	"PillarsPhenomVFXWeb/utility"
 	"database/sql"
 	"fmt"
+
+	_ "github.com/go-sql-driver/mysql"
 )
 
 // begin with capitial wordd so it can be accessed by outer
@@ -34,6 +36,7 @@ func ConnectToDB() *sql.DB {
 	DBConn, err := sql.Open("mysql", sqlstring)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print("can not connect to mysql server")
+		pillarsLog.PillarsLogger.Print(err.Error())
 	}
 	return DBConn
 }
