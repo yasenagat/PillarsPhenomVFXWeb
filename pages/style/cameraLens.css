@@ -1,0 +1,226 @@
+/****************每个页面可共用的样式*************************/
+body{
+
+  width:1000px;
+  margin:0 auto;
+  background-color:#000; 
+
+}
+.page{
+   margin:0 auto;
+}
+/*.masthead{
+  width:100%;
+}*/
+}
+.nav_lefts{
+    width:52.8%;
+    min-width:528px;
+    float:left;
+    height:71px;
+    margin-left:30px;
+    border:1px solid red;
+}
+
+.nav_right{
+   float:right;
+   border:1px solid red; 
+   text-align:center;
+   /*margin-left:130px;*/
+}
+/*class="ulStyle"
+/*.ulStyle{
+  
+  text-decoration:none;
+}*/
+/*.liStyleOne{
+   list-style-type:none;
+   float:left;
+}*/
+.liStyle{
+   list-style-type:none;
+   float:left;
+   margin-right:40px;
+   border:1px solid red; 
+   display:block;
+  
+}
+.liStyle  img{
+   width:23px;
+   height:33px;
+
+}
+/******************页面整体布局********************/
+.section
+{   font-family:"宋体－简","黑体",serif;  /*无衬线是sans seri*/
+    font-size:20px;
+    margin:0 auto;
+	  clear:left;
+	  float:left;
+    width:100%;
+    height:862px;
+    background-color:#fff;
+    border:1px solid red;	
+}
+.nav_banner
+{   
+    width:100%;
+    height:71px;
+    font-family:"宋体－简","黑体",serif;  /*无衬线是sans seri*/
+    font-size:20px;
+    /*color:#fff;*/
+    text-decoration:none;
+    background-color:#333333;
+    border-left:4px solid #333;
+    border-right:1px solid #333;
+    border-bottom:1px solid #333;
+    margin-top:10px;
+    border:1px solid red;
+}
+
+/****************每个页面可共用的样式到此为止*************************/
+.section_Top
+{
+    width:100%;
+    height:76px;
+    border-bottom:2px solid #e4e4e4;
+    padding-top:14px;
+    padding-bottom:10px;
+
+}
+.section_Left
+{
+	clear:left;
+	float:left;
+    width:20.3%;
+    height:680px;
+    border-right:2px solid #e4e4e4;
+    /*border:1px solid red;*/
+}
+.section_Right
+{   
+    width:78%;
+    float:left;
+    /*border:1px solid red;*/
+}
+.section_Right_Camera_Show
+{   clear:left;
+	float:left;
+    width:62.233%;
+    height:680px;
+    border-right:2px solid #e4e4e4;
+    /*border:1px solid red;*/
+}
+.section_Right_Camera_ShowExplain
+{  float:left;
+   width:37.2%;
+   height:680px; 
+   /*border:1px solid red;*/
+}
+/******************页面内部元素样式********************/
+
+.camera_view{
+  	float:right;
+    height:76px;
+	margin-right:18px;
+}
+.camera_view_image{
+    text-align:center;
+}
+.img_size{
+  	width:33px;
+  	height:37px;
+
+}
+.camera_view_text{
+  	padding-top:10px;
+}
+.section_Right_Camera_ShowExplain_Text{
+     margin-left:22px;
+	/*padding-left:22px;*/
+}
+.drop_btn_image
+{   clear:left;
+	float:left;
+	margin-left:52px;
+	margin-top:23px; 
+}
+.drop_btn_right_text{
+	float:left;
+    margin-left:5px;
+    margin-top:23px;
+}
+.drop_btn_dropDown_text{
+    clear:left;
+    float:left;
+    margin-left:79px;
+
+}
+.section_Right_Camera_Show_One{
+   clear:left;
+   float:left;
+   margin:20px 20px 40px 50px;
+   /*border:1px solid red;*/
+}
+.section_Right_Camera_Show_Two{
+   float:left;
+   margin:20px 0px 40px 0px;
+   /*border:1px solid red;*/
+}
+.section_Right_Camera_Show_Three{
+
+   clear:left;
+   float:left;
+   margin:0px 20px auto 50px;
+}
+.section_Right_Camera_Show_Fourth{
+   float:left;
+   margin:0px 0px auto 0px;
+
+}
+#ShowExplain_images{
+   clear:left;
+   float:left;
+   margin-top:10px;
+   /*padding-left:10px;*/
+}
+#ShowExplain_images img{
+   width:139px;
+   height:116px;
+
+}
+#ShowExplain_text{
+   float:left;
+
+}
+#ShowExplain_text span{
+   display:block;
+   padding-left:10px;
+   padding-top:10px;
+}
+.section_Right_Camera_ShowExplain_Text{
+   clear:left;
+   float:left;
+   margin-top:121px;
+   margin-left:12px;
+   margin-bottom:20px;
+   /*border:1px solid red;*/
+}
+.section_Right_Camera_ShowExplain_BlankDiv{
+	clear:left;
+    float:left;
+    margin-left:12px;
+    margin-right:12px;
+    width:260px;
+    height:93px;
+    border:1px solid #979797;
+
+}
+
+
+
+
+
+
+
+

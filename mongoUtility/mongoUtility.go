@@ -7,7 +7,7 @@ import (
 )
 
 var Session *mgo.Session
-var MaterialCollection *mgo.Collection
+var MetadataCollection *mgo.Collection
 
 func init() {
 	Session = ConnectToMgo()
@@ -30,7 +30,7 @@ func ConnectToMgo() *mgo.Session {
 	if errMgo != nil {
 		panic(errMgo.Error())
 	}
-	MaterialCollection = Session.DB("PillarsPhenomVFXWeb").C("Material")
+	MetadataCollection = Session.DB("PillarsPhenomVFXWeb").C("MaterialMetadata")
 	return Session
 }
 

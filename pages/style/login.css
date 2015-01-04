@@ -1,0 +1,70 @@
+body{
+	min-width:1000px;
+  min-height:804px; 
+  background-color:#2d2d2d; 
+}
+
+[placeholder]
+{
+  font-size:20px;
+  font-family:"宋体－简","黑体",serif; 
+  padding-left:10px;
+}
+#login_indexPage{
+   width:48%;
+   min-height:297px;
+   background-color:#ffffff;
+   border-radius:10px;
+   margin:300px  auto 208px auto;
+}
+.login_indexPage_userDiv
+{  
+    width: 63.125%;
+    /*height:53px;*/
+    height:53px;
+    /*border:1px solid red;*/
+    margin:0 auto;
+    padding-top:32px;
+
+}
+.login_indexPage_userDiv img{
+    width:10.561048%;
+    height: 53px;
+    /*border:1px solid red;*/
+    padding-left:10px;
+    clear:left;
+    float:left;
+    
+}
+.inputNameDiv{
+    width:65.83%;
+    height:50px;
+    /*border:2px solid red; */
+    float:left;      
+    padding-left:20px;
+
+}
+.login_indexPage_userDiv input{
+    width:100%;
+    height:48px;
+    border-radius:10px;
+    border:2px solid #e4e4e4;
+    /*border:2px solid red;*/
+    
+}
+.loginPage_loginButton_Div{
+    text-align:center;
+    padding-top:40px;
+
+
+}
+.loginPage_loginButton_Div #loginPage_loginButton{
+     width:99px;
+     height:43px;
+     background-color:#dfe0e0;
+     border-radius:20px;
+     border:1px solid #e4e4e4;
+     font-size:20px;
+     font-family:"宋体－简","黑体",serif;
+
+}
