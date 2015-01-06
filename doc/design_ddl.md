@@ -12,6 +12,8 @@ Create Table `user` (
 	`picture` mediumtext not null,#头像照片的base64编码
 	`email` char(30) not null unique,
 	`phone` char(20) not null,
+	`user_authority` char(20) not null,#用户权限（admin，制片，助理，分包商）
+	`file_path` varchar(2047) not null,#用户存储路径
 	`status` tinyint unsigned NOT NULL,#标识用户当期状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

@@ -16,6 +16,8 @@ type User struct {
 	Picture        string
 	Email          string
 	Phone          string
+	UserAuthority  string
+	FilePath       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string

@@ -16,7 +16,7 @@ define(['reqmod/cookie','pm'],function (cookie,pm){
     var register = function () {
         console.log('register business start');
         var Phone,passwd,Email,NickName;
-        
+
         if($('#tb_pwd_conform')[0].value!=$('#tb_pwd')[0].value)
         {
             pm.show('e',"两次密码不一致");
@@ -77,11 +77,11 @@ define(['reqmod/cookie','pm'],function (cookie,pm){
             pm.show('e',"用户名或者密码不能为空");
             return;
         }
-		
+
         login_core(UserID,passwd,function(data){
             if(data.FeedbackCode ==0)
             {
-                window.location="/cameraLens.html";
+                window.location="/userlist";
             }
             else
             {
