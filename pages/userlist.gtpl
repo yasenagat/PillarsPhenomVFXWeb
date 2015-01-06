@@ -3,7 +3,7 @@
 	<head>
 		<title>用户列表</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-		<link rel="stylesheet" type="text/css" href="style/userManage.css" />
+		<link rel="stylesheet" type="text/css" href="style/userManage.css"/>
 	</head>
 	<body>
 		<div id="wrap">
@@ -81,7 +81,7 @@
 								{{.UpdateDatetime}}
 							</td>
 							<td>
-								<a href="emplist.html">删除</a>&nbsp;<a href="updateEmp.html">修改</a>
+								<a href="emplist.html" onclik="del({{.Email}})">删除</a>&nbsp;<a href="updateEmp.html">修改</a>
 							</td>
 						</tr>
 					{{end}}

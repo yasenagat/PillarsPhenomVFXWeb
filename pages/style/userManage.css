@@ -1,5 +1,5 @@
 
-	body 
+	body
 	{
 		margin: 0;
 		font-size: 62.5%;
@@ -71,7 +71,7 @@
 	#navigation ul {
 		padding: 0;
 		margin: 0;
-		list-style: none;	
+		list-style: none;
 		font-size: 1.1em;
 		height: 25px;
 	}
@@ -90,7 +90,7 @@
 	#navigation ul li a:hover {
 		background: #5494F3;
 	}
-	
+
 	#content {
 		padding: 0 15px;
 		margin: 0 auto 0 auto;
@@ -106,8 +106,8 @@
 		color: #73A822;
 		text-decoration: underline;
 	}
-	
-	#content h1, #content h2, 
+
+	#content h1, #content h2,
 	#content h3, #content h4 , #content h5 {
 		color: #74A8F5;
 	}
@@ -149,8 +149,8 @@
 	}
 
 	#footer #design {
-		display: block; 
-		width: 150px; 
+		display: block;
+		width: 150px;
 		height: 30px;
 		float: right;
 		line-height: 20px;
@@ -204,7 +204,7 @@
 		background: #FBFACE;
 		color: #000000;
 	}
-	
+
 	.hidden {
 		display: none;
 	}
@@ -212,11 +212,11 @@
 	.little {
 		font-size: 10px;
 	}
-	
+
 	.clear {
 		clear: both;
 	}
-	
+
 	.img_left {
 		float: left;
 		padding: 1px;
@@ -246,7 +246,7 @@
 
 /* #content p a links in paragraphs
 ------------------------------------*/
-	#content p a:link, #content p a:visited, 
+	#content p a:link, #content p a:visited,
 	.table a:link, .table a:visited,
 	.link a {
 		color: #73A822;
@@ -272,7 +272,7 @@
 		color: #73A822;
 		text-decoration: underline;
 	}
-	
+
 /* #content ul.black (73A822)
 --------------------------------*/
 	#content ul.black li {
@@ -289,7 +289,7 @@
 		color: #999999;
 		text-decoration: underline;
 	}
-	
+
 /* #content ol
 --------------------------------*/
 	#content ol {
@@ -297,7 +297,7 @@
 		margin: 0 0 15px 0;
 		line-height: 1.8em;
 	}
-	
+
 	#content ol li {
 		font-size: 1.1em;
 	}
@@ -310,7 +310,7 @@
 		text-decoration: underline;
 	}
 
-/* #content p.paging 
+/* #content p.paging
 ---------------------------------*/
 	#content p.paging {
 	padding: 5px;
@@ -348,7 +348,7 @@
 		margin: 0;
 		padding: 0;
 	}
-	
+
 /* .button some buttons style - inspired from wordpress
 ------------------------------*/
 	input.button {
@@ -361,7 +361,7 @@
 		font-size: 11px;
 		font-family: Verdana, Arial, Helvetica, sans-serif;
 	}
-	
+
 /* form style for forms
 -------------------------*/
 	form {
@@ -385,17 +385,17 @@
 /* .notice - messages to user
 --------------------------------*/
 	.notice {
-		background: #CAEA99; 
-		border: 1px solid #70A522; 
-		padding: 15px 15px 15px 15px; 
+		background: #CAEA99;
+		border: 1px solid #70A522;
+		padding: 15px 15px 15px 15px;
 		margin-bottom: 15px;
 		font-size: 1.2em;
 		color: #333333;
 	}
 	.notice_error {
-		background: #FEDCDA; 
-		border: 1px solid  #CE090E; 
-		padding: 15px 15px 15px 15px; 
+		background: #FEDCDA;
+		border: 1px solid  #CE090E;
+		padding: 15px 15px 15px 15px;
 		margin-bottom: 15px;
 		font-size: 1.2em;
 		color: #333333;
@@ -405,7 +405,7 @@
 		text-decoration: underline;
 	}
 
-/* Other links 
+/* Other links
 ----------------*/
 	.other_links {
 		background: #eeeeee;
@@ -433,10 +433,24 @@
 	#content .other_links a:hover {
 		color: #666666;
 	}
-	
+
 /* code */
 	code {
 		font-size: 1.2em;
 		color: #73A822;
 	}
-	
+
+/* Validate span
+----------------*/
+	span{
+		color:red;
+		font-style:italic;
+	}
+	span.error{
+		background: url(../img/c_unchecked.gif) no-repeat;
+		padding-left: 15px;
+	}
+	span.success{
+		background: url(../img/c_checked.gif) no-repeat;
+		padding-left: 15px;
+	}

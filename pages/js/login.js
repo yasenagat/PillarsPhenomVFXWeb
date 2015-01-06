@@ -15,9 +15,10 @@ require.config({
     }
 });
 
-require(['domready', 'jquery', 'user','pm'], function (doc, $, user,pm){
+require(['domready', 'jquery', 'user','pm'], function (doc, $, user, pm){
     //binding event is ok！
     doc(function () {
+		alert("s");
         $('#loginPage_loginButton')[0].onclick = function(){user.login();}
         pm.load();
     });
