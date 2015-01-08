@@ -17,9 +17,30 @@ require.config({
 
 require(['jquery', 'validate'], function($) {
     $(function(){
+		var mail = "";
+		if (document.URL.indexOf("?") != -1) {
+			var getval = document.URL.split('?')[1];
+			if(getval.indexOf("=") != -1) {
+				mail = getval.split("=")[1];
+			}
+		}
+		if(mail != ""){
+			$.post('/query', {Email:mail}, function(data) {
+				if(data.FeedbackCode == undefined){
+					$("input[name^='Email']").val(data.Email);
+					$("input[name^='Email']").attr("disabled", true);
+					$("input[name^='UserName']").val(data.DisplayName);
+					$("input[name^='Phone']").val(data.Phone);
+					$("#UserAuthority").val(data.UserAuthority);
+					$("input[name^='FilePath']").val(data.FilePath);
+				}
+
+			}, "json");
+		}
+
 		//验证手机
 		$.validator.addMethod("phone", function(value, element) {
-    			var tel = /^(130|131|132|133|134|135|136|137|138|139|150|153|157|158|159|180|187|188|189)\d{8}$/;
+    			var tel = /^(130|131|132|133|134|135|136|137|138|139|150|153|157|158|159|170|180|187|188|189)\d{8}$/;
     			return tel.test(value) || this.optional(element);
 		}, "请输入正确的手机号码");
 
@@ -28,15 +49,13 @@ require(['jquery', 'validate'], function($) {
 			rules:{
 				Email:{required:true, email:true},
 				UserName:{required:true, minlength:2},
-				Phone:{required:true, phone:true},
-				UserAuthority:{required:true}
+				Phone:{required:true, phone:true}
 			},
 			//自定义错误提示信息
 			messages:{
 				Email:{required:"Email必须输入", email:"必须是合法的邮件地址"},
 				UserName:{required:"用户名必须输入", minlength:"长度至少为2个字符"},
-				Phone:{required:"电话必须输入"},
-				UserAuthority:{required:"分组必须输入"}
+				Phone:{required:"电话必须输入"}
 			},
 			errorElement:"span", //span是一个html标记，用来放置错误提示信息
 			success:function(label) {
@@ -46,3 +65,8 @@ require(['jquery', 'validate'], function($) {
 	});
 
 });
+
+
+function showvalf(){
+
+}

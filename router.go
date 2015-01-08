@@ -10,5 +10,7 @@ func RouterBinding() {
 
 	http.HandleFunc("/login_action", action.LoginAction)
 	http.HandleFunc("/add", action.AddUserAction)
+	http.HandleFunc("/del", action.DeleteUserAction)
 	http.HandleFunc("/userlist", action.UserListAction)
+	http.HandleFunc("/query", action.QueryUserAction)
 }

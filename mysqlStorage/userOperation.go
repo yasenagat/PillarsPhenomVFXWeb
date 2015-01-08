@@ -112,7 +112,7 @@ func DeleteUserByUserCode(userCode *string) (bool, error) {
 	}
 }
 
-func QueryUserByEmail(userName *string) (*utility.User, error) {
+func QueryUserByEmail(email *string) (*utility.User, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT user_code, display_name,
 		picture, email, phone, user_authority, file_path, status, insert_datetime, update_datetime
 		FROM user WHERE email = ?`)
@@ -121,7 +121,7 @@ func QueryUserByEmail(userName *string) (*utility.User, error) {
 		return nil, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Query(userName)
+	result, err := stmt.Query(email)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err

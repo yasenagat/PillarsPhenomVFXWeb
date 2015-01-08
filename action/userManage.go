@@ -107,3 +107,73 @@ func UserListAction(w http.ResponseWriter, r *http.Request) {
 	//utility.Dump(userList)
 	list.Execute(w, userList)
 }
+
+func DeleteUserAction(w http.ResponseWriter, r *http.Request) {
+	var backMessage utility.FeedbackMessage
+	r.ParseForm()
+
+	//段落1： 判断参数个数是否正常。
+	olen := len(r.Form["Email"])
+
+	if olen != 1 {
+		backMessage.FeedbackCode = 10
+		backMessage.FeedbackText = "Error parameter format"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+		return
+	}
+
+	if len(r.Form["Email"][0]) == 0 {
+		backMessage.FeedbackCode = 13
+		backMessage.FeedbackText = "Error parameter Email"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+		return
+	}
+
+	email := r.Form["Email"][0]
+	result, _ := mysqlStorage.DeleteUserByEmail(&email)
+	if result == false {
+		backMessage.FeedbackCode = 2
+		backMessage.FeedbackText = "Delete user failed!"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+	} else {
+		backMessage.FeedbackCode = 0
+		backMessage.FeedbackText = "Delete user succeed!"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+	}
+}
+
+func QueryUserAction(w http.ResponseWriter, r *http.Request) {
+	var backMessage utility.FeedbackMessage
+	r.ParseForm()
+	//段落1： 判断参数个数是否正常。
+	olen := len(r.Form["Email"])
+	if olen != 1 {
+		backMessage.FeedbackCode = 10
+		backMessage.FeedbackText = "Error parameter format"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+		return
+	}
+	if len(r.Form["Email"][0]) == 0 {
+		backMessage.FeedbackCode = 13
+		backMessage.FeedbackText = "Error parameter Email"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+		return
+	}
+	email := r.Form["Email"][0]
+	user, err := mysqlStorage.QueryUserByEmail(&email)
+	if err != nil {
+		backMessage.FeedbackCode = 2
+		backMessage.FeedbackText = "Query user failed!"
+		feedMessage, _ := json.Marshal(backMessage)
+		fmt.Fprintf(w, string(feedMessage))
+	} else {
+		feedMessage, _ := json.Marshal(user)
+		fmt.Fprintf(w, string(feedMessage))
+	}
+}
