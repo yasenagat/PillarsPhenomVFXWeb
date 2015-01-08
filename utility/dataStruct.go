@@ -4,11 +4,13 @@ import (
 	"time"
 )
 
+// 前端请求返回自定义状态代码和信息
 type FeedbackMessage struct {
 	FeedbackCode int
 	FeedbackText string
 }
 
+// 用户管理
 type User struct {
 	UserCode       string
 	Password       string
@@ -91,4 +93,16 @@ type Daily struct {
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
+}
+
+// 项目管理
+type Project struct {
+	ProjectCode     string
+	ProjectName     string
+	Picture         string
+	ProjectDescribe string
+	ProjectLeader   string
+	Status          int
+	InsertDatetime  string
+	UpdateDatetime  string
 }

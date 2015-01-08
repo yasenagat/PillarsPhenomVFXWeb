@@ -116,6 +116,20 @@ Create Table `daily` (
 
 权限管理
     
+项目管理 gpg -a --export 07DC563D1F41B907 |  apt-key add -
+Create Table `project` (
+	`project_id` int unsigned NOT NULL AUTO_INCREMENT,
+	`project_code` char(32) not null unique,#计算生成的唯一识别符
+	`project_name` varchar(100) not null,
+	`picture` mediumtext not null,#项目缩略图的base64编码
+	`project_leader` varchar(100) not null,
+	`status` tinyint unsigned NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`project_id`),
+	INDEX(`project_name`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 

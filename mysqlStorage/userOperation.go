@@ -114,8 +114,8 @@ func DeleteUserByUserCode(userCode *string) (bool, error) {
 
 func QueryUserByEmail(email *string) (*utility.User, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT user_code, display_name,
-		picture, email, phone, user_authority, file_path, status, insert_datetime, update_datetime
-		FROM user WHERE email = ?`)
+		picture, email, phone, user_authority, file_path, status, insert_datetime,
+		update_datetime FROM user WHERE email = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
@@ -140,32 +140,21 @@ func QueryUserByEmail(email *string) (*utility.User, error) {
 
 }
 
-func QueryUserByUserCode(userCode *string) (*utility.User, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT user_code, display_name,
-		picture, email, phone, status, insert_datetime, update_datetime
-		FROM user WHERE user_code = ?`)
+func UpdateUserByEmail(user *utility.User) (bool, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE user SET display_name = ?,
+	phone = ?, user_authority = ?, file_path = ?, update_datetime = now() WHERE email = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
-		return nil, err
+		return false, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Query(userCode)
+	_, err = stmt.Exec(user.DisplayName, user.Phone, user.UserAuthority,
+		user.FilePath, user.Email)
 	if err != nil {
-		pillarsLog.PillarsLogger.Print(err.Error())
-		return nil, err
+		return false, err
+	} else {
+		return true, err
 	}
-	defer result.Close()
-	var user utility.User
-	if result.Next() {
-		err := result.Scan(&(user.UserCode), &(user.DisplayName), &(user.Picture),
-			&(user.Email), &(user.Phone), &(user.Status), &(user.InsertDatetime),
-			&(user.UpdateDatetime))
-		if err != nil {
-			pillarsLog.PillarsLogger.Print(err.Error())
-		}
-	}
-	return &user, err
-
 }
 
 func QueryUserCode(email *string) (*string, error) {

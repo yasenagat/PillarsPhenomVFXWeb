@@ -13,4 +13,5 @@ func RouterBinding() {
 	http.HandleFunc("/del", action.DeleteUserAction)
 	http.HandleFunc("/userlist", action.UserListAction)
 	http.HandleFunc("/query", action.QueryUserAction)
+	http.HandleFunc("/update", action.UpdateUserAction)
 }

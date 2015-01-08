@@ -28,7 +28,7 @@ require(['jquery', 'validate'], function($) {
 			$.post('/query', {Email:mail}, function(data) {
 				if(data.FeedbackCode == undefined){
 					$("input[name^='Email']").val(data.Email);
-					$("input[name^='Email']").attr("disabled", true);
+					$("input[name^='Email']").attr("readonly", true);
 					$("input[name^='UserName']").val(data.DisplayName);
 					$("input[name^='Phone']").val(data.Phone);
 					$("#UserAuthority").val(data.UserAuthority);
@@ -36,6 +36,14 @@ require(['jquery', 'validate'], function($) {
 				}
 
 			}, "json");
+
+			$("#save").click(function () {
+				$('#form1').attr("action", "update");
+			});
+		}else{
+			$("#save").click(function () {
+				$('#form1').attr("action", "add");
+			});
 		}
 
 		//验证手机
@@ -55,7 +63,7 @@ require(['jquery', 'validate'], function($) {
 			messages:{
 				Email:{required:"Email必须输入", email:"必须是合法的邮件地址"},
 				UserName:{required:"用户名必须输入", minlength:"长度至少为2个字符"},
-				Phone:{required:"电话必须输入"}
+				Phone:{required:"电话必须输入", phone:"请输入正确的手机号码"}
 			},
 			errorElement:"span", //span是一个html标记，用来放置错误提示信息
 			success:function(label) {
@@ -65,8 +73,3 @@ require(['jquery', 'validate'], function($) {
 	});
 
 });
-
-
-function showvalf(){
-
-}
