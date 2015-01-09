@@ -1,5 +1,5 @@
 
-function deleteuser(code) {
+function deleteproject(code) {
 	alter_core('/delproject', code, function(data) {
         if(data.FeedbackCode == 0) {
             window.location = "/projectlist";
@@ -9,7 +9,7 @@ function deleteuser(code) {
     });
 }
 
-function updateuser(code) {
+function updateproject(code) {
 	window.location = "/addproject.html?a=" + code;
 }
 

@@ -18,7 +18,7 @@
 						</div>
 						<div id="topheader">
 							<h1 id="title">
-								<a href="#">用户管理</a>
+								<a href="#">项目管理</a>
 							</h1>
 						</div>
 						<div id="navigation">
@@ -28,54 +28,34 @@
 					<p id="whereami">
 					</p>
 					<h1>
-						用户信息:
+						项目信息:
 					</h1>
 					<form id="form1" method="post">
 						<table cellpadding="0" cellspacing="0" border="0"
 							class="form_table">
 							<tr>
 								<td valign="middle" align="right">
-									Email:
+									项目名称:
 								</td>
 								<td valign="middle" align="left">
-									<input type="text" class="inputgri" name="Email"/>
+									<input type="hidden" name="ProjectCode"/>
+									<input type="text" class="inputgri" name="ProjectName"/>
 								</td>
 							</tr>
 							<tr>
 								<td valign="middle" align="right">
-									用户名:
+									项目描述:
 								</td>
 								<td valign="middle" align="left">
-									<input type="text" class="inputgri" name="UserName"/>
+									<input type="text" class="inputgri" name="ProjectDescribe"/>
 								</td>
 							</tr>
 							<tr>
 								<td valign="middle" align="right">
-									电话:
+									项目负责人:
 								</td>
 								<td valign="middle" align="left">
-									<input type="text" class="inputgri" name="Phone"/>
-								</td>
-							</tr>
-							<tr>
-								<td valign="middle" align="right">
-									分组:
-								</td>
-								<td valign="middle" align="left">
-									<select id="UserAuthority" name="UserAuthority" class="inputgri">
-										<option value ="admin">admin</option>
-										<option value ="制片">制片</option>
-										<option value="制片助理">制片助理</option>
-										<option value="分包商">分包商</option>
-									</select>
-								</td>
-							</tr>
-							<tr>
-								<td valign="middle" align="right">
-									文件路径:
-								</td>
-								<td valign="middle" align="left">
-									<input type="text" class="inputgri" name="FilePath"/>
+									<input type="text" class="inputgri" name="ProjectLeader"/>
 								</td>
 							</tr>
 						</table>
@@ -91,6 +71,6 @@
 				</div>
 			</div>
 		</div>
-		<script data-main="js/addUser" language="JavaScript" defer async="true" src="jslib/require.js"></script>
+		<script data-main="js/addproject" language="JavaScript" defer async="true" src="jslib/require.js"></script>
 	</body>
 </html>

@@ -67,7 +67,7 @@
 
 					</table>
 					<p>
-						<input type="button" class="button" value="新增项目" onclick="location='addUser.html'"/>
+						<input type="button" class="button" value="新增项目" onclick="location='addproject.html'"/>
 					</p>
 				</div>
 			</div>

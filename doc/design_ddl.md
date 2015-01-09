@@ -122,6 +122,7 @@ Create Table `project` (
 	`project_code` char(32) not null unique,#计算生成的唯一识别符
 	`project_name` varchar(100) not null,
 	`picture` mediumtext not null,#项目缩略图的base64编码
+	`project_describe` varchar(800) not null,
 	`project_leader` varchar(100) not null,
 	`status` tinyint unsigned NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

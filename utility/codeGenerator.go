@@ -1,7 +1,6 @@
 package utility
 
 import (
-	"fmt"
 	"math/rand"
 	"strconv"
 	"time"
@@ -15,7 +14,7 @@ func RandomInt() int {
 
 func GenerateCode(origin *string) *string {
 	str := *origin + strconv.Itoa(RandomInt())
-	fmt.Println("GENERATE CODE" + strconv.Itoa(RandomInt()))
+	//fmt.Println("GENERATE CODE" + strconv.Itoa(RandomInt()))
 	result := string(Md5sum(&str))
 	return &result
 }
