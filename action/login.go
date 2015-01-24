@@ -36,6 +36,7 @@ func LoginAction(w http.ResponseWriter, r *http.Request) {
 
 	if *userCode == "" {
 		u.OutputJson(w, 15, "Login failed!", nil)
+		return
 	}
 
 	userSession := session.GlobalSessions.SessionStart(w, r)

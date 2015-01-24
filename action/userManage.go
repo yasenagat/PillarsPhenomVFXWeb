@@ -117,6 +117,7 @@ func QueryUserAction(w http.ResponseWriter, r *http.Request) {
 	user, err := mysqlStorage.QueryUserByEmail(&email)
 	if err != nil {
 		u.OutputJson(w, 13, "Query user failed!", nil)
+		return
 	}
 
 	result, _ := json.Marshal(user)
