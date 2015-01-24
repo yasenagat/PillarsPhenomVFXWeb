@@ -2,7 +2,7 @@ package action
 
 import (
 	"PillarsPhenomVFXWeb/mysqlStorage"
-	"PillarsPhenomVFXWeb/utility"
+	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -10,199 +10,135 @@ import (
 )
 
 func AddProjectAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage // 返回json构建
-	r.ParseForm()                           //form 数据解析
-
-	//段落1： 判断参数个数是否正常。
-	olen := len(r.Form["ProjectName"]) + len(r.Form["ProjectDescribe"]) +
-		len(r.Form["ProjectLeader"])
-
+	r.ParseForm()
+	olen := len(r.Form["ProjectName"]) + len(r.Form["ProjectDetail"]) + len(r.Form["ProjectLeader"])
 	if olen != 3 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
 	if len(r.Form["ProjectName"][0]) == 0 {
-		backMessage.FeedbackCode = 14
-		backMessage.FeedbackText = "Error parameter ProjectName"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter ProjectName", nil)
 		return
 	}
 
-	if len(r.Form["ProjectDescribe"][0]) == 0 {
-		backMessage.FeedbackCode = 15
-		backMessage.FeedbackText = "Error parameter ProjectDescribe"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+	if len(r.Form["ProjectDetail"][0]) == 0 {
+		u.OutputJson(w, 13, "Error parameter ProjectDetail", nil)
 		return
 	}
 
 	if len(r.Form["ProjectLeader"][0]) == 0 {
-		backMessage.FeedbackCode = 16
-		backMessage.FeedbackText = "Error parameter ProjectLeader"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 14, "Error parameter ProjectLeader", nil)
 		return
 	}
 
 	temp := "insert"
-	projectCode := utility.GenerateCode(&temp)
-	picture := utility.GenerateCode(&temp)
-	project := utility.Project{
-		ProjectCode:     *projectCode,
-		ProjectName:     r.Form["ProjectName"][0],
-		Picture:         *picture,
-		ProjectDescribe: r.Form["ProjectDescribe"][0],
-		ProjectLeader:   r.Form["ProjectLeader"][0],
-		Status:          0,
+	projectCode := u.GenerateCode(&temp)
+	picture := u.GenerateCode(&temp)
+	project := u.Project{
+		ProjectCode:   *projectCode,
+		ProjectName:   r.Form["ProjectName"][0],
+		Picture:       *picture,
+		ProjectDetail: r.Form["ProjectDetail"][0],
+		ProjectLeader: r.Form["ProjectLeader"][0],
+		Status:        0,
 	}
 	result, _ := mysqlStorage.InsertIntoProject(&project)
 	if result == false {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Inert into project failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		ProjectListAction(w, r)
+		u.OutputJson(w, 15, "Insert into project failed!", nil)
+		return
 	}
+
+	ProjectListAction(w, r)
 }
 
 func DeleteProjectAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage
 	r.ParseForm()
-
-	//段落1： 判断参数个数是否正常。
 	olen := len(r.Form["ProjectCode"])
-
 	if olen != 1 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
 	if len(r.Form["ProjectCode"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter ProjectCode"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
 		return
 	}
 
 	code := r.Form["ProjectCode"][0]
 	result, _ := mysqlStorage.DeleteProjectByProjectCode(&code)
 	if result == false {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Delete project failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		backMessage.FeedbackCode = 0
-		backMessage.FeedbackText = "Delete project succeed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Delete project failed!", nil)
+		return
 	}
+
+	u.OutputJson(w, 0, "Delete project succeed!", nil)
 }
 
 func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage
 	r.ParseForm()
-
-	//段落1： 判断参数个数是否正常。
-	olen := len(r.Form["ProjectCode"]) + len(r.Form["ProjectName"]) +
-		len(r.Form["ProjectDescribe"]) + len(r.Form["ProjectLeader"])
+	olen := len(r.Form["ProjectCode"]) + len(r.Form["ProjectName"]) + len(r.Form["ProjectDetail"]) + len(r.Form["ProjectLeader"])
 	if olen != 4 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
 	if len(r.Form["ProjectCode"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter ProjectCode"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
 		return
 	}
 
 	if len(r.Form["ProjectName"][0]) == 0 {
-		backMessage.FeedbackCode = 14
-		backMessage.FeedbackText = "Error parameter ProjectName"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Error parameter ProjectName", nil)
 		return
 	}
 
-	if len(r.Form["ProjectDescribe"][0]) == 0 {
-		backMessage.FeedbackCode = 15
-		backMessage.FeedbackText = "Error parameter ProjectDescribe"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+	if len(r.Form["ProjectDetail"][0]) == 0 {
+		u.OutputJson(w, 14, "Error parameter ProjectDetail", nil)
 		return
 	}
 
 	if len(r.Form["ProjectLeader"][0]) == 0 {
-		backMessage.FeedbackCode = 16
-		backMessage.FeedbackText = "Error parameter ProjectLeader"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 15, "Error parameter ProjectLeader", nil)
 		return
 	}
 
-	project := utility.Project{
-		ProjectCode:     r.Form["ProjectCode"][0],
-		ProjectName:     r.Form["ProjectName"][0],
-		ProjectDescribe: r.Form["ProjectDescribe"][0],
-		ProjectLeader:   r.Form["ProjectLeader"][0],
+	project := u.Project{
+		ProjectCode:   r.Form["ProjectCode"][0],
+		ProjectName:   r.Form["ProjectName"][0],
+		ProjectDetail: r.Form["ProjectDetail"][0],
+		ProjectLeader: r.Form["ProjectLeader"][0],
 	}
 	result, _ := mysqlStorage.UpdateProjectByProjectCode(&project)
 	if result == false {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Update project failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		ProjectListAction(w, r)
+		u.OutputJson(w, 16, "Update project failed!", nil)
+		return
 	}
+
+	ProjectListAction(w, r)
 }
 
 func QueryProjectAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage
 	r.ParseForm()
-	//段落1： 判断参数个数是否正常。
 	olen := len(r.Form["ProjectCode"])
 	if olen != 1 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
+
 	if len(r.Form["ProjectCode"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter ProjectCode"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
 		return
 	}
 	code := r.Form["ProjectCode"][0]
 	project, err := mysqlStorage.QueryProjectByProjectCode(&code)
 	if err != nil {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Query project failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		feedMessage, _ := json.Marshal(project)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Query project failed!", nil)
+		return
 	}
+
+	result, _ := json.Marshal(project)
+	fmt.Fprintf(w, string(result))
 }
 
 func ProjectListAction(w http.ResponseWriter, r *http.Request) {

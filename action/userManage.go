@@ -2,7 +2,7 @@ package action
 
 import (
 	"PillarsPhenomVFXWeb/mysqlStorage"
-	"PillarsPhenomVFXWeb/utility"
+	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
 	"fmt"
 	"html/template"
@@ -10,65 +10,42 @@ import (
 )
 
 func AddUserAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage // 返回json构建
-	r.ParseForm()                           //form 数据解析
-
-	//段落1： 判断参数个数是否正常。
-	olen := len(r.Form["Email"]) + len(r.Form["UserName"]) + len(r.Form["Phone"]) +
-		len(r.Form["UserAuthority"]) + len(r.Form["FilePath"])
-
+	r.ParseForm()
+	olen := len(r.Form["Email"]) + len(r.Form["UserName"]) + len(r.Form["Phone"]) + len(r.Form["UserAuthority"]) + len(r.Form["FilePath"])
 	if olen != 5 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
 	if len(r.Form["Email"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter Email"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter Email", nil)
 		return
 	}
 
 	if len(r.Form["UserName"][0]) == 0 {
-		backMessage.FeedbackCode = 14
-		backMessage.FeedbackText = "Error parameter UserName"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Error parameter UserName", nil)
 		return
 	}
 
 	if len(r.Form["Phone"][0]) == 0 {
-		backMessage.FeedbackCode = 15
-		backMessage.FeedbackText = "Error parameter Phone"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 14, "Error parameter Phone", nil)
 		return
 	}
 
 	if len(r.Form["UserAuthority"][0]) == 0 {
-		backMessage.FeedbackCode = 16
-		backMessage.FeedbackText = "Error parameter UserAuthority"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 15, "Error parameter UserAuthority", nil)
 		return
 	}
 
 	if len(r.Form["FilePath"][0]) == 0 {
-		backMessage.FeedbackCode = 17
-		backMessage.FeedbackText = "Error parameter FilePath"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 16, "Error parameter FilePath", nil)
 		return
 	}
 
 	temp := "insert"
-	userCode := utility.GenerateCode(&temp)
-	picture := utility.GenerateCode(&temp)
-	user := utility.User{
+	userCode := u.GenerateCode(&temp)
+	picture := u.GenerateCode(&temp)
+	user := u.User{
 		UserCode:      *userCode,
 		Password:      "e10adc3949ba59abbe56e057f20f883e", // 默认为md5(123456, 32)
 		DisplayName:   r.Form["UserName"][0],
@@ -81,18 +58,11 @@ func AddUserAction(w http.ResponseWriter, r *http.Request) {
 	}
 	result, _ := mysqlStorage.InsertIntoUser(&user)
 	if result == false {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Inert into user failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		UserListAction(w, r)
-		//backMessage.FeedbackCode = 0
-		//backMessage.FeedbackText = "Save userinfo succeed!"
-		//feedMessage, _ := json.Marshal(backMessage)
-		//fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 17, "Inert into user failed!", nil)
+		return
 	}
 
+	UserListAction(w, r)
 }
 
 func UserListAction(w http.ResponseWriter, r *http.Request) {
@@ -104,136 +74,89 @@ func UserListAction(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		panic(err.Error())
 	}
-	//utility.Dump(userList)
 	list.Execute(w, userList)
 }
 
 func DeleteUserAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage
 	r.ParseForm()
-
-	//段落1： 判断参数个数是否正常。
 	olen := len(r.Form["Email"])
-
 	if olen != 1 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
 	if len(r.Form["Email"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter Email"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter Email", nil)
 		return
 	}
 
 	email := r.Form["Email"][0]
 	result, _ := mysqlStorage.DeleteUserByEmail(&email)
 	if result == false {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Delete user failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		backMessage.FeedbackCode = 0
-		backMessage.FeedbackText = "Delete user succeed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Delete user failed!", nil)
+		return
 	}
+
+	u.OutputJson(w, 0, "Delete user succeed!", nil)
 }
 
 func QueryUserAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage
 	r.ParseForm()
-	//段落1： 判断参数个数是否正常。
 	olen := len(r.Form["Email"])
 	if olen != 1 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
+
 	if len(r.Form["Email"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter Email"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter Email", nil)
 		return
 	}
+
 	email := r.Form["Email"][0]
 	user, err := mysqlStorage.QueryUserByEmail(&email)
 	if err != nil {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Query user failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		feedMessage, _ := json.Marshal(user)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Query user failed!", nil)
 	}
+
+	result, _ := json.Marshal(user)
+	fmt.Fprintf(w, string(result))
 }
 
 func UpdateUserAction(w http.ResponseWriter, r *http.Request) {
-	var backMessage utility.FeedbackMessage
 	r.ParseForm()
-
-	//段落1： 判断参数个数是否正常。
-	olen := len(r.Form["Email"]) + len(r.Form["UserName"]) + len(r.Form["Phone"]) +
-		len(r.Form["UserAuthority"]) + len(r.Form["FilePath"])
+	olen := len(r.Form["Email"]) + len(r.Form["UserName"]) + len(r.Form["Phone"]) + len(r.Form["UserAuthority"]) + len(r.Form["FilePath"])
 	if olen != 5 {
-		backMessage.FeedbackCode = 10
-		backMessage.FeedbackText = "Error parameter format"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
 	if len(r.Form["Email"][0]) == 0 {
-		backMessage.FeedbackCode = 13
-		backMessage.FeedbackText = "Error parameter Email"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 12, "Error parameter Email", nil)
 		return
 	}
 
 	if len(r.Form["UserName"][0]) == 0 {
-		backMessage.FeedbackCode = 14
-		backMessage.FeedbackText = "Error parameter UserName"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 13, "Error parameter UserName", nil)
 		return
 	}
 
 	if len(r.Form["Phone"][0]) == 0 {
-		backMessage.FeedbackCode = 15
-		backMessage.FeedbackText = "Error parameter Phone"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 14, "Error parameter Phone", nil)
 		return
 	}
 
 	if len(r.Form["UserAuthority"][0]) == 0 {
-		backMessage.FeedbackCode = 16
-		backMessage.FeedbackText = "Error parameter UserAuthority"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 15, "Error parameter UserAuthority", nil)
 		return
 	}
 
 	if len(r.Form["FilePath"][0]) == 0 {
-		backMessage.FeedbackCode = 17
-		backMessage.FeedbackText = "Error parameter FilePath"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
+		u.OutputJson(w, 16, "Error parameter FilePath", nil)
 		return
 	}
 
-	user := utility.User{
+	user := u.User{
 		DisplayName:   r.Form["UserName"][0],
 		Email:         r.Form["Email"][0],
 		Phone:         r.Form["Phone"][0],
@@ -242,11 +165,9 @@ func UpdateUserAction(w http.ResponseWriter, r *http.Request) {
 	}
 	result, _ := mysqlStorage.UpdateUserByEmail(&user)
 	if result == false {
-		backMessage.FeedbackCode = 2
-		backMessage.FeedbackText = "Update user failed!"
-		feedMessage, _ := json.Marshal(backMessage)
-		fmt.Fprintf(w, string(feedMessage))
-	} else {
-		UserListAction(w, r)
+		u.OutputJson(w, 17, "Update user failed!", nil)
+		return
 	}
+
+	UserListAction(w, r)
 }
