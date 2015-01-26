@@ -47,7 +47,7 @@ func AddUserAction(w http.ResponseWriter, r *http.Request) {
 	picture := u.GenerateCode(&temp)
 	user := u.User{
 		UserCode:      *userCode,
-		Password:      "e10adc3949ba59abbe56e057f20f883e", // 默认为md5(123456, 32)
+		Password:      "E10ADC3949BA59ABBE56E057F20F883E", // 默认为md5(123456, 32)
 		DisplayName:   r.Form["UserName"][0],
 		Picture:       *picture,
 		Email:         r.Form["Email"][0],

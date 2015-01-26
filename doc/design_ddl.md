@@ -22,6 +22,8 @@ Create Table `user` (
 	INDEX(`user_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO user(user_code,password,display_name,picture,email,phone,user_authority,file_path,status) VALUES('119427f6aed6fbce53eaadaaa5519317','E10ADC3949BA59ABBE56E057F20F883E','管理员',"478e3dd1616187541b6dcc4e82865133","admin@mail.com","13512341234","admin","null",0);#插入一条管理员用户测试
+
 用户注销账号是只做逻辑删除，即标记status为1。
 
 用户指定硬盘路径之后，对该路径进行解析，获取所有的Material（素材）及素材的MetaData（元数据），每个Material可能有几十个元信息

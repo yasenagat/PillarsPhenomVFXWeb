@@ -53,7 +53,7 @@
 								{{.ProjectName}}
 							</td>
 							<td>
-								{{.ProjectDescribe}}
+								{{.ProjectDetail}}
 							</td>
 							<td>
 								{{.ProjectLeader}}
@@ -73,7 +73,7 @@
 			</div>
 			<div id="footer">
 				<div id="footer_bg">
-					chengxuezhi@git.com
+					test@mail.com
 				</div>
 			</div>
 		</div>

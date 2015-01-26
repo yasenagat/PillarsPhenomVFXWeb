@@ -2,32 +2,30 @@
 <html>
 	<head>
 		<title>登陆界面</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width,initial-scale=1.0">
-		<link href="style/login.css" rel="stylesheet" type="text/css" />
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link href="style/login.css" rel="stylesheet" type="text/css"/>
 	</head>
 
 	<body>
-		<div id="login_indexPage">
-
-			<div class="login_indexPage_userDiv">
-			    	<img src="img/user.png" />
-			    <div class="inputNameDiv">
-	            	<input placeholder="用户名" id="userName"/>
-	            </div>
+		<form id="form1">
+			<div id="login_indexPage">
+				<div class="login_indexPage_userDiv">
+				    	<img src="img/user.png"/>
+				    <div class="inputNameDiv">
+		            	<input placeholder="用户名" id="userName" name="UserName"/>
+		            </div>
+				</div>
+				<div class="login_indexPage_userDiv">
+				    	<img src="img/passWord.png"/>
+				    <div class="inputNameDiv">
+		            	<input placeholder="密码" id="userPassword" name="UserPassword" type="password"/>
+		            </div>
+				</div>
+				<div class="loginPage_loginButton_Div">
+		           <input id="loginBtn" value="登陆"/>
+				</div>
 			</div>
-			<div class="login_indexPage_userDiv">
-			    	<img src="img/passWord.png"/>
-			    <div class="inputNameDiv">
-	            	<input placeholder="密码" id="userPassword" type="password"/>
-	            </div>
-			</div>
-			<div class="loginPage_loginButton_Div">
-	           <input type="submit" id="loginPage_loginButton" value="登陆"/>
-			</div>
-
-		</div>
-
+		</form>
 		<script data-main="js/login" language="JavaScript" defer async="true" src="jslib/require.js"></script>
 	</body>
 </html>

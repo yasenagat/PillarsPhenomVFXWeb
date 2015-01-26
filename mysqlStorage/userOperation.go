@@ -69,29 +69,28 @@ func QueryUserList() (*[]utility.User, error) {
 
 }
 
-func CheckEmailAndPassword(email *string, password *string) (*string, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT user_code FROM user
-		WHERE email = ? AND password = ?`)
+func CheckEmailAndPassword(email *string, password *string) (*utility.User, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT user_code, display_name,
+		user_authority FROM user WHERE email = ? AND password = ? AND status = 0`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
 	}
 	defer stmt.Close()
-	passwordMd5 := utility.Md5sum(password)
-	result, err := stmt.Query(email, passwordMd5)
+	result, err := stmt.Query(*email, *password)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
 	}
 	defer result.Close()
-	var userCode string
+	var user utility.User
 	if result.Next() {
-		err := result.Scan(&userCode)
+		err = result.Scan(&(user.UserCode), &(user.DisplayName), &(user.UserAuthority))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
 		}
 	}
-	return &userCode, err
+	return &user, err
 }
 
 func DeleteUserByUserCode(userCode *string) (bool, error) {

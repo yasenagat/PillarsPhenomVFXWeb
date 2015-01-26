@@ -28,22 +28,33 @@ func LoginAction(w http.ResponseWriter, r *http.Request) {
 
 	e := r.Form["Email"][0]
 	p := r.Form["Password"][0]
-	userCode, err := mysqlStorage.CheckEmailAndPassword(&(e), &(p))
+	user, err := mysqlStorage.CheckEmailAndPassword(&(e), &(p))
 	if err != nil {
 		u.OutputJson(w, 14, "Email or Password wrong!", nil)
 		return
 	}
 
-	if *userCode == "" {
+	if user.UserCode == "" {
 		u.OutputJson(w, 15, "Login failed!", nil)
 		return
 	}
 
+	// 登陆成功，用户信息放入session
 	userSession := session.GlobalSessions.SessionStart(w, r)
-	userSession.Set("userCode", *userCode)
+	userSession.Set("userCode", user.UserCode)
 	userSession.Set("errorTimes", 0)
 	userSession.Set("loginTime", time.Now().Unix())
 	userSession.Set("lastAction", time.Now().Unix())
 
-	u.OutputJson(w, 0, "Login succeed!", nil)
+	// 根据用户权限类型，跳转不同页面
+	if user.UserAuthority == "admin" {
+		u.OutputJson(w, 0, "userlist", nil)
+	} else if user.UserAuthority == "制片" {
+		u.OutputJson(w, 0, "projectlist", nil)
+	} else if user.UserAuthority == "制片助理" {
+		u.OutputJson(w, 0, "task.html", nil)
+	} else if user.UserAuthority == "分包商" {
+		u.OutputJson(w, 0, "cameraLens.html", nil)
+	}
+
 }

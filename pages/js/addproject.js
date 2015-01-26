@@ -29,7 +29,7 @@ require(['jquery', 'validate'], function($) {
 				if(data.FeedbackCode == undefined){
 					$("input[name^='ProjectCode']").val(data.ProjectCode);
 					$("input[name^='ProjectName']").val(data.ProjectName);
-					$("input[name^='ProjectDescribe']").val(data.ProjectDescribe);
+					$("input[name^='ProjectDetail']").val(data.ProjectDetail);
 					$("input[name^='ProjectLeader']").val(data.ProjectLeader);
 				}
 
