@@ -133,10 +133,3 @@ Create Table `project` (
 	INDEX(`project_name`),
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-
-
-
-
-
