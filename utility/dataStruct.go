@@ -8,6 +8,7 @@ import (
 type FeedbackMessage struct {
 	FeedbackCode int
 	FeedbackText string
+	Data         interface{}
 }
 
 // 用户管理
@@ -97,12 +98,12 @@ type Daily struct {
 
 // 项目管理
 type Project struct {
-	ProjectCode     string
-	ProjectName     string
-	Picture         string
-	ProjectDescribe string
-	ProjectLeader   string
-	Status          int
-	InsertDatetime  string
-	UpdateDatetime  string
+	ProjectCode    string
+	ProjectName    string
+	Picture        string
+	ProjectDetail  string
+	ProjectLeader  string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
 }

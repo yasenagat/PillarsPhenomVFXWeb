@@ -8,7 +8,7 @@ import (
 
 func InsertIntoProject(project *utility.Project) (bool, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`INSERT INTO project
-		(project_code, project_name, picture, project_describe, project_leader, status)
+		(project_code, project_name, picture, project_detail, project_leader, status)
 		VALUES(?, ?, ?, ?, ?, ?)`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
@@ -16,7 +16,7 @@ func InsertIntoProject(project *utility.Project) (bool, error) {
 	}
 	defer stmt.Close()
 	_, err = stmt.Exec(project.ProjectCode, project.ProjectName, project.Picture,
-		project.ProjectDescribe, project.ProjectLeader, project.Status)
+		project.ProjectDetail, project.ProjectLeader, project.Status)
 	if err != nil {
 		return false, err
 	} else {
@@ -43,13 +43,13 @@ func DeleteProjectByProjectCode(code *string) (bool, error) {
 
 func UpdateProjectByProjectCode(project *utility.Project) (bool, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE project SET project_name = ?,
-		project_describe = ?, project_leader = ?, update_datetime = now() WHERE project_code = ?`)
+		project_detail = ?, project_leader = ?, update_datetime = now() WHERE project_code = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(project.ProjectName, project.ProjectDescribe, project.ProjectLeader, project.ProjectCode)
+	_, err = stmt.Exec(project.ProjectName, project.ProjectDetail, project.ProjectLeader, project.ProjectCode)
 	if err != nil {
 		return false, err
 	} else {
@@ -59,7 +59,7 @@ func UpdateProjectByProjectCode(project *utility.Project) (bool, error) {
 
 func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT project_code, project_name,
-		picture, project_describe, project_leader, status, insert_datetime, update_datetime
+		picture, project_detail, project_leader, status, insert_datetime, update_datetime
 		FROM project WHERE project_code = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
@@ -75,7 +75,7 @@ func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
 	var project utility.Project
 	if result.Next() {
 		err = result.Scan(&(project.ProjectCode), &(project.ProjectName),
-			&(project.Picture), &(project.ProjectDescribe), &(project.ProjectLeader), &(project.Status),
+			&(project.Picture), &(project.ProjectDetail), &(project.ProjectLeader), &(project.Status),
 			&(project.InsertDatetime), &(project.UpdateDatetime))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
@@ -86,7 +86,7 @@ func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
 
 func QueryProjectList() (*[]utility.Project, error) {
 	result, err := mysqlUtility.DBConn.Query(`SELECT project_code, project_name,
-		picture, project_describe, project_leader, status, insert_datetime, update_datetime
+		picture, project_detail, project_leader, status, insert_datetime, update_datetime
 		FROM project WHERE status = 0`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
@@ -98,7 +98,7 @@ func QueryProjectList() (*[]utility.Project, error) {
 	for result.Next() {
 		var project utility.Project
 		err = result.Scan(&(project.ProjectCode), &(project.ProjectName),
-			&(project.Picture), &(project.ProjectDescribe), &(project.ProjectLeader),
+			&(project.Picture), &(project.ProjectDetail), &(project.ProjectLeader),
 			&(project.Status), &(project.InsertDatetime), &(project.UpdateDatetime))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
