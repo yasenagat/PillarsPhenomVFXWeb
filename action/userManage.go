@@ -10,9 +10,21 @@ import (
 	"net/http"
 )
 
-func AddUserAction(w http.ResponseWriter, r *http.Request) {
+func check_a(w http.ResponseWriter, r *http.Request) bool {
 	flag, s_code := session.GetSessionUserCode(w, r)
 	if flag == false || s_code == "" {
+		return false
+	}
+
+	rs, _ := mysqlStorage.GetUserAuthority(&s_code)
+	if *rs != "admin" {
+		return false
+	}
+	return true
+}
+
+func AddUserAction(w http.ResponseWriter, r *http.Request) {
+	if !check_a(w, r) {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -73,8 +85,7 @@ func AddUserAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserListAction(w http.ResponseWriter, r *http.Request) {
-	flag, s_code := session.GetSessionUserCode(w, r)
-	if flag == false || s_code == "" {
+	if !check_a(w, r) {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -91,8 +102,7 @@ func UserListAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUserAction(w http.ResponseWriter, r *http.Request) {
-	flag, s_code := session.GetSessionUserCode(w, r)
-	if flag == false || s_code == "" {
+	if !check_a(w, r) {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -120,8 +130,7 @@ func DeleteUserAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryUserAction(w http.ResponseWriter, r *http.Request) {
-	flag, s_code := session.GetSessionUserCode(w, r)
-	if flag == false || s_code == "" {
+	if !check_a(w, r) {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -150,8 +159,7 @@ func QueryUserAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUserAction(w http.ResponseWriter, r *http.Request) {
-	flag, s_code := session.GetSessionUserCode(w, r)
-	if flag == false || s_code == "" {
+	if !check_a(w, r) {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}

@@ -93,6 +93,31 @@ func CheckEmailAndPassword(email *string, password *string) (*utility.User, erro
 	return &user, err
 }
 
+func GetUserAuthority(code *string) (*string, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT user_authority FROM user
+		WHERE user_code = ? AND status = 0`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(code)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var authority string
+
+	if result.Next() {
+		err := result.Scan(&authority)
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+	}
+	return &authority, err
+}
+
 func DeleteUserByUserCode(userCode *string) (bool, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE user SET status = 1
 		WHERE user_code = ?`)
