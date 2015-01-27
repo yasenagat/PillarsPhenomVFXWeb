@@ -2,6 +2,7 @@ package action
 
 import (
 	"PillarsPhenomVFXWeb/mysqlStorage"
+	"PillarsPhenomVFXWeb/session"
 	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,12 @@ import (
 )
 
 func AddUserAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["Email"]) + len(r.Form["UserName"]) + len(r.Form["Phone"]) + len(r.Form["UserAuthority"]) + len(r.Form["FilePath"])
 	if olen != 5 {
@@ -66,6 +73,12 @@ func AddUserAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func UserListAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	list, err := template.ParseFiles("pages/userlist.gtpl")
 	if err != nil {
 		panic(err.Error())
@@ -78,6 +91,12 @@ func UserListAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteUserAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["Email"])
 	if olen != 1 {
@@ -101,6 +120,12 @@ func DeleteUserAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryUserAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["Email"])
 	if olen != 1 {
@@ -125,6 +150,12 @@ func QueryUserAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateUserAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["Email"]) + len(r.Form["UserName"]) + len(r.Form["Phone"]) + len(r.Form["UserAuthority"]) + len(r.Form["FilePath"])
 	if olen != 5 {

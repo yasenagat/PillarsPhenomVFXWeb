@@ -2,6 +2,7 @@ package action
 
 import (
 	"PillarsPhenomVFXWeb/mysqlStorage"
+	"PillarsPhenomVFXWeb/session"
 	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
 	"fmt"
@@ -10,6 +11,12 @@ import (
 )
 
 func AddProjectAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["ProjectName"]) + len(r.Form["ProjectDetail"]) + len(r.Form["ProjectLeader"])
 	if olen != 3 {
@@ -53,6 +60,12 @@ func AddProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteProjectAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["ProjectCode"])
 	if olen != 1 {
@@ -76,6 +89,12 @@ func DeleteProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["ProjectCode"]) + len(r.Form["ProjectName"]) + len(r.Form["ProjectDetail"]) + len(r.Form["ProjectLeader"])
 	if olen != 4 {
@@ -119,6 +138,12 @@ func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryProjectAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	r.ParseForm()
 	olen := len(r.Form["ProjectCode"])
 	if olen != 1 {
@@ -142,6 +167,12 @@ func QueryProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProjectListAction(w http.ResponseWriter, r *http.Request) {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	list, err := template.ParseFiles("pages/projectlist.gtpl")
 	if err != nil {
 		panic(err.Error())
