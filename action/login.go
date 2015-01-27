@@ -48,9 +48,9 @@ func LoginAction(w http.ResponseWriter, r *http.Request) {
 
 	// 根据用户权限类型，跳转不同页面
 	if user.UserAuthority == "admin" {
-		u.OutputJson(w, 0, "userlist", nil)
+		u.OutputJson(w, 0, "user_list", nil)
 	} else if user.UserAuthority == "制片" {
-		u.OutputJson(w, 0, "projectlist", nil)
+		u.OutputJson(w, 0, "project_list", nil)
 	} else if user.UserAuthority == "制片助理" {
 		u.OutputJson(w, 0, "task.html", nil)
 	} else if user.UserAuthority == "分包商" {

@@ -2,21 +2,19 @@ require.baseUrl = "/"
 require.config({
     baseUrl: require.baseUrl,
     paths: {
-        "jquery": "jslib/jquery-1.4.3",
-		"validate": "jslib/jquery.validate"
+        "jquery": "jslib/jquery-1.10.2.min",
+        "domready": "jslib/domReady",
+		"validate": "jslib/jquery.validate.min"
     },
 	shim: {
-		'jquery': {
-			exports: '$'
-		},
         'validate': {
             deps: ['jquery']
         }
     }
 });
 
-require(['jquery', 'validate'], function($) {
-    $(function(){
+require(['domready', 'jquery', 'validate'], function(doc, $) {
+    doc(function(){
 		var code = "";
 		if (document.URL.indexOf("?") != -1) {
 			var getval = document.URL.split('?')[1];
@@ -25,7 +23,7 @@ require(['jquery', 'validate'], function($) {
 			}
 		}
 		if(code != ""){
-			$.post('/queryproject', {ProjectCode:code}, function(data) {
+			$.post('/project_sel', {ProjectCode:code}, function(data) {
 				if(data.FeedbackCode == undefined){
 					$("input[name^='ProjectCode']").val(data.ProjectCode);
 					$("input[name^='ProjectName']").val(data.ProjectName);
@@ -36,11 +34,11 @@ require(['jquery', 'validate'], function($) {
 			}, "json");
 
 			$("#save").click(function () {
-				$('#form1').attr("action", "updateproject");
+				$('#form1').attr("action", "project_upd");
 			});
 		}else{
 			$("#save").click(function () {
-				$('#form1').attr("action", "addproject");
+				$('#form1').attr("action", "project_add");
 			});
 		}
 
@@ -63,5 +61,4 @@ require(['jquery', 'validate'], function($) {
 			}
 		});
 	});
-
 });

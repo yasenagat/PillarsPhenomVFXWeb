@@ -10,15 +10,15 @@ func RouterBinding() {
 
 	http.HandleFunc("/login_action", action.LoginAction)
 
-	http.HandleFunc("/add", action.AddUserAction)
-	http.HandleFunc("/del", action.DeleteUserAction)
-	http.HandleFunc("/update", action.UpdateUserAction)
-	http.HandleFunc("/query", action.QueryUserAction)
-	http.HandleFunc("/userlist", action.UserListAction)
+	http.HandleFunc("/user_add", action.AddUserAction)
+	http.HandleFunc("/user_del", action.DeleteUserAction)
+	http.HandleFunc("/user_upd", action.UpdateUserAction)
+	http.HandleFunc("/user_sel", action.QueryUserAction)
+	http.HandleFunc("/user_list", action.UserListAction)
 
-	http.HandleFunc("/addproject", action.AddProjectAction)
-	http.HandleFunc("/delproject", action.DeleteProjectAction)
-	http.HandleFunc("/updateproject", action.UpdateProjectAction)
-	http.HandleFunc("/queryproject", action.QueryProjectAction)
-	http.HandleFunc("/projectlist", action.ProjectListAction)
+	http.HandleFunc("/project_add", action.AddProjectAction)
+	http.HandleFunc("/project_del", action.DeleteProjectAction)
+	http.HandleFunc("/project_upd", action.UpdateProjectAction)
+	http.HandleFunc("/project_sel", action.QueryProjectAction)
+	http.HandleFunc("/project_list", action.ProjectListAction)
 }

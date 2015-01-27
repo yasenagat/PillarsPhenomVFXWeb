@@ -1,32 +1,24 @@
 <!doctype html>
 <html>
- <head>
-  	<title>镜头界面</title>
-  	<meta charset="utf-8" />
-  	<meta  name="viewport" content="width=device-width,initial-scale=1.0">
-  	<link href="style/cameraLens.css" rel="stylesheet"  type="text/css" />
-  	<script  type="text/javaScript">
-  		 $(document).ready(function()
-  		 {
-              $(".drop_btn_image").click(function()
-              {
-                $(this).next("#drop_btn_right_text_List").slideDown(500);
+	<head>
+		<title>镜头界面</title>
+		<meta charset="utf-8" />
+		<meta  name="viewport" content="width=device-width,initial-scale=1.0">
+		<link href="style/cameraLens.css" rel="stylesheet"  type="text/css"/>
+		<script  type="text/javaScript">
+		/*
+			$(document).ready(function(){
+				$(".drop_btn_image").click(function() {
+					$(this).next("#drop_btn_right_text_List").slideDown(500);
+				});
+			});
+		*/
+		</script>
+	</head>
 
-              }
+	<body>
+         <div class="page">
 
-
-
-          );
-
-
-  		 });
-
-
-  	</script>
-</head> 
-<body>  
-         <div class="page"> 
-	        
 	        <div class="nav_banner">
 	            <div class="nav_lefts">
 			        <ul >
@@ -41,13 +33,13 @@
 			    <div class="nav_right">
 			        <ul>
 			            <li  class="liStyle"><img src="img/user.png"/></a></li>
-			            <li  class="liStyle"><a  href="#">用户名</a></li> 
+			            <li  class="liStyle"><a  href="#">用户名</a></li>
 			            <li  class="liStyle"><a  href="#"><img src="img/configuration.png"/></a></li>
 			            <li  class="liStyle"><a  href="#">设置</a></li>
 		            </ul>
 		        </div>
 	        </div>
-	         <div  class="section"> 
+	         <div  class="section">
 		         <div  class="section_Top">
 		            <div class="camera_view">
 		         		<div class="camera_view_image"><img src="img/sort.png"  class="img_size"/></div>
@@ -65,16 +57,16 @@
 		         		<div class="camera_view_image"><img src="img/search.png"  class="img_size"/></div>
 		         		<div class="camera_view_text">搜索</div>
 		         	</div>
-		         
+
 		         	<div class="camera_view">
 		         		<div class="camera_view_image"><img src="img/camera.png"  class="img_size"/></div>
 		         		<div class="camera_view_text">镜头视图</div>
 		         	</div>
-                  
+
 		         </div>
 		         <div  class="section_Left">
 		         	 <div class="drop_btn_image">
-		         	 	<img  src="img/Triangle1.png"/> 
+		         	 	<img  src="img/Triangle1.png"/>
 		         	 </div>
 		         	 <div  class="drop_btn_right_text">镜头列表</div>
 		         	 <div  id="drop_btn_right_text_List">
@@ -91,35 +83,25 @@
                          <div  class="section_Right_Camera_Show_Two" ><img  src="img/shark.png"/></div>
                          <div  class="section_Right_Camera_Show_Three"><img  src="img/shark.png"/></div>
                          <div  class="section_Right_Camera_Show_Fourth"><img  src="img/shark.png"/></div>
-                
-		         	</div> 
-		         		
+
+		         	</div>
+
 		            <div class="section_Right_Camera_ShowExplain">
-		               
-		               	<div id="ShowExplain_images"><img  src="img/shark.png"/></div> 
+
+		               	<div id="ShowExplain_images"><img  src="img/shark.png"/></div>
 		                <div id="ShowExplain_text">
 		                 	<span>白鲨</span>
 		                 	<span>1000＊1001 </span>
-		                </div> 
-		           
+		                </div>
+
 		            	<div class="section_Right_Camera_ShowExplain_Text">制作需求</div>
 		            	<div class="section_Right_Camera_ShowExplain_BlankDiv">  </div>
 
-		            </div> 	
+		            </div>
 
-		         	
-		         </div>   
+		         </div>
              </div>
          </div>
 
-  
-
-
-
-
-
-     
-
-
-</body>
+	</body>
 </html>

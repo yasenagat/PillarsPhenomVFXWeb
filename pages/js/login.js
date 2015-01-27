@@ -4,12 +4,9 @@ require.config({
     paths: {
         "jquery": "jslib/jquery-1.10.2.min",
         "md5": "jslib/md5",
-		"validate": "jslib/jquery.validate"
+		"validate": "jslib/jquery.validate.min"
     },
 	shim: {
-		'jquery': {
-			exports: '$'
-		},
         'validate': {
             deps: ['jquery']
         }

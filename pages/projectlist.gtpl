@@ -4,7 +4,6 @@
 		<title>项目列表</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link rel="stylesheet" type="text/css" href="style/userManage.css"/>
-		<script type="text/javascript" src="/jslib/jquery-1.4.3.js"></script>
 	</head>
 
 	<body>
@@ -78,6 +77,6 @@
 			</div>
 		</div>
 
-		<script type="text/javascript" src="/js/projectlist.js"></script>
+		<script data-main="js/projectlist" language="JavaScript" defer async="true" src="jslib/require.js"></script>
 	</body>
 </html>

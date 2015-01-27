@@ -2,21 +2,19 @@ require.baseUrl = "/"
 require.config({
     baseUrl: require.baseUrl,
     paths: {
-        "jquery": "jslib/jquery-1.4.3",
-		"validate": "jslib/jquery.validate"
+        "jquery": "jslib/jquery-1.10.2.min",
+        "domready": "jslib/domReady",
+		"validate": "jslib/jquery.validate.min"
     },
 	shim: {
-		'jquery': {
-			exports: '$'
-		},
         'validate': {
             deps: ['jquery']
         }
     }
 });
 
-require(['jquery', 'validate'], function($) {
-    $(function(){
+require(['domready', 'jquery', 'validate'], function(doc, $) {
+    doc(function(){
 		var mail = "";
 		if (document.URL.indexOf("?") != -1) {
 			var getval = document.URL.split('?')[1];
@@ -25,7 +23,7 @@ require(['jquery', 'validate'], function($) {
 			}
 		}
 		if(mail != ""){
-			$.post('/query', {Email:mail}, function(data) {
+			$.post('/user_sel', {Email:mail}, function(data) {
 				if(data.FeedbackCode == undefined){
 					$("input[name^='Email']").val(data.Email);
 					$("input[name^='Email']").attr("readonly", true);
@@ -38,11 +36,11 @@ require(['jquery', 'validate'], function($) {
 			}, "json");
 
 			$("#save").click(function () {
-				$('#form1').attr("action", "update");
+				$('#form1').attr("action", "user_upd");
 			});
 		}else{
 			$("#save").click(function () {
-				$('#form1').attr("action", "add");
+				$('#form1').attr("action", "user_add");
 			});
 		}
 
@@ -71,5 +69,4 @@ require(['jquery', 'validate'], function($) {
 			}
 		});
 	});
-
 });
