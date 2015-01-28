@@ -21,9 +21,5 @@ func RouterBinding() {
 	http.HandleFunc("/project_upd", action.UpdateProjectAction)
 	http.HandleFunc("/project_sel", action.QueryProjectAction)
 	http.HandleFunc("/project_list", action.ProjectListAction)
-	//http.HandleFunc("/.*", NotFound)
-}
-
-func NotFound(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/404.html", http.StatusFound)
+	//http.HandleFunc("/.*", NotFound) // TODO 想实现未知路由地址访问的404页面跳转
 }

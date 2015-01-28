@@ -8,6 +8,22 @@ import (
 	"time"
 )
 
+/*
+	session和权限的验证
+*/
+func checkAuthority(w http.ResponseWriter, r *http.Request, authority string) bool {
+	flag, s_code := session.GetSessionUserCode(w, r)
+	if flag == false || s_code == "" {
+		return false
+	}
+
+	rs, _ := mysqlStorage.GetUserAuthority(&s_code)
+	if *rs != "admin" && *rs != authority {
+		return false
+	}
+	return true
+}
+
 func LoginAction(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	olen := len(r.Form["Password"]) + len(r.Form["Email"])

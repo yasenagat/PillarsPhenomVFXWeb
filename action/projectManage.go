@@ -2,7 +2,6 @@ package action
 
 import (
 	"PillarsPhenomVFXWeb/mysqlStorage"
-	"PillarsPhenomVFXWeb/session"
 	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
 	"fmt"
@@ -10,21 +9,8 @@ import (
 	"net/http"
 )
 
-func check(w http.ResponseWriter, r *http.Request) bool {
-	flag, s_code := session.GetSessionUserCode(w, r)
-	if flag == false || s_code == "" {
-		return false
-	}
-
-	rs, _ := mysqlStorage.GetUserAuthority(&s_code)
-	if *rs != "制片" {
-		return false
-	}
-	return true
-}
-
 func AddProjectAction(w http.ResponseWriter, r *http.Request) {
-	if !check(w, r) {
+	if !checkAuthority(w, r, "制片") {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -72,7 +58,7 @@ func AddProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func DeleteProjectAction(w http.ResponseWriter, r *http.Request) {
-	if !check(w, r) {
+	if !checkAuthority(w, r, "制片") {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -100,7 +86,7 @@ func DeleteProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
-	if !check(w, r) {
+	if !checkAuthority(w, r, "制片") {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -148,7 +134,7 @@ func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryProjectAction(w http.ResponseWriter, r *http.Request) {
-	if !check(w, r) {
+	if !checkAuthority(w, r, "制片") {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
@@ -176,7 +162,7 @@ func QueryProjectAction(w http.ResponseWriter, r *http.Request) {
 }
 
 func ProjectListAction(w http.ResponseWriter, r *http.Request) {
-	if !check(w, r) {
+	if !checkAuthority(w, r, "制片") {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
 	}
