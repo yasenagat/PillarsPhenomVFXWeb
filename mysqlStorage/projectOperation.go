@@ -6,17 +6,18 @@ import (
 	"PillarsPhenomVFXWeb/utility"
 )
 
-func InsertIntoProject(project *utility.Project) (bool, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`INSERT INTO project
-		(project_code, project_name, picture, project_detail, project_leader, status)
-		VALUES(?, ?, ?, ?, ?, ?)`)
+func InsertIntoProject(p *utility.Project) (bool, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`INSERT INTO project (project_code,
+		project_name, picture, project_leader, project_type, start_datetime,
+		end_datetime, project_detail, status, insert_datetime, update_datetime)
+		VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(),)`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(project.ProjectCode, project.ProjectName, project.Picture,
-		project.ProjectDetail, project.ProjectLeader, project.Status)
+	_, err = stmt.Exec(p.ProjectCode, p.ProjectName, p.Picture, p.ProjectLeader,
+		p.ProjectType, p.StartDatetime, p.EndDatetime, p.ProjectDetail, p.Status)
 	if err != nil {
 		return false, err
 	} else {
@@ -41,15 +42,15 @@ func DeleteProjectByProjectCode(code *string) (bool, error) {
 	}
 }
 
-func UpdateProjectByProjectCode(project *utility.Project) (bool, error) {
+func UpdateProjectByProjectCode(p *utility.Project) (bool, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE project SET project_name = ?,
-		project_detail = ?, project_leader = ?, update_datetime = now() WHERE project_code = ?`)
+		project_leader = ?, project_type = ?, start_datetime = ?, end_datetime = ?, project_detail = ?, update_datetime = now() WHERE project_code = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(project.ProjectName, project.ProjectDetail, project.ProjectLeader, project.ProjectCode)
+	_, err = stmt.Exec(p.ProjectName, p.ProjectLeader, p.ProjectType, p.StartDatetime, p.EndDatetime, p.ProjectDetail)
 	if err != nil {
 		return false, err
 	} else {
@@ -58,9 +59,7 @@ func UpdateProjectByProjectCode(project *utility.Project) (bool, error) {
 }
 
 func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT project_code, project_name,
-		picture, project_detail, project_leader, status, insert_datetime, update_datetime
-		FROM project WHERE project_code = ?`)
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT project_code, project_name, picture, project_leader, project_type, start_datetime, end_datetime, project_detail FROM project WHERE project_code = ? and status = 0`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
@@ -72,40 +71,38 @@ func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
 		return nil, err
 	}
 	defer result.Close()
-	var project utility.Project
+	var p utility.Project
 	if result.Next() {
-		err = result.Scan(&(project.ProjectCode), &(project.ProjectName),
-			&(project.Picture), &(project.ProjectDetail), &(project.ProjectLeader), &(project.Status),
-			&(project.InsertDatetime), &(project.UpdateDatetime))
+		err = result.Scan(&(p.ProjectCode), &(p.ProjectName), &(p.Picture), &(p.ProjectLeader), &(p.ProjectType), &(p.StartDatetime), &(p.EndDatetime), &(p.ProjectDetail))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
 		}
 	}
-	return &project, err
+	return &p, err
 }
 
-func QueryProjectList() (*[]utility.Project, error) {
-	result, err := mysqlUtility.DBConn.Query(`SELECT project_code, project_name,
-		picture, project_detail, project_leader, status, insert_datetime, update_datetime
-		FROM project WHERE status = 0`)
+func QueryProjectList(page int, limit int) (*[]utility.Project, error) {
+	skip := (page - 1) * limit
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT project_code, project_name, picture, project_leader, project_type, start_datetime, end_datetime, project_detail FROM project WHERE status = 0 LIMIT ?, ?`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(skip, limit)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
 	}
 	defer result.Close()
 	var projectList []utility.Project
-	var i int = 0
 	for result.Next() {
-		var project utility.Project
-		err = result.Scan(&(project.ProjectCode), &(project.ProjectName),
-			&(project.Picture), &(project.ProjectDetail), &(project.ProjectLeader),
-			&(project.Status), &(project.InsertDatetime), &(project.UpdateDatetime))
+		var p utility.Project
+		err = result.Scan(&(p.ProjectCode), &(p.ProjectName), &(p.Picture), &(p.ProjectLeader), &(p.ProjectType), &(p.StartDatetime), &(p.EndDatetime), &(p.ProjectDetail))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
 		}
-		project.Status = i%2 + 1
-		projectList = append(projectList, project)
-		i++
+		projectList = append(projectList, p)
 	}
 	return &projectList, err
 }

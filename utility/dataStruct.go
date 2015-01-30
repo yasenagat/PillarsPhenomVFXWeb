@@ -19,8 +19,23 @@ type User struct {
 	Picture        string
 	Email          string
 	Phone          string
-	UserAuthority  string
-	FilePath       string
+	UserAuthority  string //TODO Need to change
+	FilePath       string //TODO Not Use,May be delete
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 项目管理
+type Project struct {
+	ProjectCode    string
+	ProjectName    string
+	Picture        string
+	ProjectLeader  string
+	ProjectType    string
+	StartDatetime  string
+	EndDatetime    string
+	ProjectDetail  string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -91,18 +106,6 @@ type Daily struct {
 	ShotCode       string
 	AwardCode      string
 	TargetPath     string
-	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-// 项目管理
-type Project struct {
-	ProjectCode    string
-	ProjectName    string
-	Picture        string
-	ProjectDetail  string
-	ProjectLeader  string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string

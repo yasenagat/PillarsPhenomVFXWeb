@@ -7,11 +7,11 @@ CREATE DATABASE IF NOT EXISTS PillarsPhenomVFX DEFAULT CHARSET utf8;
 Create Table `user` (
 	`user_id` int unsigned NOT NULL AUTO_INCREMENT,
 	`user_code` char(32) not null unique,#计算生成的唯一识别符
-	`password` char(32) not null,
-	`display_name` char(20) not null,
+	`password` char(32) not null,#密码
+	`display_name` char(20) not null,#显示用户名
 	`picture` mediumtext not null,#头像照片的base64编码
-	`email` char(30) not null unique,
-	`phone` char(20) not null,
+	`email` char(30) not null unique,#登陆账号
+	`phone` char(20) not null,#电话
 	`user_authority` char(20) not null,#用户权限（admin，制片，助理，分包商）
 	`file_path` varchar(2047) not null,#用户存储路径
 	`status` tinyint unsigned NOT NULL,#标识用户当期状态0代表正常，1代表已注销
@@ -25,6 +25,27 @@ Create Table `user` (
 INSERT INTO user(user_code,password,display_name,picture,email,phone,user_authority,file_path,status) VALUES('119427f6aed6fbce53eaadaaa5519317','E10ADC3949BA59ABBE56E057F20F883E','管理员',"478e3dd1616187541b6dcc4e82865133","admin@mail.com","13512341234","admin","null",0);#插入一条管理员用户测试
 
 用户注销账号是只做逻辑删除，即标记status为1。
+
+
+项目管理
+Create Table `project` (
+	`project_id` int unsigned NOT NULL AUTO_INCREMENT,
+	`project_code` char(32) not null unique,#计算生成的唯一识别符
+	`project_name` varchar(100) not null,#项目名称
+	`picture` mediumtext not null,#项目缩略图的base64编码
+	`project_leader` varchar(100) not null,#项目负责人
+	`project_type` varchar(100) not null,#项目类型
+	`start_datetime` TIMESTAMP,#项目开始时间
+	`end_datetime` TIMESTAMP,#项目结束时间
+	`project_detail` varchar(800) not null,#项目描述（备注）
+	`status` tinyint unsigned NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	PRIMARY KEY (`project_id`),
+	INDEX(`project_name`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 用户指定硬盘路径之后，对该路径进行解析，获取所有的Material（素材）及素材的MetaData（元数据），每个Material可能有几十个元信息
 Create Table `material` (
@@ -118,18 +139,3 @@ Create Table `daily` (
 
 权限管理
 
-项目管理 gpg -a --export 07DC563D1F41B907 |  apt-key add -
-Create Table `project` (
-	`project_id` int unsigned NOT NULL AUTO_INCREMENT,
-	`project_code` char(32) not null unique,#计算生成的唯一识别符
-	`project_name` varchar(100) not null,
-	`picture` mediumtext not null,#项目缩略图的base64编码
-	`project_detail` varchar(800) not null,
-	`project_leader` varchar(100) not null,
-	`status` tinyint unsigned NOT NULL,#状态0代表正常，1代表已注销
-	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`project_id`),
-	INDEX(`project_name`),
-	INDEX(`project_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
