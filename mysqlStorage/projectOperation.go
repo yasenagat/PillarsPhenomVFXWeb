@@ -49,7 +49,7 @@ func UpdateProjectByProjectCode(p *utility.Project) (bool, error) {
 		return false, err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(p.ProjectName, p.Picture, p.ProjectLeader, p.ProjectType, p.StartDatetime, p.EndDatetime, p.ProjectDetail)
+	_, err = stmt.Exec(p.ProjectName, p.Picture, p.ProjectLeader, p.ProjectType, p.StartDatetime, p.EndDatetime, p.ProjectDetail, p.ProjectCode)
 	if err != nil {
 		return false, err
 	} else {
@@ -80,14 +80,14 @@ func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
 	return &p, err
 }
 
-func QueryProjectList(start int, end int) (*[]utility.Project, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT * FROM (SELECT project_code, project_name, picture, project_leader, project_type, start_datetime, end_datetime, project_detail FROM project WHERE status = 0 ORDER BY update_datetime) T LIMIT ?, ?`)
+func QueryProjectList(start int64, end int64) (*[]utility.Project, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT * FROM (SELECT project_code, project_name, picture, project_leader, project_type, start_datetime, end_datetime, project_detail FROM project WHERE status = 0 ORDER BY update_datetime DESC) T LIMIT ?, ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Query(start, start)
+	result, err := stmt.Query(start, end)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err

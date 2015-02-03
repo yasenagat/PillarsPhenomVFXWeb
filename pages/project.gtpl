@@ -29,7 +29,7 @@
 			{{with .}}
 				{{range .}}
 					<div class="protab">
-						<table width="100%" border="0" cellspacing="0" cellpadding="0">
+						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab{{.ProjectCode}}">
 							<tbody><tr>
 								<td rowspan="3" width="150" height="200">
 									<script type="text/javascript">
@@ -69,6 +69,7 @@
 							</tr>
 						</tbody></table>
 						<div class="cz">操作</div>
+						<div class="del">删除</div>
 					</div>
 
 				{{end}}

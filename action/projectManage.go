@@ -7,7 +7,7 @@ import (
 	"fmt"
 	"html/template"
 	"net/http"
-	"reflect"
+	"strconv"
 )
 
 func AddProjectAction(w http.ResponseWriter, r *http.Request) {
@@ -123,7 +123,7 @@ func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if len(r.Form["ProjectCode"][0]) == 0 {
-		u.OutputJson(w, 11, "Error parameter ProjectName", nil)
+		u.OutputJson(w, 11, "Error parameter ProjectCode", nil)
 		return
 	}
 
@@ -175,7 +175,7 @@ func UpdateProjectAction(w http.ResponseWriter, r *http.Request) {
 	}
 	result, _ := mysqlStorage.UpdateProjectByProjectCode(&project)
 	if result == false {
-		u.OutputJson(w, 16, "Update project failed!", nil)
+		u.OutputJson(w, 19, "Update project failed!", nil)
 		return
 	}
 
@@ -217,32 +217,52 @@ func ProjectListAction(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r.ParseForm()
-	page, limit := 1, 20
-	olen := len(r.Form["Start"]) + len(r.Form["End"])
-	if olen == 2 {
-		p := reflect.ValueOf(r.Form["Start"][0])
-		fmt.Println("---------->", p.Type())
-		//if p.Type() != int {
-		//	u.OutputJson(w, 1, "Error parameter Start", nil)
-		//	return
-		//}
-
-		//l := reflect.ValueOf(r.Form["End"][0])
-		//if l.Type() != int {
-		//	u.OutputJson(w, 12, "Error parameter End", nil)
-		//	return
-		//}
-		//page, limit = r.Form["Start"][0], r.Form["End"][0]
-	}
-
 	list, err := template.ParseFiles("pages/project.gtpl")
 	if err != nil {
+		// TODO 系统异常页面，w重定向
 		panic(err.Error())
 	}
-	projectList, err := mysqlStorage.QueryProjectList(page, limit)
+
+	page, limit := 0, 6
+	projectList, err := mysqlStorage.QueryProjectList(int64(page), int64(limit))
 	if err != nil {
+		// TODO 系统异常页面，w重定向
 		panic(err.Error())
 	}
 	list.Execute(w, projectList)
+}
+
+func LoadProjectAction(w http.ResponseWriter, r *http.Request) {
+	if !checkAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
+	olen := len(r.Form["Start"]) + len(r.Form["End"])
+	if olen != 2 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+
+	start, err := strconv.ParseInt(r.Form["Start"][0], 10, 0)
+	if err != nil {
+		u.OutputJson(w, 12, "Error parameter Start", nil)
+		return
+	}
+
+	end, err := strconv.ParseInt(r.Form["End"][0], 10, 0)
+	if err != nil {
+		u.OutputJson(w, 13, "Error parameter End", nil)
+		return
+	}
+
+	projectList, err := mysqlStorage.QueryProjectList(start, end)
+	if err != nil {
+		u.OutputJson(w, 14, "Load project failed!", nil)
+		return
+	}
+
+	rs, _ := json.Marshal(projectList)
+	u.OutputJson(w, 0, "Load project succeed!", string(rs))
 }

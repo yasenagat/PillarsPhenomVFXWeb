@@ -39,7 +39,7 @@ require(['domready', 'jquery', 'validate'], function(doc, $) {
 		});
 
 		// 操作
-		$(".pro div .cz").click(function() {
+		$(".pro").on("click",".cz",function(){
 			flag = "upd";
 			var thistab = $(this).parent().children();
 			var xmm = thistab.find(".ProjectName_").html().trim();
@@ -63,6 +63,29 @@ require(['domready', 'jquery', 'validate'], function(doc, $) {
 			$(".outer").show(500);
 			$(".formdiv").show(500);
 		});
+
+		// 删除
+		$(".pro").on("click",".del",function(){
+			var thistab = $(this).parent().children();
+			var xmdm = thistab.find(".ProjectCode_").val().trim();
+			if(confirm("关闭项目后不可恢复，确定要删除吗？")) {
+				del_core(xmdm, function(data) {
+					if(data.FeedbackCode == 0) {
+						$(".tab"+xmdm).remove();
+		            } else {
+						// TODO 删除失败
+		            }
+				});
+			}
+		})
+		var del_core = function(xmdm, callback) {
+	        $.post("/project_del", {ProjectCode: xmdm},
+	            function(data) {
+	                callback(data);
+	            },
+	            "json"
+	        );
+	    }
 
 		// 表单验证
 		var validator = $('#projectForm').validate({
@@ -108,13 +131,25 @@ require(['domready', 'jquery', 'validate'], function(doc, $) {
 
 				ajaxpost_core(action, pc, pn, pi, pl, pt, sd, ed, pd, function(data) {
 					if(data.FeedbackCode == 0) {
-		                var addhtml = "<div class='protab'><table width='100%' border='0' cellspacing='0' cellpadding='0'><tr><td rowspan='3' width='150' height='200'><img width='120' height='160' src='" + pic + "'></td><td width='15%' align='right'>项目名：<input type='hidden' class='ProjectCode_' value='" + pc + "'></td><td class='ProjectName_'>" + pn + "</td><td width='15%' align='right'>负责人：</td><td class='ProjectLeader_'>" + pl + "</td></tr><tr><td align='right'>开始时间：</td><td class='StartDatetime_'>" + sd + "</td><td align='right'>结束时间：</td><td class='EndDatetime_'>" + ed + "</td></tr><tr><td align='right'>项目类型：</td><td class='ProjectType_'>" + pt + "</td><td align='right'>备注：</td><td class='ProjectDetail_'>" + pd + "</td></tr></table><div class='cz'>操作</div></div>";
-						$(".pro").prepend(addhtml);
-						againjs();
-						$(".outer").hide(500);
-						$(".formdiv").hide(500);
-						var rs = JSON.parse(data.Data);
-						pc = rs["ProjectCode"];
+						if(flag == "add"){
+							var addhtml = "<div class='protab'><table width='100%' border='0' cellspacing='0' cellpadding='0' class='tab" + pc + "'><tr><td rowspan='3' width='150' height='200'><img width='120' height='160' src='" + pic + "'></td><td width='15%' align='right'>项目名：<input type='hidden' class='ProjectCode_' value='" + pc + "'></td><td class='ProjectName_'>" + pn + "</td><td width='15%' align='right'>负责人：</td><td class='ProjectLeader_'>" + pl + "</td></tr><tr><td align='right'>开始时间：</td><td class='StartDatetime_'>" + sd + "</td><td align='right'>结束时间：</td><td class='EndDatetime_'>" + ed + "</td></tr><tr><td align='right'>项目类型：</td><td class='ProjectType_'>" + pt + "</td><td align='right'>备注：</td><td class='ProjectDetail_'>" + pd + "</td></tr></table><div class='cz'>操作</div><div class='del'>删除</div></div>";
+							$(".pro").prepend(addhtml);
+							againjs();
+							$(".outer").hide(500);
+							$(".formdiv").hide(500);
+							var rs = JSON.parse(data.Data);
+							pc = rs["ProjectCode"];
+						}else{
+							$(".tab"+pc+" .ProjectName_").html(pn);
+							$(".tab"+pc+" .ProjectLeader").html(pl);
+							$(".tab"+pc+" .ProjectType").html(pt);
+							$(".tab"+pc+" .StartDatetime").html(sd);
+							$(".tab"+pc+" .EndDatetime").html(ed);
+							$(".tab"+pc+" .ProjectDetail").html(pd);
+							againjs();
+							$(".outer").hide(500);
+							$(".formdiv").hide(500);
+						}
 		            } else {
 						// TODO 保存失败显示位置
 		                alert("保存失败，请稍后重试！");
@@ -158,28 +193,43 @@ require(['domready', 'jquery', 'validate'], function(doc, $) {
 			var scrollHeight = $(document).height();
 			var windowHeight = $(this).height();
 			if(scrollTop + windowHeight == scrollHeight) {
-				var start = $(".pro").children(".protab").length + 1;
-				var end = 5;
+				var start = $(".pro").children(".protab").length;
+				var end = start + 6;
 				load_core(start, end, function(data) {
 					if(data.FeedbackCode == 0) {
-						// TODO 未完待续。。。。
 						var rs = JSON.parse(data.Data);
-						for (var i=0;i<rs.length;i++) {
-							var addhtml = "<div class='protab'><table width='100%' border='0' cellspacing='0' cellpadding='0'><tr><td rowspan='3' width='150' height='200'><img width='120' height='160' src='" + pic + "'></td><td width='15%' align='right'>项目名：<input type='hidden' class='ProjectCode_' value='" + pc + "'></td><td class='ProjectName_'>" + pn + "</td><td width='15%' align='right'>负责人：</td><td class='ProjectLeader_'>" + pl + "</td></tr><tr><td align='right'>开始时间：</td><td class='StartDatetime_'>" + sd + "</td><td align='right'>结束时间：</td><td class='EndDatetime_'>" + ed + "</td></tr><tr><td align='right'>项目类型：</td><td class='ProjectType_'>" + pt + "</td><td align='right'>备注：</td><td class='ProjectDetail_'>" + pd + "</td></tr></table><div class='cz'>操作</div></div>";
-							$(".pro").prepend(addhtml);
+						if (rs == null || rs.length < 1){
+							return;
 						}
-
-
+						var addhtml;
+						for (var i=0; i<rs.length; i++) {
+							addhtml = "";
+							addhtml += "<div class='protab'>";
+							addhtml += "<table width='100%' border='0' cellspacing='0' cellpadding='0' class='tab" + rs[i]["ProjectCode"] + "'>";
+							addhtml += "<tr><td rowspan='3' width='150' height='200'><img width='120' height='160' src='" + rs[i]["Picture"] + "'></td>";
+							addhtml += "<td width='15%' align='right'>项目名：<input type='hidden' class='ProjectCode_' value='" + rs[i]["ProjectCode"] + "'></td>";
+							addhtml += "<td class='ProjectName_'>" + rs[i]["ProjectName"] + "</td>";
+							addhtml += "<td width='15%' align='right'>负责人：</td>";
+							addhtml += "<td class='ProjectLeader_'>" + rs[i]["ProjectLeader"] + "</td></tr>";
+							addhtml += "<tr><td align='right'>开始时间：</td><td class='StartDatetime_'>" + rs[i]["StartDatetime"] + "</td>";
+							addhtml += "<td align='right'>结束时间：</td>";
+							addhtml += "<td class='EndDatetime_'>" + rs[i]["EndDatetime"] + "</td>";
+							addhtml += "</tr><tr><td align='right'>项目类型：</td>";
+							addhtml += "<td class='ProjectType_'>" + rs[i]["ProjectType"] + "</td>";
+							addhtml += "<td align='right'>备注：</td>";
+							addhtml += "<td class='ProjectDetail_'>" + rs[i]["ProjectDetail"] + "</td></tr>";
+							addhtml += "</table><div class='cz'>操作</div><div class='del'>删除</div></div>";
+							$(".pro").append(addhtml);
+						}
 		            } else {
-						// TODO 保存失败显示位置
-		                alert("保存失败，请稍后重试！");
+						// TODO 加载失败
 		            }
 	        	});
 			}
 		});
 
 		var load_core = function(start, end, callback) {
-	        $.post("", {Start: start, End: end},
+	        $.post("/project_load", {Start: start, End: end},
 	            function(data) {
 	                callback(data);
 	            },
