@@ -76,6 +76,13 @@ body *{
 	cursor:pointer;
 	display:none;
 }
+.del{
+	position:absolute;
+	right:7px;
+	top:40px;
+	cursor:pointer;
+	display:none;
+}
 .pro .protab table{
 	-webkit-transition: width .3s, height .3s, color .3s linear, background-color .3s linear, border-color .3s linear, -webkit-transform .3s linear;
 	-moz-transition: width .3s, height .3s, color .3s linear, background-color .3s linear, border-color .3s linear, -moz-transform .3s linear;
@@ -88,13 +95,17 @@ body *{
 	color:#09C;
 	display:block;
 }
+.pro .protab:hover .del{
+	color:#09C;
+	display:block;
+}
 .outer{
 	position: fixed; top: 0px; left: 0px;background: none repeat scroll 0% 0% rgb(0, 0, 0); opacity: 0.3; z-index: 9999; display:none;
 }
 .formdiv{
 	width:400px;
 	overflow:hidden;
-	position: absolute;
+	position: fixed;
     z-index: 9999;
 	background:#FFF;
 	display:none;

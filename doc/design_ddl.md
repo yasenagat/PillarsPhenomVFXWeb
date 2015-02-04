@@ -30,6 +30,7 @@ INSERT INTO user(user_code,password,display_name,picture,email,phone,user_author
 项目管理
 Create Table `project` (
 	`project_id` int unsigned NOT NULL AUTO_INCREMENT,
+	`user_code` char(32) not null,
 	`project_code` char(32) not null unique,#计算生成的唯一识别符
 	`project_name` varchar(100) not null,#项目名称
 	`picture` mediumtext not null,#项目缩略图的base64编码
