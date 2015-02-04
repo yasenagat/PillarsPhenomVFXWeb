@@ -3,20 +3,21 @@
 	<head>
 		<title>Project</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<link href="style/css.css" rel="stylesheet" type="text/css">
 		<link href="style/style.css" rel="stylesheet" type="text/css">
 	</head>
 
 	<body>
+		<div class="menu">
+			<ul>
+				<li><a href="#">Project</a></li>
+				<li><a href="#">Editoral</a></li>
+				<li><a href="#">Post</a></li>
+				<li><a href="#">On-Set</a></li>
+				<li><a href="#">Playback</a></li>
+			</ul>
+		</div>
 		<div class="all">
-			<div class="menu">
-				<ul>
-					<li><a href="#">Project</a></li>
-					<li><a href="#">Editoral</a></li>
-					<li><a href="#">Post</a></li>
-					<li><a href="#">On-Set</a></li>
-					<li><a href="#">Playback</a></li>
-				</ul>
-			</div>
 			<div class="cont">
 				<div class="search">
 					<input type="text" class="inptext">
