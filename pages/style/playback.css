@@ -1,0 +1,175 @@
+.leftdiv{
+}
+.listdiv{
+	height:150px;
+}
+.videodiv{
+	text-align:center;
+	overflow:hidden;
+}
+.float{
+	position:absolute;
+	top:60px;
+	right:0;
+}
+.rightdiv{
+	float:right;
+	width:390px;
+	position:absolute;
+	right:0;
+	top:0;
+	z-index:5;
+	display:none;
+	padding:10px;
+	border:2px solid #ccc;
+	background:#FFF;
+}
+.yorn{
+	width:50px;
+	height:50px;
+	position:absolute;
+	right:0;
+	top:20px;
+	z-index:10;
+	cursor:pointer;
+	border:2px solid #ccc;
+}
+.rightdiv .tit{
+	font-size:25px;
+	padding-left:10px;
+	height:50px;
+	line-height:50px;
+}
+.chatdiv{
+	padding:5px;
+	overflow:hidden;
+	height:600px;
+	overflow-x: hidden;
+	OVERFLOW-y: auto;
+	border:1px solid #999;
+	background:#FFF;
+}
+.news{
+	margin:5px;
+	font-size:20px;
+	overflow: hidden;
+	line-height: 22px;
+	word-break: break-all;
+	work-wrap: break-word;
+	padding:10px;
+	background:#CCC;
+	border:2px solid #999;
+}
+.news img{
+	max-height:160px;
+	max-width:200px;
+	float:left;
+}
+.sendout{
+	padding:5px;
+	overflow:hidden;
+	height:230px;
+	border:1px solid #999;
+	margin-top:15px;
+	background:#FFF;
+}
+.sendout img{
+	width:50px;
+	height:35px;
+}
+.sendout .textarea{
+	margin-top:5px;
+	width:365px;
+	height:150px;
+	font-size:25px;
+	border:2px solid #999;
+}
+.sendout .but{
+	width:50px;
+	height:30px;
+	float:right;
+}
+
+/*画图*/
+#canvas{
+	border:1px solid #ccc;
+	position:absolute;
+	top:0px;
+}
+#canvasnone{
+	display:none;
+}
+.canvasstyle{
+	width:200px;
+	height:170px;
+	border: 3px solid #ccc;
+	position: absolute;
+	top: 20px;
+	left:-205px;
+}
+#nonediv{
+	display:none;
+}
+.colordiv table tbody tr td{
+	cursor:pointer;
+	border:2px solid #ccc;
+}
+.canvasstyle{
+	font-size:20px;
+}
+.colordiv span{
+	width:30px;
+	height:20px;
+	background-color:#F00;
+	display:block;
+	float:right;
+}
+.widthdiv table tbody tr td{
+	cursor:pointer;
+	border:2px solid #ccc;
+}
+.widthdiv span{
+	width:30px;
+	height:20px;
+	display:block;
+	float:right;
+}
+.butdiv{
+	height:50px;
+	text-align:center;
+	line-height:50px;
+}
+.butdiv2{
+	height:80px;
+	text-align:left;
+	line-height:80px;
+	margin:10px;
+	position:relative;
+	cursor:e-resize;
+	border:1px solid #ccc;
+}
+.butdiv input{
+	width:60px;
+	height:40px;
+	text-align:center;
+}
+.butdiv .keepbut{
+	margin-right:10px;
+}
+.widdiv{
+	background-color:#CCC;
+	height:40px;
+	padding-top:20px;
+	padding-bottom:20px;
+	cursor:w-resize;
+}
+.date{
+	height:40px;
+	width:0%;
+	line-height:40px;
+	padding-top:20px;
+	padding-bottom:20px;
+	font-size:30px;
+	position:absolute;
+	top:0;
+}
