@@ -4,87 +4,133 @@
 
 CREATE DATABASE IF NOT EXISTS PillarsPhenomVFX DEFAULT CHARSET utf8;
 
-Create Table `user` (
-	`user_id` int unsigned NOT NULL AUTO_INCREMENT,
-	`user_code` char(32) not null unique,#计算生成的唯一识别符
-	`password` char(32) not null,#密码
-	`display_name` char(20) not null,#显示用户名
-	`picture` mediumtext not null,#头像照片的base64编码
-	`email` char(30) not null unique,#登陆账号
-	`phone` char(20) not null,#电话
-	`user_authority` char(20) not null,#用户权限（admin，制片，助理，分包商）
-	`file_path` varchar(2047) not null,#用户存储路径
-	`status` tinyint unsigned NOT NULL,#标识用户当期状态0代表正常，1代表已注销
-	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+### 4.1 用户管理--用户列表
+CREATE TABLE `user` (
+	`user_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`password` CHAR(32) NOT NULL,#密码
+	`display_name` CHAR(20) NOT NULL,#显示用户名
+	`picture` MEDIUMTEXT NOT NULL,#头像照片的base64编码
+	`email` CHAR(30) NOT NULL UNIQUE,#登陆账号
+	`phone` CHAR(20) NOT NULL,#电话
+	`user_authority` CHAR(20) NOT NULL,#用户权限（admin，制片，助理，分包商）
+	`file_path` VARCHAR(2047) NOT NULL,#用户存储路径
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP,
+	`update_datetime` TIMESTAMP,
 	PRIMARY KEY (`user_id`),
 	INDEX(`email`),
 	INDEX(`user_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
+##### 用户注销账号是只做逻辑删除，即标记status为1。
 INSERT INTO user(user_code,password,display_name,picture,email,phone,user_authority,file_path,status) VALUES('119427f6aed6fbce53eaadaaa5519317','E10ADC3949BA59ABBE56E057F20F883E','管理员',"478e3dd1616187541b6dcc4e82865133","admin@mail.com","13512341234","admin","null",0);#插入一条管理员用户测试
 
-用户注销账号是只做逻辑删除，即标记status为1。
 
-
-项目管理
-Create Table `project` (
-	`project_id` int unsigned NOT NULL AUTO_INCREMENT,
-	`user_code` char(32) not null,
-	`project_code` char(32) not null unique,#计算生成的唯一识别符
-	`project_name` varchar(100) not null,#项目名称
-	`picture` mediumtext not null,#项目缩略图的base64编码
-	`project_leader` varchar(100) not null,#项目负责人
-	`project_type` varchar(100) not null,#项目类型
+### 4.2 项目管理--项目列表
+CREATE TABLE `project` (
+	`project_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`user_code` CHAR(32) NOT NULL,
+	`project_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`project_name` VARCHAR(255) NOT NULL,#项目名称
+	`picture` MEDIUMTEXT NOT NULL,#项目缩略图的base64编码
+	`project_leader` VARCHAR(100) NOT NULL,#项目负责人
+	`project_type` VARCHAR(100) NOT NULL,#项目类型
 	`start_datetime` TIMESTAMP,#项目开始时间
 	`end_datetime` TIMESTAMP,#项目结束时间
-	`project_detail` varchar(800) not null,#项目描述（备注）
-	`status` tinyint unsigned NOT NULL,#状态0代表正常，1代表已注销
-	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`project_detail` VARCHAR(1000) NOT NULL,#项目描述（备注）
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP,
+	`update_datetime` TIMESTAMP,
 	PRIMARY KEY (`project_id`),
 	INDEX(`project_name`),
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-用户指定硬盘路径之后，对该路径进行解析，获取所有的Material（素材）及素材的MetaData（元数据），每个Material可能有几十个元信息
-Create Table `material` (
-	`material_id` int unsigned NOT NULL AUTO_INCREMENT,
-	`material_code` char(32) not null unique,#计算生成的唯一识别符
-	`material_path` varchar(2047) not null,#存储素材的路径
-	`material_name` varchar(255) not null,#素材的名称
-	`material_type` char(16) not null,#素材的类型
-	`material_encoded_path`varchar(2047) not null,#存储素材转码后的路径
-	`status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+### 4.3 素材管理--用户添加的库
+CREATE TABLE `library`(
+	`library_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`library_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`library_name` VARCHAR(255) NOT NULL,#库的名称
+	`library_path` VARCHAR(1000) NOT NULL,#库的原始路径
+	`encoded_path` VARCHAR(1000),#库的转码路径
+	`dpx_path` VARCHAR(1000),#DPX路径
+	`mov_path` VARCHAR(1000),#mov小样路径
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`project_code` CHAR(32) NOT NULL,#项目代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP,
+	`update_datetime` TIMESTAMP,
+	PRIMARY KEY (`library_id`),
+	INDEX(`library_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+### 4.3 素材管理--素材信息
+CREATE TABLE `material` (
+	`material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`material_name` VARCHAR(255) NOT NULL,#素材的名称
+	`material_path` VARCHAR(2047) NOT NULL,#存储素材的路径
+	`material_type` VARCHAR(20) NOT NULL,#文件格式（R3D）
+	`material_length` VARCHAR(20) NOT NULL,#长度，格式为00:00:00:00
+	`material_size` VARCHAR(20) NOT NULL,#尺寸，格式为1920*1080
+	`material_rate` VARCHAR(20) NOT NULL,#帧速率
+	`material_start` VARCHAR(20) NOT NULL,#始码，格式为00:00:00:00
+	`material_end` VARCHAR(20) NOT NULL,#止码，格式为00:00:00:00
+	`picture` MEDIUMTEXT NOT NULL,#缩略图，Base64编码
+	`material_data` text NOT NULL,#元数据，string JSON
+	`encoded_path` VARCHAR(1000) NOT NULL,#存储素材转码后的路径
+	`dpx_path` VARCHAR(1000) NOT NULL,#DPX路径
+	`mov_path` VARCHAR(1000) NOT NULL,#mov小样路径
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`project_code` CHAR(32) NOT NULL,#项目代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP,
+	`update_datetime` TIMESTAMP,
 	PRIMARY KEY (`material_id`),
 	INDEX(`material_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-MaterialMetaData是一个MongoDB的数据库，存储MaterialCode对应的Material所拥有的很多条MetaData
-MaterialMetadata
-{
-    _id MongoDB自动生成
-    MetaDataCode: string #32位长
-    MetaDataIndex: int #该metadata在原来MetaData中的index
-    MaterialCode: string #32位长
-    MetaDataName: string #任意位长
-    MetaDataValue: string #任意位长
-    Status: int #0代表正常，1代表被删除
-    InsertDatetime #记录添加时间
-    UpdateDatetime #记录修改时间，实际上只有删除的时候会修改
-}
+### 4.3 素材管理--用户添加的素材组
+CREATE TABLE `material_group`(
+	`group_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`group_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`group_name` VARCHAR(255) NOT NULL,#素材组的名称
+	`father_code` CHAR(32) NOT NULL,#上级代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`project_code` CHAR(32) NOT NULL,#项目代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP,
+	`update_datetime` TIMESTAMP,
+	PRIMARY KEY (`group_id`),
+	INDEX(`group_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+### 4.3 素材管理--用户添加的素材组数据
+CREATE TABLE `material_group_data`(
+	`data_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`data_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`group_code` VARCHAR(255) NOT NULL,#素材组的代码
+	`material_code` CHAR(32) NOT NULL,#素材的代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`project_code` CHAR(32) NOT NULL,#项目代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP,
+	`update_datetime` TIMESTAMP,
+	PRIMARY KEY (`data_id`),
+	INDEX(`data_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 每个shot是material的一段，该表由EDL文件解析获得，EDL解析的程序需要自己写
-Create Table `shot` (
-    `shot_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `shot_code` char(32) not null unique,#计算生成的唯一识别符
-    `material_code` char(32) not null,#该shot对应的Material code
-    `in_point` char(11) not null,#该shot的入点，格式为00:00:00:00
-    `out_point` char(11) not null,#该shot的出点，格式为00:00:00:00
-    `field_name` varchar(32) not null,#该shot拍摄的场地
-    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+CREATE TABLE `shot` (
+    `shot_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `shot_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `material_code` CHAR(32) NOT NULL,#该shot对应的Material code
+    `in_point` CHAR(11) NOT NULL,#该shot的入点，格式为00:00:00:00
+    `out_point` CHAR(11) NOT NULL,#该shot的出点，格式为00:00:00:00
+    `field_name` VARCHAR(32) NOT NULL,#该shot拍摄的场地
+    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`shot_id`),
@@ -93,12 +139,12 @@ Create Table `shot` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
-Create Table `thumbnail` (
-    `thumbnail_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `thumbnail_code` char(32) not null unique,#计算生成的唯一识别符
-    `shot_code` char(32) not null,#对应的镜头
-    `thumbnail_image` BLOB not null,
-    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+CREATE TABLE `thumbnail` (
+    `thumbnail_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `thumbnail_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `shot_code` CHAR(32) NOT NULL,#对应的镜头
+    `thumbnail_image` BLOB NOT NULL,
+    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`thumbnail_id`),
@@ -107,15 +153,15 @@ Create Table `thumbnail` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 接下来讲需求发给若干个接包方
-Create Table `award` (
-    `award_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `award_code` char(32) not null unique,#计算生成的唯一识别符
-    `shot_code` char(32) not null,#对应的镜头
-    `recieve_user_code` char(32) not null,#接包方用户名
-    `require` varchar(2047) not null,#对于制作的具体说明
-    `target_path_base` varchar(2047) not null,#目标基础路径
-    `addition_path` varchar(2047) not null,#提供额外的辅助信息的路径
-    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+CREATE TABLE `award` (
+    `award_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `award_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `shot_code` CHAR(32) NOT NULL,#对应的镜头
+    `recieve_user_code` CHAR(32) NOT NULL,#接包方用户名
+    `require` VARCHAR(2047) NOT NULL,#对于制作的具体说明
+    `target_path_base` VARCHAR(2047) NOT NULL,#目标基础路径
+    `addition_path` VARCHAR(2047) NOT NULL,#提供额外的辅助信息的路径
+    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`award_id`),
@@ -124,13 +170,13 @@ Create Table `award` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 接包方处理完之后上传到文件夹并在Daily里面进行记录
-Create Table `daily` (
-    `daily_id` int unsigned NOT NULL AUTO_INCREMENT,
-    `daily_code` char(32) not null unique,#计算生成的唯一识别符
-    `shot_code` char(32) not null,#对应的镜头
-    `award_code` char(32) not null,#对应的哪个包
-    `target_path` varchar(2047) not null,#目标路径
-    `status` tinyint unsigned NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+CREATE TABLE `daily` (
+    `daily_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `daily_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `shot_code` CHAR(32) NOT NULL,#对应的镜头
+    `award_code` CHAR(32) NOT NULL,#对应的哪个包
+    `target_path` VARCHAR(2047) NOT NULL,#目标路径
+    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`daily_id`),
