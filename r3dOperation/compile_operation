@@ -1,0 +1,3 @@
+g++ r3d.cpp -L ./Lib/linux64 -lR3DSDK -lpthread -luuid -I ./Include/  -c
+
+ar -rcs libr3d.a r3d.o

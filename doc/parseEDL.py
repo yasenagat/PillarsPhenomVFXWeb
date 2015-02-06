@@ -1,0 +1,8 @@
+from edl.edl import Parser
+parser=Parser('23.98')
+with open('TL_v08.edl') as f:
+    edl=parser.parse(f)
+    for event in edl.events:
+        #print "Event Number:"+str(event.num)
+        #print "Source file:"+str(event.source_file)
+        print "Clip Name:"+str(event.clip_name)
