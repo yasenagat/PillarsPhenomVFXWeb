@@ -47,7 +47,7 @@ type Library struct {
 	MovPath        string
 	UserCode       string
 	ProjectCode    string
-	Status         string
+	Status         int
 	InsertDatetime string
 	UpdateDatetime string
 }

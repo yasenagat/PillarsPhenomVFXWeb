@@ -23,7 +23,7 @@ func ConnectToDB() *sql.DB {
 	}
 
 	// connection not exist
-	propertyMap := utility.ReadProperty("./mysql.properties")
+	propertyMap := utility.ReadProperty("../mysql.properties")
 	var userName, password, host, port, database string
 	userName = propertyMap["DBUserName"]
 	password = propertyMap["DBPassword"]

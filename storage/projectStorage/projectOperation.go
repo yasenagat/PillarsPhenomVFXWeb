@@ -6,7 +6,7 @@ import (
 	"PillarsPhenomVFXWeb/utility"
 )
 
-func InsertIntoProject(p *utility.Project) (bool, error) {
+func InsertProject(p *utility.Project) (bool, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`INSERT INTO project (project_code,
 		project_name, picture, project_leader, project_type, start_datetime,
 		end_datetime, project_detail, status, insert_datetime, update_datetime)

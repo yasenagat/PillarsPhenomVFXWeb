@@ -72,7 +72,7 @@ func AddProject(w http.ResponseWriter, r *http.Request) {
 		ProjectDetail: r.Form["ProjectDetail"][0],
 		Status:        0,
 	}
-	result, _ := ps.InsertIntoProject(&project)
+	result, _ := ps.InsertProject(&project)
 	if result == false {
 		u.OutputJson(w, 19, "Insert into project failed!", nil)
 		return

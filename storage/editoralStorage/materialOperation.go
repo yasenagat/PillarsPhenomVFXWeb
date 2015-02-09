@@ -61,3 +61,30 @@ func QueryMaterialByMaterialCode(materialCode *string) (*utility.Material, error
 
 	return &m, err
 }
+
+// TODO -----------------------------------------------------未完待续
+
+func QueryMaterialList(code string, start int64, end int64) (*[]utility.Material, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT material_code, material_name, material_type FROM material WHERE status = 0 AND material_code = ?`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(start, end)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var materials []utility.Material
+	for result.Next() {
+		var m utility.Material
+		err = result.Scan(&(m.MaterialCode), &(m.MaterialName), &(m.MaterialType), &(m.EncodedPath))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+		materials = append(materials, m)
+	}
+	return &materials, err
+}

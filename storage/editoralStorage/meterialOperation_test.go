@@ -6,23 +6,23 @@ import (
 	"testing"
 )
 
-func Test_InsertIntoMaterial(t *testing.T) {
+func Test_InsertMaterial(t *testing.T) {
 	temp := "testing"
 	materialCode := "0bf4d1a1eec52d15ef55efcc4418d984"
 	materialPath := utility.GenerateCode(&temp)
 	materialName := utility.GenerateCode(&temp)
 	materialType := "type"
-	materialEncodedPath := "/home/src/path"
+	encodedPath := "/home/src/path"
 
 	material := utility.Material{
-		MaterialCode:        materialCode,
-		MaterialPath:        *materialPath,
-		MaterialName:        *materialName,
-		MaterialType:        materialType,
-		MaterialEncodedPath: materialEncodedPath,
+		MaterialCode: materialCode,
+		MaterialPath: *materialPath,
+		MaterialName: *materialName,
+		MaterialType: materialType,
+		EncodedPath:  encodedPath,
 	}
 
-	result, err := InsertIntoMaterial(&material)
+	result, err := InsertMaterial(&material)
 	if result == false {
 		fmt.Println(err.Error())
 		t.Error("Insert into material failed")

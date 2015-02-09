@@ -1,6 +1,6 @@
 from edl.edl import Parser
 parser=Parser('23.98')
-with open('TL_v08.edl') as f:
+with open('Untitled Sequence.01.edl') as f:
     edl=parser.parse(f)
     for event in edl.events:
         #print "Event Number:"+str(event.num)
