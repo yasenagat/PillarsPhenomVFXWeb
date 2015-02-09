@@ -1,9 +1,5 @@
 package utility
 
-import (
-	"time"
-)
-
 // 前端请求返回自定义状态代码和信息
 type FeedbackMessage struct {
 	FeedbackCode int
@@ -41,28 +37,66 @@ type Project struct {
 	UpdateDatetime string
 }
 
-// 所有的Material（素材）及素材的MetaData（元数据）
-type Material struct {
-	MaterialCode        string
-	MaterialPath        string
-	MaterialName        string
-	MaterialType        string
-	MaterialEncodedPath string
-	Status              int
-	InsertDatetime      string
-	UpdateDatetime      string
+// 用户添加的库
+type Library struct {
+	LibraryCode    string
+	LibraryName    string
+	LibraryPath    string
+	EncodedPath    string
+	DpxPath        string
+	MovPath        string
+	UserCode       string
+	ProjectCode    string
+	Status         string
+	InsertDatetime string
+	UpdateDatetime string
 }
 
-// MongoDB，存储MaterialCode对应的Material所拥有的很多条MetaData
-type MaterialMetadata struct {
-	MetaDataCode   string
-	MetaDataIndex  int
+// 所有的Material（素材）及素材的MetaData（元数据）
+type Material struct {
 	MaterialCode   string
-	MetaDataName   string
-	MetaDataValue  string
+	MaterialName   string
+	MaterialPath   string
+	MaterialType   string
+	MaterialLength string
+	MaterialSize   string
+	MaterialRate   string
+	MaterialStart  string
+	MaterialEnd    string
+	Picture        string
+	MaterialData   string
+	EncodedPath    string
+	DpxPath        string
+	MovPath        string
+	UserCode       string
+	ProjectCode    string
 	Status         int
-	InsertDatetime time.Time
-	UpdateDatetime time.Time
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 用户添加的素材组
+type MaterialGroup struct {
+	GroupCode      string
+	GroupName      string
+	FatherCode     string
+	UserCode       string
+	ProjectCode    string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 用户添加的素材组数据
+type MaterialGroupData struct {
+	DataCode       string
+	GroupCode      string
+	MaterialCode   string
+	UserCode       string
+	ProjectCode    string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
 }
 
 // 每个shot是material的一段，该表由EDL文件解析获得
