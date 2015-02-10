@@ -68,20 +68,23 @@ CREATE TABLE `library`(
 ### 4.3 素材管理--素材信息
 CREATE TABLE `material` (
 	`material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`library_code` CHAR(32) NOT NULL,#库的代码
 	`material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`material_name` VARCHAR(255) NOT NULL,#素材的名称
-	`material_path` VARCHAR(2047) NOT NULL,#存储素材的路径
 	`material_type` VARCHAR(20) NOT NULL,#文件格式（R3D）
-	`material_length` VARCHAR(20) NOT NULL,#长度，格式为00:00:00:00
-	`material_size` VARCHAR(20) NOT NULL,#尺寸，格式为1920*1080
-	`material_rate` VARCHAR(20) NOT NULL,#帧速率
-	`material_start` VARCHAR(20) NOT NULL,#始码，格式为00:00:00:00
-	`material_end` VARCHAR(20) NOT NULL,#止码，格式为00:00:00:00
+	`material_path` VARCHAR(2047) NOT NULL,#素材的Base路径，例:library_path+Base+material_type
+	`video_track_count` INT NOT NULL,#轨数
+	`width` INT NOT NULL,#尺寸宽，格式为1920*1080
+	`height` INT NOT NULL,#尺寸高，格式为1920*1080
+	`video_audio_framerate` INT NOT NULL,#视频音频帧速率
+	`timecode_framerate` INT NOT NULL,#时间线帧速率
+	`video_frame_count` INT NOT NULL,#帧数
+	`start_absolute_timecode` VARCHAR(20) NOT NULL,#绝对始码，格式为00:00:00:00
+	`end_absolute_timecode` VARCHAR(20) NOT NULL,#绝对止码，格式为00:00:00:00
+	`start_edge_timecode` VARCHAR(20) NOT NULL,#始码，格式为00:00:00:00
+	`end_edge_timecode` VARCHAR(20) NOT NULL,#止码，格式为00:00:00:00
+	`meta_data` text NOT NULL,#元数据，string JSON
 	`picture` MEDIUMTEXT NOT NULL,#缩略图，Base64编码
-	`material_data` text NOT NULL,#元数据，string JSON
-	`encoded_path` VARCHAR(1000) NOT NULL,#存储素材转码后的路径
-	`dpx_path` VARCHAR(1000) NOT NULL,#DPX路径
-	`mov_path` VARCHAR(1000) NOT NULL,#mov小样路径
 	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销

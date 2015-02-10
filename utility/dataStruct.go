@@ -54,25 +54,28 @@ type Library struct {
 
 // 所有的Material（素材）及素材的MetaData（元数据）
 type Material struct {
-	MaterialCode   string
-	MaterialName   string
-	MaterialPath   string
-	MaterialType   string
-	MaterialLength string
-	MaterialSize   string
-	MaterialRate   string
-	MaterialStart  string
-	MaterialEnd    string
-	Picture        string
-	MaterialData   string
-	EncodedPath    string
-	DpxPath        string
-	MovPath        string
-	UserCode       string
-	ProjectCode    string
-	Status         int
-	InsertDatetime string
-	UpdateDatetime string
+	LibraryCode           string
+	MaterialCode          string
+	MaterialName          string
+	MaterialType          string
+	MaterialPath          string
+	VideoTrackCount       int
+	Width                 int
+	Height                int
+	VideoAudioFramerate   int
+	TimecodeFramerate     int
+	VideoFrameCount       int
+	StartAbsoluteTimecode string
+	EndAbsoluteTimecode   string
+	StartEdgeTimecode     string
+	EndEdgeTimecode       string
+	MetaData              string
+	Picture               string
+	UserCode              string
+	ProjectCode           string
+	Status                int
+	InsertDatetime        string
+	UpdateDatetime        string
 }
 
 // 用户添加的素材组

@@ -63,27 +63,24 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		u.OutputJson(w, 16, "Load materials failed!", nil)
 		return
 	}
-	for n, m := range materials {
-		// TODO 调用C++，传入素材路径，返回素材的信息
-		fmt.Println(n, "-------->", m.MaterialPath)
-
-		// -----------temp start-----------
+	for _, m := range materials {
+		filePath := library.LibraryPath + m.MaterialPath + m.MaterialType
+		fmt.Println(filePath)
+		// TODO 调用C++，传入素材路径，返回素材的信息(图片尚未实现)
+		clip := ClipInit(filePath)
+		m.LibraryCode = library.LibraryCode
 		m.MaterialCode = *u.GenerateCode(&temp)
-		m.DpxPath = "DpxPath测试数据"
-		m.MaterialLength = "len测试数据"
-		m.MaterialSize = "size测试数据"
-		m.MaterialRate = "rate测试数据"
-		m.MaterialStart = "start测试数据"
-		m.MaterialEnd = "end测试数据"
+		m.VideoTrackCount = ClipVideoTrackCount(clip)
+		m.Width = ClipWidth(clip)
+		m.Height = ClipHeight(clip)
+		m.VideoAudioFramerate = ClipVideoAudioFramerate(clip)
+		m.StartAbsoluteTimecode = ClipStartAbsoluteTimecode(clip)
+		m.EndAbsoluteTimecode = ClipEndAbsoluteTimecode(clip)
+		m.MetaData = ClipMetaData(clip)
 		m.Picture = "Picture测试数据"
-		m.MaterialData = "MaterialData测试数据"
-		m.EncodedPath = "EncodedPath测试数据"
-		m.DpxPath = "DpxPath测试数据"
-		m.MovPath = "MovPath测试数据"
 		m.UserCode = library.UserCode
 		m.ProjectCode = library.ProjectCode
 		m.Status = 0
-		// -----------temp end-----------
 
 		result, _ := es.InsertMaterial(m)
 		if result == false {
@@ -131,13 +128,12 @@ func GetLibraryFileList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO -----------------------------------------------------未完待续
-	projectList, err := es.QueryMaterialList(r.Form["LibraryCode"][0], start, end)
+	materials, err := es.QueryMaterials(r.Form["LibraryCode"][0], start, end)
 	if err != nil {
-		u.OutputJson(w, 16, "Query MaterialList failed!", nil)
+		u.OutputJson(w, 16, "Query Materials failed!", nil)
 		return
 	}
 
-	rs, _ := json.Marshal(projectList)
+	rs, _ := json.Marshal(materials)
 	u.OutputJson(w, 0, "Load project succeed!", string(rs))
 }

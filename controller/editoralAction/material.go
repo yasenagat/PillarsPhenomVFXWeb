@@ -2,7 +2,6 @@ package editoralAction
 
 import (
 	u "PillarsPhenomVFXWeb/utility"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -25,12 +24,12 @@ func LoadMaterials(fullPath string) (error, []*u.Material) {
 		if strings.Contains(name, ".R3D") || strings.Contains(name, "ARRIRAW") {
 			sname := strings.Split(name, ".")
 			if len(sname) != 2 {
-				fmt.Println(sname[0], sname[1])
 				return nil
 			}
+			basePath := strings.Replace(strings.Replace(path, fullPath, "", 1), sname[1], "", -1)
 			m = &u.Material{}
 			m.MaterialName = sname[0]
-			m.MaterialPath = path
+			m.MaterialPath = basePath
 			m.MaterialType = sname[1]
 			materials = append(materials, m)
 		}
