@@ -3,7 +3,7 @@
 *.o
 *.a
 *.so
-!r3dOperation/Lib/linux64/libR3DSDK.a
+!cppFile/Lib/linux64/libR3DSDK.a
 
 # Folders
 _obj
