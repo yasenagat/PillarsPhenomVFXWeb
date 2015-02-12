@@ -1,12 +1,5 @@
 package utility
 
-// 前端请求返回自定义状态代码和信息
-type FeedbackMessage struct {
-	FeedbackCode int
-	FeedbackText string
-	Data         interface{}
-}
-
 // 用户管理
 type User struct {
 	UserCode       string
@@ -42,8 +35,8 @@ type Library struct {
 	LibraryCode    string
 	LibraryName    string
 	LibraryPath    string
-	EncodedPath    string
 	DpxPath        string
+	JpgPath        string
 	MovPath        string
 	UserCode       string
 	ProjectCode    string
@@ -62,7 +55,7 @@ type Material struct {
 	VideoTrackCount       int
 	Width                 int
 	Height                int
-	VideoAudioFramerate   int
+	VideoAudioFramerate   float32
 	TimecodeFramerate     int
 	VideoFrameCount       int
 	StartAbsoluteTimecode string
@@ -79,10 +72,12 @@ type Material struct {
 }
 
 // 用户添加的素材组
-type MaterialGroup struct {
-	GroupCode      string
-	GroupName      string
+type MaterialFolder struct {
+	FolderCode     string
+	FolderName     string
 	FatherCode     string
+	FlagCode       string
+	FolderDetail   string
 	UserCode       string
 	ProjectCode    string
 	Status         int

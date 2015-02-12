@@ -1,0 +1,222 @@
+.leftdiv{
+	width:300px;
+	float:left;
+	overflow:hidden;
+	background:#EFEFEF;
+	border-right:5px solid #979797;
+}
+.groupdiv{
+	overflow:hidden;
+	font-size:25px;
+	min-height:300px;
+}
+.grouptit{
+	background:#e3e3e3;
+	height:50px;
+	line-height:50px;
+}
+.tit1{
+	margin-left:15px;
+	color:#9d9d9d;
+}
+.grouptit .addbtn{
+	float:right;
+	margin-right:10px;
+	padding:0 10px 0 10px;
+	color:#7c7c7c;
+}
+.groupcont{
+	overflow:hidden;
+	width:100%;
+}
+.groupcont ul li{
+	padding-left:15px;
+	overflow:hidden;
+}
+.groupcont .addbtn{
+	float:right;
+	margin-right:10px;
+	padding:0 10px 0 10px;
+	color:#D8D8D8;
+}
+.groupcont ul li{
+	line-height:40px;
+	overflow:hidden;
+}
+.groupcont .li1:hover,.groupcont .li2:hover{
+	background:#979797;
+}
+.rightdiv{
+	float:left;
+	width:875px;
+	padding-left:20px;
+	background:#efefef;
+}
+.tit2{
+	height:80px;
+	line-height:80px;
+}
+.sp1,.sp2,.sp3,.spsearch{
+	display:inline-block;
+	height:50px;
+	float:left;
+}
+.tit2 span input{
+	padding:10 20px 10 20px;
+	font-size:20px;
+}
+.sp2{
+	margin-left:100px;
+}
+.sp3{
+	margin-left:100px;
+}
+.spsearch{
+	margin-left:100px;
+}
+.inpsearch{
+	border:2px solid #979797;
+}
+.bgimgdiv,.strdiv{
+}
+.bgimgdiv{
+	display:none;
+}
+.bgimgdiv .tit3,.strdiv .tit3{
+	font-size:25px;
+}
+.videoimg{
+	width:200px;
+	height:150px;
+	margin-right:10px;
+	margin-top:10px;
+	border-radius:10px;
+	background:#d8d8d8;
+	border:2px solid #979797;
+	position:relative;
+}
+.videoimg .check{
+	position:absolute;
+	left:5px;
+	top:5px;
+}
+.videoimg .play{
+	position:absolute;
+	left:40%;
+	top:43%;
+}
+.videoimg .downl{
+	position:absolute;
+	right:5px;
+	bottom:5px;
+}
+.videoimg .disnone{
+	padding:5px;
+	background:#d8d8d8;
+	border:2px solid #979797;
+	position:absolute;
+	top:140px;
+	left:150px;
+	z-index:1;
+	display:none;
+}
+.videoimg .disnone ul li{
+	font-size:16px;
+}
+.videoimg .disnone ul li:hover{
+	background:#999;
+}
+.videoimg .files{
+	width:150px;
+	height:100px;
+	border:1px solid #60F;
+	margin:0 auto;
+	margin-top:20px;
+}
+/*列表样式*/
+.videodiv .videostr{
+	height:50px;
+	width:95%;
+	border:2px solid #979797;
+	background:#d8d8d8;
+	position:relative;
+	margin-bottom:8px;
+}
+.videostr .check{
+	position:absolute;
+	left:5px;
+	top:7px;
+	width:30px;
+	height:30px;
+}
+.videostr .play{
+	position:absolute;
+	left:35px;
+	top:10px;
+	font-size:20px;
+}
+.videostr .downl{
+	position:absolute;
+	right:30px;
+	top:10px;
+	font-size:20px;
+}
+.videostr .disnone{
+	position:absolute;
+	right:-10px;
+	top:15px;
+	z-index:1;
+	padding:5px;
+	background:#d8d8d8;
+	border:2px solid #979797;
+	display:none;
+}
+.videostr .downl:hover .videostr .disnone{
+	display:block;
+}
+.videostr .disnone ul li:hover{
+	background:#999;
+}
+.videostr .files{
+	width:75%;
+	margin:0 auto;
+	height:50px;
+}
+.files .name{
+	width:200px;
+	height:50px;
+	line-height:50px;
+	font-size:20px;
+}
+.files .format{
+	width:150px;
+	height:50px;
+	line-height:50px;
+	font-size:20px;
+}
+.files .long{
+	width:150px;
+	height:50px;
+	line-height:50px;
+	font-size:20px;
+}
+.downdiv:hover .disnone{
+	display:block;
+}
+.outer{
+	position: fixed; top: 0px; left: 0px;background: none repeat scroll 0% 0% rgb(0, 0, 0); opacity: 0.3; z-index: 9999; display:none;
+}
+.formdiv{
+	width:400px;
+	overflow:hidden;
+	position: absolute;
+    z-index: 9999;
+	background:#FFF;
+	display:none;
+	font-size:20px;
+}
+.formdiv input{
+	width:200px;
+	height:30px;
+	border:2px solid #999;
+}

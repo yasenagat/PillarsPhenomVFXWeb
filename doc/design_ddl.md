@@ -53,9 +53,9 @@ CREATE TABLE `library`(
 	`library_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`library_name` VARCHAR(255) NOT NULL,#库的名称
 	`library_path` VARCHAR(1000) NOT NULL,#库的原始路径
-	`encoded_path` VARCHAR(1000),#库的转码路径
 	`dpx_path` VARCHAR(1000),#DPX路径
-	`mov_path` VARCHAR(1000),#mov小样路径
+	`jpg_path` VARCHAR(1000),#Jpg路径
+	`mov_path` VARCHAR(1000),#Mov小样路径
 	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
@@ -95,11 +95,13 @@ CREATE TABLE `material` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--用户添加的素材组
-CREATE TABLE `material_group`(
-	`group_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`group_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-	`group_name` VARCHAR(255) NOT NULL,#素材组的名称
+CREATE TABLE `material_folder`(
+	`folder_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`folder_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`folder_name` VARCHAR(255) NOT NULL,#素材组名
 	`father_code` CHAR(32) NOT NULL,#上级代码
+	`flag_code` CHAR(1) NOT NULL,#子节点标志，0否，1是
+	`folder_detail` VARCHAR(1000) NOT NULL,#描述
 	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销

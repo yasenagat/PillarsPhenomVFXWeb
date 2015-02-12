@@ -1,0 +1,448 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>editoral</title>
+<script language="javascript" src="jslib/jquery-1.10.2.min.js"></script>
+<script language="javascript" src="js/editoral.js"></script>
+<link href="style/css.css" rel="stylesheet" type="text/css">
+<link href="style/editoral.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="menu">
+    <ul>
+      <li><a href="#">project</a></li>
+      <li><a href="#">editoral</a></li>
+      <li><a href="#">post</a></li>
+      <li><a href="#">on-set</a></li>
+      <li><a href="#">playback</a></li>
+    </ul>
+</div>
+<div class="all">
+    <div class="cont">
+    	<div class="leftdiv">
+        	<div class="groupdiv">
+            	<div class="grouptit">
+                	<span class="tit1">Library</span>
+                    <span class="addbtn" id="addsou">+</span>
+                </div>
+                <div class="groupcont">
+                	<ul>
+                    	<li class="li1">20150101</li>
+                        <li class="li1">extra</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="groupdiv">
+            	<div class="grouptit">
+                	<span class="tit1">素材组</span>
+                </div>
+                <div class="groupcont">
+                	<ul>
+                    	<li class="li1">All</li>
+                        <li>
+                            <ul>
+                                <li class="li2">R3d</li>
+                                <li class="li2">Arriraw</li>
+                                <li class="li2">Canon</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="groupdiv">
+            	<div class="grouptit">
+                	<span class="tit1">创建的素材组</span>
+                    <span class="addbtn">+</span>
+                </div>
+                <div class="groupcont">
+                	<ul>
+                    	<li class="li1">特效素材
+	                        <span class="addbtn">+</span>
+                        </li>
+                        <li>
+                            <ul>
+                                <li class="li2">3d
+                                	<span class="addbtn">+</span>
+                                </li>
+                                <li class="li2">Roto
+                                	<span class="addbtn">+</span>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="rightdiv">
+        	<div class="tit2">
+            	<span class="sp1">
+                	<input type="button" value="列表">
+                    <input type="button" value="视图">
+                </span>
+                <span class="sp2">
+                	<input type="button" value="回放">
+                </span>
+                <span class="sp3">
+                	<input type="button" value="批量下载">
+                </span>
+                <span class="spsearch">
+                	<input type="text" class="inpsearch" value="">
+                	<input type="button" class="butsearch" value="搜索">
+                </span>
+            </div>
+            <div class="bgimgdiv">
+            	<div class="tit3">
+                缩略图形式：
+                </div>
+                <div class="videodiv">
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+
+                </div>
+            </div>
+            <div class="strdiv">
+            	<div class="tit3">
+                列表形式：
+                </div>
+                <div class="videodiv">
+                	<span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+                    <span class="videostr">
+                    	<input class="check" name="" type="checkbox" value="">
+                        <input class="play" type="button" value="回放">
+                        <div class="downdiv">
+                            <input class="downl" type="button" value="下载">
+                            <span class="disnone">
+                                <ul>
+                                    <li>Source</li>
+                                    <li>DPX</li>
+                                    <li>JPG</li>
+                                    <li>Mov</li>
+                                </ul>
+                            </span>
+                        </div>
+                        <div class="files">
+                        	<span class="name">素材名</span>
+                            <span class="format">格式</span>
+                            <span class="long">长度</span>
+                        </div>
+                    </span>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="outer"></div>
+<div class="formdiv">
+    <table width="100%" height="400" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="150" align="right">名称：</td>
+        <td><input type="text" class="names"></td>
+      </tr>
+      <tr>
+        <td align="right">素材路径：</td>
+        <td><input type="text" class="url"></td>
+      </tr>
+      <tr>
+        <td align="right">转码路径：</td>
+        <td><input type="text" class="transcodingurl"></td>
+      </tr>
+      <tr>
+        <td align="right">DPX路径：</td>
+        <td><input type="text" class="dpxurl"></td>
+      </tr>
+      <tr>
+        <td align="right">MOV路径：</td>
+        <td><input type="text" class="movurl"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center"><input type="button" class="submit" value="确定"></td>
+      </tr>
+    </table>
+</div>
+</body>
+</html>

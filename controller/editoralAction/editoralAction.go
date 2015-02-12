@@ -1,10 +1,10 @@
 package editoralAction
 
 import (
+	r3d "PillarsPhenomVFXWeb/r3dOperation"
 	s "PillarsPhenomVFXWeb/session"
 	es "PillarsPhenomVFXWeb/storage/editoralStorage"
 	u "PillarsPhenomVFXWeb/utility"
-	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -18,7 +18,7 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	olen := len(r.Form["ProjectCode"]) + len(r.Form["LibraryName"]) + len(r.Form["LibraryPath"]) + len(r.Form["EncodedPath"]) + len(r.Form["DpxPath"]) + len(r.Form["MovPath"])
+	olen := len(r.Form["ProjectCode"]) + len(r.Form["LibraryName"]) + len(r.Form["LibraryPath"]) + len(r.Form["DpxPath"]) + len(r.Form["JpgPath"]) + len(r.Form["MovPath"])
 	if olen != 6 {
 		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
@@ -45,8 +45,8 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		LibraryCode: *code,
 		LibraryName: r.Form["LibraryName"][0],
 		LibraryPath: r.Form["LibraryPath"][0],
-		EncodedPath: r.Form["EncodedPath"][0],
 		DpxPath:     r.Form["DpxPath"][0],
+		JpgPath:     r.Form["JpgPath"][0],
 		MovPath:     r.Form["MovPath"][0],
 		UserCode:    userCode,
 		ProjectCode: r.Form["ProjectCode"][0],
@@ -67,16 +67,16 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		filePath := library.LibraryPath + m.MaterialPath + m.MaterialType
 		fmt.Println(filePath)
 		// TODO 调用C++，传入素材路径，返回素材的信息(图片尚未实现)
-		clip := ClipInit(filePath)
+		clip := r3d.ClipInit(filePath)
 		m.LibraryCode = library.LibraryCode
 		m.MaterialCode = *u.GenerateCode(&temp)
-		m.VideoTrackCount = ClipVideoTrackCount(clip)
-		m.Width = ClipWidth(clip)
-		m.Height = ClipHeight(clip)
-		m.VideoAudioFramerate = ClipVideoAudioFramerate(clip)
-		m.StartAbsoluteTimecode = ClipStartAbsoluteTimecode(clip)
-		m.EndAbsoluteTimecode = ClipEndAbsoluteTimecode(clip)
-		m.MetaData = ClipMetaData(clip)
+		m.VideoTrackCount = r3d.ClipVideoTrackCount(clip)
+		m.Width = r3d.ClipWidth(clip)
+		m.Height = r3d.ClipHeight(clip)
+		m.VideoAudioFramerate = r3d.ClipVideoAudioFramerate(clip)
+		m.StartAbsoluteTimecode = r3d.ClipStartAbsoluteTimecode(clip)
+		m.EndAbsoluteTimecode = r3d.ClipEndAbsoluteTimecode(clip)
+		m.MetaData = r3d.ClipMetaData(clip)
 		m.Picture = "Picture测试数据"
 		m.UserCode = library.UserCode
 		m.ProjectCode = library.ProjectCode
@@ -89,8 +89,9 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	rs, _ := json.Marshal(library)
-	u.OutputJson(w, 0, "Add library succeed!", string(rs))
+	//rs, _ := json.Marshal(library)
+	//u.OutputJson(w, 0, "Add library succeed!", string(rs))
+	u.OutputJson(w, 0, "Add library succeed!", library)
 }
 
 func GetLibraryFileList(w http.ResponseWriter, r *http.Request) {
@@ -134,6 +135,112 @@ func GetLibraryFileList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rs, _ := json.Marshal(materials)
-	u.OutputJson(w, 0, "Load project succeed!", string(rs))
+	//rs, _ := json.Marshal(materials)
+	//u.OutputJson(w, 0, "Load project succeed!", string(rs))
+	u.OutputJson(w, 0, "Load project succeed!", materials)
+}
+
+func GetMaterialInfo(w http.ResponseWriter, r *http.Request) {
+	if !s.CheckAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
+	olen := len(r.Form["MaterialCode"])
+	if olen != 1 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+	if len(r.Form["MaterialCode"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter MaterialCode", nil)
+		return
+	}
+	code := r.Form["MaterialCode"][0]
+	material, err := es.QueryMaterialByMaterialCode(&code)
+	if err != nil {
+		u.OutputJson(w, 13, "Query Material failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Load project succeed!", material)
+}
+
+func GetFiletypes(w http.ResponseWriter, r *http.Request) {
+	if !s.CheckAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
+	olen := len(r.Form["ProjectCode"])
+	if olen != 1 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+	if len(r.Form["ProjectCode"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+		return
+	}
+	code := r.Form["ProjectCode"][0]
+	filetypes, err := es.QueryFiletypes(&code)
+	if err != nil {
+		u.OutputJson(w, 13, "Query Filetypes failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Query Filetypes succeed!", filetypes)
+}
+
+func chectString(w http.ResponseWriter, r *http.Request, num int, args []string) bool {
+	for _, str := range args {
+		if len(r.Form[str][0]) == 0 {
+			u.OutputJson(w, num, "Error parameter "+str, nil)
+			return false
+		}
+		num += 1
+	}
+	return true
+}
+
+func AddFolder(w http.ResponseWriter, r *http.Request) {
+	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
+	olen := len(r.Form["ProjectCode"]) + len(r.Form["FolderName"]) + len(r.Form["FatherCode"]) + len(r.Form["FolderDetail"])
+	if olen != 4 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+	var args = []string{"ProjectCode", "FolderName", "FatherCode", "FolderDetail"}
+	if !chectString(w, r, 12, args) {
+		return
+	}
+
+	//temp := "insert"
+	//code := u.GenerateCode(&temp)
+	mf := u.MaterialFolder{
+		//LibraryCode: *code,
+		//LibraryName: r.Form["LibraryName"][0],
+		//LibraryPath: r.Form["LibraryPath"][0],
+		//DpxPath:     r.Form["DpxPath"][0],
+		//JpgPath:     r.Form["JpgPath"][0],
+		//MovPath:     r.Form["MovPath"][0],
+		UserCode: userCode,
+		//ProjectCode: r.Form["ProjectCode"][0],
+		//Status:      0,
+	}
+	//result, _ := es.InsertLibrary(&library)
+	//if result == false {
+	//	u.OutputJson(w, 15, "Insert into library failed!", nil)
+	//	return
+	//}
+
+	//rs, _ := json.Marshal(library)
+	//u.OutputJson(w, 0, "Add library succeed!", string(rs))
+	u.OutputJson(w, 0, "Add library succeed!", mf)
 }

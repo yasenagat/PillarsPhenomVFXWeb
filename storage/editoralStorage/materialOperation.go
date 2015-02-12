@@ -38,8 +38,8 @@ func DeleteMaterialByMaterialCode(materialCode *string) (bool, error) {
 	return true, err
 }
 
-func QueryMaterials(code string, start int64, end int64) (*[]utility.Material, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT * FROM (SELECT material_code, material_name, material_type, material_path FROM material WHERE status = 0 AND library_code = ? ORDER BY update_datetime DESC) T LIMIT ?, ?`)
+func QueryMaterials(code string, start int64, end int64) (*[]utility.MaterialsOut, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT * FROM (SELECT material_code, material_name, material_type, material_path, ROUND(video_frame_count / video_audio_framerate, 2) AS length FROM material WHERE status = 0 AND library_code = ? ORDER BY update_datetime DESC) T LIMIT ?, ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
@@ -51,10 +51,10 @@ func QueryMaterials(code string, start int64, end int64) (*[]utility.Material, e
 		return nil, err
 	}
 	defer result.Close()
-	var materials []utility.Material
+	var materials []utility.MaterialsOut
 	for result.Next() {
-		var m utility.Material
-		err = result.Scan(&(m.MaterialCode), &(m.MaterialName), &(m.MaterialType), &(m.MaterialPath))
+		var m utility.MaterialsOut
+		err = result.Scan(&(m.MaterialCode), &(m.MaterialName), &(m.MaterialType), &(m.MaterialPath), &(m.Length))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
 		}
@@ -63,8 +63,8 @@ func QueryMaterials(code string, start int64, end int64) (*[]utility.Material, e
 	return &materials, err
 }
 
-func QueryMaterialByMaterialCode(materialCode *string) (*utility.Material, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT material_code, material_path, material_name, material_type FROM material WHERE status = 0 AND material_code = ?`)
+func QueryMaterialByMaterialCode(materialCode *string) (*utility.MaterialOut, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT material_code, material_name, material_type, picture, CONCAT(width, '*', height) AS size, ROUND(video_frame_count / video_audio_framerate, 2) AS length, video_audio_framerate, start_absolute_timecode, end_absolute_timecode, meta_data FROM material WHERE status = 0 AND material_code = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return nil, err
@@ -76,13 +76,39 @@ func QueryMaterialByMaterialCode(materialCode *string) (*utility.Material, error
 		return nil, err
 	}
 	defer result.Close()
-	var m utility.Material
+
+	var m utility.MaterialOut
 	if result.Next() {
-		err = result.Scan(&(m.MaterialCode), &(m.MaterialPath), &(m.MaterialName), &(m.MaterialType), &(m.Status), &(m.InsertDatetime), &(m.UpdateDatetime))
+		err = result.Scan(&(m.MaterialCode), &(m.MaterialName), &(m.MaterialType), &(m.Picture), &(m.Size), &(m.Length), &(m.VideoAudioFramerate), &(m.StartAbsoluteTimecode), &(m.EndAbsoluteTimecode), &(m.MetaData))
 		if err != nil {
 			pillarsLog.PillarsLogger.Print(err.Error())
 		}
 	}
 
 	return &m, err
+}
+
+func QueryFiletypes(projectCode *string) (*[]string, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT DISTINCT material_type FROM material WHERE status = 0 AND project_code = ?`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(projectCode)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var filetypes []string
+	for result.Next() {
+		var t string
+		err = result.Scan(&(t))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+		filetypes = append(filetypes, t)
+	}
+	return &filetypes, err
 }
