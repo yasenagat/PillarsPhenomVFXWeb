@@ -76,7 +76,7 @@ type MaterialFolder struct {
 	FolderCode     string
 	FolderName     string
 	FatherCode     string
-	FlagCode       string
+	LeafFlag       string
 	FolderDetail   string
 	UserCode       string
 	ProjectCode    string

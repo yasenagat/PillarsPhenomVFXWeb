@@ -100,7 +100,7 @@ CREATE TABLE `material_folder`(
 	`folder_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`folder_name` VARCHAR(255) NOT NULL,#素材组名
 	`father_code` CHAR(32) NOT NULL,#上级代码
-	`flag_code` CHAR(1) NOT NULL,#子节点标志，0否，1是
+	`leaf_flag` CHAR(1) NOT NULL,#子节点标志，0否，1是
 	`folder_detail` VARCHAR(1000) NOT NULL,#描述
 	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
@@ -112,10 +112,10 @@ CREATE TABLE `material_folder`(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--用户添加的素材组数据
-CREATE TABLE `material_group_data`(
+CREATE TABLE `material_folder_data`(
 	`data_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`data_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-	`group_code` VARCHAR(255) NOT NULL,#素材组的代码
+	`folder_code` VARCHAR(255) NOT NULL,#素材组的代码
 	`material_code` CHAR(32) NOT NULL,#素材的代码
 	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码

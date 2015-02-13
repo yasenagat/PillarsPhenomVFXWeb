@@ -63,6 +63,31 @@ func QueryMaterials(code string, start int64, end int64) (*[]utility.MaterialsOu
 	return &materials, err
 }
 
+func FindMaterials(code string, args string) (*[]utility.MaterialsOut, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT material_code, material_name, material_type, material_path, ROUND(video_frame_count / video_audio_framerate, 2) AS length FROM material WHERE status = 0 AND project_code = ? AND (material_name LIKE '%?%' OR material_type LIKE '%?%') ORDER BY update_datetime DESC`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(code, args, args)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var materials []utility.MaterialsOut
+	for result.Next() {
+		var m utility.MaterialsOut
+		err = result.Scan(&(m.MaterialCode), &(m.MaterialName), &(m.MaterialType), &(m.MaterialPath), &(m.Length))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+		materials = append(materials, m)
+	}
+	return &materials, err
+}
+
 func QueryMaterialByMaterialCode(materialCode *string) (*utility.MaterialOut, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT material_code, material_name, material_type, picture, CONCAT(width, '*', height) AS size, ROUND(video_frame_count / video_audio_framerate, 2) AS length, video_audio_framerate, start_absolute_timecode, end_absolute_timecode, meta_data FROM material WHERE status = 0 AND material_code = ?`)
 	if err != nil {

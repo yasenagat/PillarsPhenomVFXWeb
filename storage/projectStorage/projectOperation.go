@@ -20,9 +20,9 @@ func InsertProject(p *utility.Project) (bool, error) {
 		p.ProjectType, p.StartDatetime, p.EndDatetime, p.ProjectDetail, p.Status)
 	if err != nil {
 		return false, err
-	} else {
-		return true, err
 	}
+
+	return true, err
 }
 
 func DeleteProjectByProjectCode(code *string) (bool, error) {
@@ -37,9 +37,9 @@ func DeleteProjectByProjectCode(code *string) (bool, error) {
 	_, err = stmt.Exec(code)
 	if err != nil {
 		return false, err
-	} else {
-		return true, err
 	}
+
+	return true, err
 }
 
 func UpdateProjectByProjectCode(p *utility.Project) (bool, error) {
@@ -52,9 +52,9 @@ func UpdateProjectByProjectCode(p *utility.Project) (bool, error) {
 	_, err = stmt.Exec(p.ProjectName, p.Picture, p.ProjectLeader, p.ProjectType, p.StartDatetime, p.EndDatetime, p.ProjectDetail, p.ProjectCode)
 	if err != nil {
 		return false, err
-	} else {
-		return true, err
 	}
+
+	return true, err
 }
 
 func QueryProjectByProjectCode(projectCode *string) (*utility.Project, error) {
