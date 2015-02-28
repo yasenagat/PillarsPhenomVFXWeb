@@ -20,3 +20,26 @@ func InsertLibrary(l *utility.Library) (bool, error) {
 
 	return true, err
 }
+
+//func QueryLibraryByLibraryCode(code *string) (*utility.Library, error) {
+//	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT project_code, project_name, picture, project_leader, project_type, start_datetime, end_datetime, project_detail FROM project WHERE project_code = ? and status = 0`)
+//	if err != nil {
+//		pillarsLog.PillarsLogger.Print(err.Error())
+//		return nil, err
+//	}
+//	defer stmt.Close()
+//	result, err := stmt.Query(projectCode)
+//	if err != nil {
+//		pillarsLog.PillarsLogger.Print(err.Error())
+//		return nil, err
+//	}
+//	defer result.Close()
+//	var p utility.Project
+//	if result.Next() {
+//		err = result.Scan(&(p.ProjectCode), &(p.ProjectName), &(p.Picture), &(p.ProjectLeader), &(p.ProjectType), &(p.StartDatetime), &(p.EndDatetime), &(p.ProjectDetail))
+//		if err != nil {
+//			pillarsLog.PillarsLogger.Print(err.Error())
+//		}
+//	}
+//	return &p, err
+//}

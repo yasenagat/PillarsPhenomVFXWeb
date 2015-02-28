@@ -86,9 +86,9 @@ type MaterialFolder struct {
 }
 
 // 用户添加的素材组数据
-type MaterialGroupData struct {
+type MaterialFolderData struct {
 	DataCode       string
-	GroupCode      string
+	FolderCode     string
 	MaterialCode   string
 	UserCode       string
 	ProjectCode    string

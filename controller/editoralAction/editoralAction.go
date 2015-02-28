@@ -1,11 +1,14 @@
 package editoralAction
 
 import (
+	"CGWorldlineWeb/pillarsLog"
 	r3d "PillarsPhenomVFXWeb/r3dOperation"
 	s "PillarsPhenomVFXWeb/session"
 	es "PillarsPhenomVFXWeb/storage/editoralStorage"
 	u "PillarsPhenomVFXWeb/utility"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 )
@@ -300,6 +303,7 @@ func DeleteFolder(w http.ResponseWriter, r *http.Request) {
 	if result == false {
 		u.OutputJson(w, 13, "Delete material_folder failed!", nil)
 		return
+		u.OutputJson(w, 16, "Insert into material_folder failed!", nil)
 	}
 
 	u.OutputJson(w, 0, "Delete material_folder succeed!", nil)
@@ -339,58 +343,58 @@ func UpdateFolder(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 0, "Update material_folder succeed!", mf)
 }
 
+// 请求传入JSON格式数据，使用结构体解析
+type addFiles struct {
+	ProjectCode   string
+	FolderCode    string
+	MaterialCodes []string
+}
+
 func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
-	//flag, userCode := s.GetAuthorityCode(w, r, "制片")
-	//if !flag {
-	//	http.Redirect(w, r, "/404.html", http.StatusFound)
-	//	return
-	//}
+	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
 
-	//data, err := ioutil.ReadAll(r.Body)
-	//if err != nil {
-	//	u.OutputJson(w, 1, "Read body failed!", nil)
-	//	pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
-	//	return
-	//}
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		u.OutputJson(w, 1, "Read body failed!", nil)
+		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		return
+	}
 
-	//skillAddForm := SkillAddForm{}
-	//err = json.Unmarshal(data, &skillAddForm)
-	//if err != nil {
-	//	u.OutputJson(w, 12, "Pramatersfailed!", nil)
-	//	pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &skillAddForm) failed!")
-	//	return
-	//}
+	folderFiles := addFiles{}
+	err = json.Unmarshal(data, &folderFiles)
+	if err != nil {
+		u.OutputJson(w, 12, "Pramaters failed!", nil)
+		pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &folderFiles) failed!")
+		return
+	}
 
-	//r.ParseForm()
-	//olen := len(r.Form["ProjectCode"]) + len(r.Form["FolderCode"]) + len(r.Form["MaterialCodes"])
-	//if olen != 4 {
-	//	u.OutputJson(w, 1, "Error parameter format", nil)
-	//	return
-	//}
-	//var args = []string{"FolderCode", "FolderName", "MaterialCodes"}
-	//if !chectString(w, r, 12, args) {
-	//	return
-	//}
+	if len(folderFiles.ProjectCode) == 0 || len(folderFiles.FolderCode) == 0 || len(folderFiles.MaterialCodes) == 0 {
+		u.OutputJson(w, 13, "Pramaters failed!", nil)
+		pillarsLog.PillarsLogger.Print("Pramaters failed!")
+		return
+	}
+	temp := "insert"
+	for i, value := range folderFiles.MaterialCodes {
+		mfd := u.MaterialFolderData{
+			DataCode:     *u.GenerateCode(&temp),
+			FolderCode:   folderFiles.FolderCode,
+			MaterialCode: value,
+			UserCode:     userCode,
+			ProjectCode:  folderFiles.ProjectCode,
+			Status:       0,
+		}
+		result, _ := es.InsertMaterialFolderData(&mfd)
+		if result == false {
+			b, _ := strconv.Atoi("1" + string(4+i))
+			fmt.Println("Insert failed-------->", b)
+			u.OutputJson(w, b, "Insert into material_folder_data failed!", nil)
+			return
+		}
+	}
 
-	//MaterialCodes := r.Form["MaterialCodes"][0]
-
-	//if len(MaterialCodes) < 1 {
-	//	u.OutputJson(w, 15, "Error parameter MaterialCodes!", nil)
-	//	return
-	//}
-
-	//mf := u.MaterialFolder{
-	//	FolderCode:   r.Form["FolderCode"][0],
-	//	FolderName:   r.Form["FolderName"][0],
-	//	FatherCode:   r.Form["FatherCode"][0],
-	//	FolderDetail: r.Form["FolderDetail"][0],
-	//	UserCode:     userCode,
-	//}
-	//result, _ := es.UpdateMaterialFolder(&mf)
-	//if result == false {
-	//	u.OutputJson(w, 16, "Update material_folder failed!", nil)
-	//	return
-	//}
-
-	//u.OutputJson(w, 0, "Update material_folder succeed!", mf)
+	u.OutputJson(w, 0, "Insert into material_folder_data succeed!", nil)
 }
