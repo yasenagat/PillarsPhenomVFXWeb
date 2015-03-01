@@ -107,8 +107,8 @@ CREATE TABLE `material_folder`(
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
-	PRIMARY KEY (`group_id`),
-	INDEX(`group_code`)
+	PRIMARY KEY (`folder_id`),
+	INDEX(`folder_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--用户添加的素材组数据

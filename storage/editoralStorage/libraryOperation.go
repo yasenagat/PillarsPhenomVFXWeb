@@ -15,31 +15,32 @@ func InsertLibrary(l *utility.Library) (bool, error) {
 	defer stmt.Close()
 	_, err = stmt.Exec(l.LibraryCode, l.LibraryName, l.LibraryPath, l.DpxPath, l.JpgPath, l.MovPath, l.UserCode, l.ProjectCode, l.Status)
 	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
 	}
 
 	return true, err
 }
 
-//func QueryLibraryByLibraryCode(code *string) (*utility.Library, error) {
-//	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT project_code, project_name, picture, project_leader, project_type, start_datetime, end_datetime, project_detail FROM project WHERE project_code = ? and status = 0`)
-//	if err != nil {
-//		pillarsLog.PillarsLogger.Print(err.Error())
-//		return nil, err
-//	}
-//	defer stmt.Close()
-//	result, err := stmt.Query(projectCode)
-//	if err != nil {
-//		pillarsLog.PillarsLogger.Print(err.Error())
-//		return nil, err
-//	}
-//	defer result.Close()
-//	var p utility.Project
-//	if result.Next() {
-//		err = result.Scan(&(p.ProjectCode), &(p.ProjectName), &(p.Picture), &(p.ProjectLeader), &(p.ProjectType), &(p.StartDatetime), &(p.EndDatetime), &(p.ProjectDetail))
-//		if err != nil {
-//			pillarsLog.PillarsLogger.Print(err.Error())
-//		}
-//	}
-//	return &p, err
-//}
+func QueryLibraryByLibraryCode(code *string) (*utility.Library, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT library_code, library_name, library_path, dpx_path, jpg_path, mov_path FROM library WHERE library_code = ? and status = 0`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(code)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var l utility.Library
+	if result.Next() {
+		err = result.Scan(&(l.LibraryCode), &(l.LibraryName), &(l.LibraryPath), &(l.DpxPath), &(l.JpgPath), &(l.MovPath))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+	}
+	return &l, err
+}

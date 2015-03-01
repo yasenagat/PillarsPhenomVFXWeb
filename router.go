@@ -1,6 +1,7 @@
 package main
 
 import (
+	"PillarsPhenomVFXWeb/controller/downloadAction"
 	"PillarsPhenomVFXWeb/controller/editoralAction"
 	"PillarsPhenomVFXWeb/controller/loginAction"
 	"PillarsPhenomVFXWeb/controller/projectAction"
@@ -37,7 +38,8 @@ func RouterBinding() {
 	http.HandleFunc("/editoral_folder_upd", editoralAction.UpdateFolder)
 	http.HandleFunc("/editoral_folder_addfiles", editoralAction.AddFolderFiles)
 	// TODO 待实现中的接口
-	http.HandleFunc("/editoral_download_file", editoralAction.GetFiletypes)
+	http.HandleFunc("/editoral_download_file", downloadAction.DownloadFile)
+	http.HandleFunc("/editoral_download_file1", downloadAction.DownloadFile1)
 	http.HandleFunc("/editoral_download_files", editoralAction.GetFiletypes)
 
 	//http.HandleFunc("/.*", NotFound) // TODO 想实现未知路由地址访问的404页面跳转
