@@ -44,3 +44,28 @@ func QueryLibraryByLibraryCode(code *string) (*utility.Library, error) {
 	}
 	return &l, err
 }
+
+//func QueryLibrarys(projectCode *string) (*[]string, error) {
+//	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT DISTINCT material_type FROM material WHERE status = 0 AND project_code = ?`)
+//	if err != nil {
+//		pillarsLog.PillarsLogger.Print(err.Error())
+//		return nil, err
+//	}
+//	defer stmt.Close()
+//	result, err := stmt.Query(projectCode)
+//	if err != nil {
+//		pillarsLog.PillarsLogger.Print(err.Error())
+//		return nil, err
+//	}
+//	defer result.Close()
+//	var filetypes []string
+//	for result.Next() {
+//		var t string
+//		err = result.Scan(&(t))
+//		if err != nil {
+//			pillarsLog.PillarsLogger.Print(err.Error())
+//		}
+//		filetypes = append(filetypes, t)
+//	}
+//	return &filetypes, err
+//}

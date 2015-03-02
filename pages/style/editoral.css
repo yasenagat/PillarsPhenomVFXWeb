@@ -8,7 +8,7 @@
 .groupdiv{
 	overflow:hidden;
 	font-size:25px;
-	min-height:300px;
+	min-height:100px;
 }
 .grouptit{
 	background:#e3e3e3;
@@ -26,9 +26,12 @@
 	color:#7c7c7c;
 }
 .groupcont{
-	overflow:hidden;
-	width:100%;
 }
+#addmatdiv{
+	width:100px;
+	overflow-x: auto;
+	OVERFLOW-y: auto;
+	}
 .groupcont ul li{
 	padding-left:15px;
 	overflow:hidden;
@@ -38,19 +41,24 @@
 	margin-right:10px;
 	padding:0 10px 0 10px;
 	color:#D8D8D8;
+
+	/*position:absolute;
+	right:10px;
+	top:2px;*/
 }
-.groupcont ul li{
+.groupcont{
+	overflow:auto;
+}
+.groupcont div,.groupcont ul li{
 	line-height:40px;
-	overflow:hidden;
 }
 .groupcont .li1:hover,.groupcont .li2:hover{
-	background:#979797;
+/*	background:#979797;*/
 }
 .rightdiv{
 	float:left;
 	width:875px;
 	padding-left:20px;
-	background:#efefef;
 }
 .tit2{
 	height:80px;
@@ -163,13 +171,14 @@
 }
 .videostr .disnone{
 	position:absolute;
-	right:-10px;
-	top:15px;
+	right:25px;
+	top:40px;
 	z-index:1;
 	padding:5px;
 	background:#d8d8d8;
 	border:2px solid #979797;
 	display:none;
+	font-size:15px;
 }
 .videostr .downl:hover .videostr .disnone{
 	display:block;
@@ -183,7 +192,7 @@
 	height:50px;
 }
 .files .name{
-	width:200px;
+	width:320px;
 	height:50px;
 	line-height:50px;
 	font-size:20px;
@@ -215,8 +224,105 @@
 	display:none;
 	font-size:20px;
 }
-.formdiv input{
+.formdiv2{
+	width:400px;
+	overflow:hidden;
+	position: absolute;
+    z-index: 9999;
+	background:#FFF;
+	display:none;
+	font-size:20px;
+}
+.formdiv input[type="text"],.formdiv2 input[type="text"]{
 	width:200px;
 	height:30px;
 	border:2px solid #999;
+}
+.formdiv input[type="button"],.formdiv2 input[type="button"]{
+	width:100px;
+	height:30px;
+}
+.float {
+	position: absolute;
+	top: 60px;
+	right: 0;
+}
+.rightdivabs {
+	float: right;
+	width: 390px;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: 5;
+	padding: 10px;
+	border: 2px solid #ccc;
+	background: #FFF;
+	font-size:20px;
+	display:none;
+}
+.rightdivabs .tit{
+	font-size: 25px;
+	padding-left: 10px;
+	height: 50px;
+	line-height: 50px;
+}
+.chatdiv {
+	padding: 5px;
+	overflow: hidden;
+	overflow-x: hidden;
+	OVERFLOW-y: auto;
+	border: 1px solid #999;
+	background: #FFF;
+}
+.roughimg{
+	border:2px solid #ccc;
+	width:330px;
+	margin:0 auto;
+	height:250px;
+}
+.withtit{
+	border:2px solid #ccc;
+	font-size:20px;
+	padding:10px;
+
+}
+.metadata{
+	line-height:25px;
+	padding:10px;
+}
+.groupcont .delbtn {
+	float: right;
+	margin-right: 10px;
+	padding: 0 10px 0 10px;
+	color: #D8D8D8;
+}
+.node{
+/*	margin-left:-20px;*/
+}
+.distreenode{
+	margin-left:15px;
+}
+.clip{
+/*	margin-left:10px;*/
+	display:none;
+}
+.nameinp,.nameinp2{
+	width: 200px;
+	height: 25px;
+	border: 2px solid #999;
+}
+.groupcont .delbtn2 {
+	float: right;
+	margin-right: 10px;
+	padding: 0 10px 0 10px;
+	color: #D8D8D8;
+}
+.TreeNode{
+	position:relative;
+}
+.treenode1{
+	position:relative;
+	min-width:280px;
+}
+.treenode1:hover{
 }

@@ -3,7 +3,9 @@ div,form,img,ul,ol,li,dl,dt,dd,p,span{margin: 0; padding: 0; border: 0; }
 li{list-style-type:none;}
 img{vertical-align:top;}
 h1,h2,h3,h4,h5,h6 { margin:0; padding:0;font-size:12px; font-weight:normal;}
-
+span{
+	display:inline-block;
+}
 a:link {color: #1f3a87; text-decoration:none;}
 a:visited {color: #83006f;text-decoration:none;}
 a:hover {color: #bc2931; text-decoration:underline;}
@@ -20,11 +22,12 @@ body *{
 	border-left:1px solid #CCC;
 	border-right:1px solid #CCC;
 	border-bottom:1px solid #CCC;
+	overflow:hidden;
 }
 .menu{
 	height:60px;
 	text-align:center;
-	background:#CCC;
+	background:#95d491;
 	overflow:hidden;
 }
 .menu ul li{
@@ -36,4 +39,7 @@ body *{
 }
 .cont{
 	position:relative;
+}
+.distreenode div{
+	border:1px solid red;
 }

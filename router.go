@@ -28,10 +28,11 @@ func RouterBinding() {
 	http.HandleFunc("/project_load", projectAction.LoadProject)
 
 	// ---------------------------- 尚未测试 ------------------------------
+	//http.HandleFunc("/editoral_library", editoralAction.AddLibrary)
 	http.HandleFunc("/editoral_library_add", editoralAction.AddLibrary)
-	http.HandleFunc("/editoral_library_materials", editoralAction.GetLibraryFileList) //
-	http.HandleFunc("/editoral_find_materials", editoralAction.FindMaterials)         //
-	http.HandleFunc("/editoral_material", editoralAction.GetMaterialInfo)             // TODO 需要在js里面查看传回的数据格式结构是否正确
+	http.HandleFunc("/editoral_library_materials", editoralAction.GetLibraryFileList)
+	http.HandleFunc("/editoral_find_materials", editoralAction.FindMaterials)
+	http.HandleFunc("/editoral_material", editoralAction.GetMaterialInfo)
 	http.HandleFunc("/editoral_filetype", editoralAction.GetFiletypes)
 	http.HandleFunc("/editoral_folder_add", editoralAction.AddFolder)
 	http.HandleFunc("/editoral_folder_del", editoralAction.DeleteFolder)

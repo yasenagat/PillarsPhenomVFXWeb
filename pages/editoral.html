@@ -3,8 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <title>editoral</title>
+<link rel="StyleSheet" href="style/dtree.css" type="text/css" />
 <script language="javascript" src="jslib/jquery-1.10.2.min.js"></script>
 <script language="javascript" src="js/editoral.js"></script>
+<script language="javascript" src="jslib/dtree.js"></script>
 <link href="style/css.css" rel="stylesheet" type="text/css">
 <link href="style/editoral.css" rel="stylesheet" type="text/css">
 </head>
@@ -42,36 +44,46 @@
                 	<ul>
                     	<li class="li1">All</li>
                         <li>
-                            <ul>
-                                <li class="li2">R3d</li>
+                            <ul id="materialGroup">
+                                <!--<li class="li2">R3d</li>
                                 <li class="li2">Arriraw</li>
-                                <li class="li2">Canon</li>
+                                <li class="li2">Canon</li>-->
+
                             </ul>
                         </li>
                     </ul>
                 </div>
             </div>
+
             <div class="groupdiv">
             	<div class="grouptit">
                 	<span class="tit1">创建的素材组</span>
-                    <span class="addbtn">+</span>
+                    <span class="addbtn" id="addmaterial">+</span>
                 </div>
                 <div class="groupcont">
-                	<ul>
-                    	<li class="li1">特效素材
-	                        <span class="addbtn">+</span>
-                        </li>
-                        <li>
-                            <ul>
-                                <li class="li2">3d
-                                	<span class="addbtn">+</span>
-                                </li>
-                                <li class="li2">Roto
-                                	<span class="addbtn">+</span>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
+<script type="text/javascript">
+d = new dTree('d');
+/*
+第一个参数，表示当前节点的ID  epon jpon
+第二个参数，表示当前节点的父节点的ID
+第三个参数，节点要显示的文字
+第四个参数，点击该节点的超链接（注意也可以是某个servlet或是struts应用中的某个.do请求）
+第五个参数，鼠标移至该节点时显示的文字
+第六个参数，指定点击该节点时在哪个桢中打开超链接
+*/
+d.add(0,-1,'111','','','1');
+d.add(1,0,'2222','','','1');
+d.add(2,1,'2222','','','1');
+d.add(3,2,'2222','','','1');
+d.add(4,3,'22224','','','1');
+d.add(5,4,'22221','','','1');
+d.add(6,5,'22226','','','1');
+d.add(7,6,'2222','','','1');
+d.add(8,7,'2222','','','1');
+d.add(9,8,'22229','','','1');
+d.add(10,9,'发生','','','0');
+document.write(d);
+</script>
                 </div>
             </div>
         </div>
@@ -211,186 +223,7 @@
                 </div>
                 <div class="videodiv">
                 	<span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
-                    	<input class="check" name="" type="checkbox" value="">
-                        <input class="play" type="button" value="回放">
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<span class="name">素材名</span>
-                            <span class="format">格式</span>
-                            <span class="long">长度</span>
-                        </div>
-                    </span>
-                    <span class="videostr">
+                    	<input type="hidden" class="sourceid" value="1">
                     	<input class="check" name="" type="checkbox" value="">
                         <input class="play" type="button" value="回放">
                         <div class="downdiv">
@@ -411,6 +244,10 @@
                         </div>
                     </span>
 
+
+
+
+
                 </div>
             </div>
         </div>
@@ -418,6 +255,7 @@
 </div>
 <div class="outer"></div>
 <div class="formdiv">
+	<form id="f1">
     <table width="100%" height="400" border="0" cellspacing="0" cellpadding="0">
       <tr>
         <td width="150" align="right">名称：</td>
@@ -440,10 +278,83 @@
         <td><input type="text" class="movurl"></td>
       </tr>
       <tr>
-        <td colspan="2" align="center"><input type="button" class="submit" value="确定"></td>
+        <td colspan="2" align="center">
+        <input type="button" class="again" value="重置">
+        <input type="button" class="submit" value="确定">
+        </td>
       </tr>
     </table>
+    </form>
 </div>
-<iframe id="fileDownFrame" src="" style="display:none;visibility:hidden;"></iframe>
+
+<div class="formdiv2">
+	<form id="f2">
+    <table width="100%" height="200" border="0" cellspacing="0" cellpadding="0">
+      <tr>
+        <td width="150" align="right">素材组名：
+        <input type="hidden" class="id">
+        <input type="hidden" class="pid">
+        <input type="hidden" class="imgsize">
+        </td>
+        <td><input type="text" class="names"></td>
+      </tr>
+      <tr>
+        <td align="right">描述：</td>
+        <td><input type="text" class="url"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+        <input type="button" class="again" value="重置">
+        <input type="button" class="submit" value="确定">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+
+<div class="float">
+	<input type="hidden" class="sourceid" value="1">
+	<div class="rightdivabs">
+    	<h2 class="tit">素材详细信息页面</h2>
+        <div class="chatdiv">
+        	<div class="roughimg">
+            <img src="#">
+            </div>
+
+            <table width="100%" height="150" border="0" cellspacing="0" cellpadding="5">
+              <tr>
+                <td width="100" align="right">素材名:</td>
+                <td class="names">素材名</td>
+              </tr>
+              <tr>
+                <td align="right">尺寸:</td>
+                <td class="size"></td>
+              </tr>
+              <tr>
+                <td align="right">长度:</td>
+                <td class="long"></td>
+              </tr>
+              <tr>
+                <td align="right">帧速率:</td>
+                <td class="speed"></td>
+              </tr>
+            </table>
+            <h2 class="withtit">基本信息</h2>
+            <div class="metadata">
+
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>
+<script language="javascript">
+function urlstr(str) {
+	alert(str);
+};
+function number(inputstr,inputid,pid)
+{
+	//节点字符串，节点id，该节点的父节点id
+	alert(inputstr+inputid+pid);
+}
+</script>

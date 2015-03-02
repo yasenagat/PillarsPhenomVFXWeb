@@ -78,8 +78,7 @@ func AddProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rs, _ := json.Marshal(project)
-	u.OutputJson(w, 0, "Add project succeed!", string(rs))
+	u.OutputJson(w, 0, "Add project succeed!", project)
 }
 
 func DeleteProject(w http.ResponseWriter, r *http.Request) {
@@ -180,8 +179,7 @@ func UpdateProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rs, _ := json.Marshal(project)
-	u.OutputJson(w, 0, "Update project succeed!", string(rs))
+	u.OutputJson(w, 0, "Update project succeed!", project)
 }
 
 func QueryProject(w http.ResponseWriter, r *http.Request) {
@@ -264,6 +262,5 @@ func LoadProject(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	rs, _ := json.Marshal(projectList)
-	u.OutputJson(w, 0, "Load project succeed!", string(rs))
+	u.OutputJson(w, 0, "Load project succeed!", projectList)
 }

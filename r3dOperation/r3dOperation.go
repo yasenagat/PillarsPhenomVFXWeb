@@ -26,7 +26,6 @@ func ClipInit(fileName string) C.Clip {
 	var fileNameC *C.char = C.CString(fileName)
 	defer C.free(unsafe.Pointer(fileNameC))
 	var clip C.Clip = C.ClipInit(fileNameC)
-	fmt.Println(clip)
 	return clip
 }
 

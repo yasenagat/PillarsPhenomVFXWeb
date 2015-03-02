@@ -2,7 +2,6 @@ package editoralAction
 
 import (
 	u "PillarsPhenomVFXWeb/utility"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
@@ -28,7 +27,6 @@ func LoadMaterials(fullPath string) (error, []*u.Material) {
 				return nil
 			}
 			basePath := strings.Replace(strings.Replace(path, fullPath, "", 1), sname[1], "", -1)
-			fmt.Println(basePath)
 			m = &u.Material{}
 			m.MaterialName = sname[0]
 			m.MaterialPath = basePath

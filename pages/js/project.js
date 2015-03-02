@@ -37,7 +37,11 @@ require(['domready', 'jquery', 'validate'], function(doc, $) {
 		$(".again").click(function(){
 			againjs();
 		});
-
+		//url跳转到素材页面
+		$(".pro").on("click","table",function(){
+			var code = $(this).find(".ProjectCode_").val();
+			window.location.href="editoral.html?code="+code;
+		});
 		// 操作
 		$(".pro").on("click",".cz",function(){
 			flag = "upd";
@@ -132,13 +136,13 @@ require(['domready', 'jquery', 'validate'], function(doc, $) {
 				ajaxpost_core(action, pc, pn, pi, pl, pt, sd, ed, pd, function(data) {
 					if(data.FeedbackCode == 0) {
 						if(flag == "add"){
+							var rs = JSON.parse(data.Data);
+							pc = rs["ProjectCode"];
 							var addhtml = "<div class='protab'><table width='100%' border='0' cellspacing='0' cellpadding='0' class='tab" + pc + "'><tr><td rowspan='3' width='150' height='200'><img width='120' height='160' src='" + pic + "'></td><td width='15%' align='right'>项目名：<input type='hidden' class='ProjectCode_' value='" + pc + "'></td><td class='ProjectName_'>" + pn + "</td><td width='15%' align='right'>负责人：</td><td class='ProjectLeader_'>" + pl + "</td></tr><tr><td align='right'>开始时间：</td><td class='StartDatetime_'>" + sd + "</td><td align='right'>结束时间：</td><td class='EndDatetime_'>" + ed + "</td></tr><tr><td align='right'>项目类型：</td><td class='ProjectType_'>" + pt + "</td><td align='right'>备注：</td><td class='ProjectDetail_'>" + pd + "</td></tr></table><div class='cz'>操作</div><div class='del'>删除</div></div>";
 							$(".pro").prepend(addhtml);
 							againjs();
 							$(".outer").hide(500);
 							$(".formdiv").hide(500);
-							var rs = JSON.parse(data.Data);
-							pc = rs["ProjectCode"];
 						}else{
 							$(".tab"+pc+" .ProjectName_").html(pn);
 							$(".tab"+pc+" .ProjectLeader").html(pl);

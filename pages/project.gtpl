@@ -31,44 +31,46 @@
 				{{range .}}
 					<div class="protab">
 						<table width="100%" border="0" cellspacing="0" cellpadding="0" class="tab{{.ProjectCode}}">
-							<tbody><tr>
-								<td rowspan="3" width="150" height="200">
-									<script type="text/javascript">
-										document.write( "<img width='120' height='160' src={{.Picture}}>" );
-									</script>
-								</td>
-								<td width="15%" align="right">项目名：
-									<input type="hidden" class="ProjectCode_" value="{{.ProjectCode}}">
-								</td>
-								<td class="ProjectName_">
-									{{.ProjectName}}
-								</td>
-								<td width="15%" align="right">负责人：</td>
-								<td class="ProjectLeader_">
-									{{.ProjectLeader}}
-								</td>
-							</tr>
-							<tr>
-								<td align="right">开始时间：</td>
-								<td class="StartDatetime_">
-									{{.StartDatetime}}
-								</td>
-								<td align="right">结束时间：</td>
-								<td class="EndDatetime_">
-									{{.EndDatetime}}
-								</td>
-							</tr>
-							<tr>
-								<td align="right">项目类型：</td>
-								<td class="ProjectType_">
-									{{.ProjectType}}
-								</td>
-								<td align="right">备注：</td>
-								<td class="ProjectDetail_">
-									{{.ProjectDetail}}
-								</td>
-							</tr>
-						</tbody></table>
+							<tbody>
+								<tr>
+									<td rowspan="3" width="150" height="200">
+										<script type="text/javascript">
+											document.write( "<img width='120' height='160' src={{.Picture}}>" );
+										</script>
+									</td>
+									<td width="15%" align="right">项目名：
+										<input type="hidden" class="ProjectCode_" value="{{.ProjectCode}}">
+									</td>
+									<td class="ProjectName_">
+										{{.ProjectName}}
+									</td>
+									<td width="15%" align="right">负责人：</td>
+									<td class="ProjectLeader_">
+										{{.ProjectLeader}}
+									</td>
+								</tr>
+								<tr>
+									<td align="right">开始时间：</td>
+									<td class="StartDatetime_">
+										{{.StartDatetime}}
+									</td>
+									<td align="right">结束时间：</td>
+									<td class="EndDatetime_">
+										{{.EndDatetime}}
+									</td>
+								</tr>
+								<tr>
+									<td align="right">项目类型：</td>
+									<td class="ProjectType_">
+										{{.ProjectType}}
+									</td>
+									<td align="right">备注：</td>
+									<td class="ProjectDetail_">
+										{{.ProjectDetail}}
+									</td>
+								</tr>
+							</tbody>
+						</table>
 						<div class="cz">操作</div>
 						<div class="del">删除</div>
 					</div>

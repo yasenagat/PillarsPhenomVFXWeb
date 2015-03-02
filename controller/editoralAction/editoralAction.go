@@ -10,8 +10,35 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 	"strconv"
 )
+
+//func GetFiletypes(w http.ResponseWriter, r *http.Request) {
+//	if !s.CheckAuthority(w, r, "制片") {
+//		http.Redirect(w, r, "/404.html", http.StatusFound)
+//		return
+//	}
+
+//	r.ParseForm()
+//	olen := len(r.Form["ProjectCode"])
+//	if olen != 1 {
+//		u.OutputJson(w, 1, "Error parameter format", nil)
+//		return
+//	}
+//	if len(r.Form["ProjectCode"][0]) == 0 {
+//		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+//		return
+//	}
+//	code := r.Form["ProjectCode"][0]
+//	filetypes, err := es.QueryFiletypes(&code)
+//	if err != nil {
+//		u.OutputJson(w, 13, "Query Filetypes failed!", nil)
+//		return
+//	}
+
+//	u.OutputJson(w, 0, "Query Filetypes succeed!", filetypes)
+//}
 
 func AddLibrary(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
@@ -42,6 +69,12 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	_, err := os.Stat(r.Form["LibraryPath"][0])
+	if err != nil {
+		u.OutputJson(w, 15, "LibraryPath failed", nil)
+		return
+	}
+
 	temp := "insert"
 	code := u.GenerateCode(&temp)
 	library := u.Library{
@@ -55,20 +88,21 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		ProjectCode: r.Form["ProjectCode"][0],
 		Status:      0,
 	}
-	result, _ := es.InsertLibrary(&library)
+	result, err := es.InsertLibrary(&library)
 	if result == false {
-		u.OutputJson(w, 15, "Insert into library failed!", nil)
+		fmt.Println(err.Error())
+		u.OutputJson(w, 16, "Insert into library failed!", nil)
 		return
 	}
 
 	err, materials := LoadMaterials(library.LibraryPath)
 	if err != nil {
-		u.OutputJson(w, 16, "Load materials failed!", nil)
+		u.OutputJson(w, 17, "Load materials failed!", nil)
 		return
 	}
 	for _, m := range materials {
 		filePath := library.LibraryPath + m.MaterialPath + m.MaterialType
-		fmt.Println(filePath)
+		//fmt.Println(filePath)
 		// TODO 调用C++，传入素材路径，返回素材的信息(图片尚未实现)
 		clip := r3d.ClipInit(filePath)
 		m.LibraryCode = library.LibraryCode
@@ -87,13 +121,11 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 
 		result, _ := es.InsertMaterial(m)
 		if result == false {
-			u.OutputJson(w, 17, "Save material failed!", nil)
+			u.OutputJson(w, 18, "Save material failed!", nil)
 			return
 		}
 	}
 
-	//rs, _ := json.Marshal(library)
-	//u.OutputJson(w, 0, "Add library succeed!", string(rs))
 	u.OutputJson(w, 0, "Add library succeed!", library)
 }
 
@@ -138,8 +170,6 @@ func GetLibraryFileList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//rs, _ := json.Marshal(materials)
-	//u.OutputJson(w, 0, "Load project succeed!", string(rs))
 	u.OutputJson(w, 0, "Query Materials succeed!", materials)
 }
 
@@ -172,8 +202,6 @@ func FindMaterials(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//rs, _ := json.Marshal(materials)
-	//u.OutputJson(w, 0, "Load project succeed!", string(rs))
 	u.OutputJson(w, 0, "Find Materials succeed!", materials)
 }
 
@@ -276,8 +304,6 @@ func AddFolder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//rs, _ := json.Marshal(library)
-	//u.OutputJson(w, 0, "Add library succeed!", string(rs))
 	u.OutputJson(w, 0, "Add material_folder succeed!", mf)
 }
 

@@ -5,8 +5,8 @@
 <title>Untitled Document</title>
 <script language="javascript" src="jslib/jquery-1.10.2.min.js"></script>
 <script language="javascript" src="js/playback.js"></script>
-<link href="style/css.css" rel="stylesheet" type="text/css">
-<link href="style/playback.css" rel="stylesheet" type="text/css">
+<link href="css/css.css" rel="stylesheet" type="text/css">
+<link href="css/playback.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div class="menu">
@@ -22,59 +22,30 @@
     <div class="cont">
     	<div class="leftdiv">
         	<div class="videodiv">
-                <video id="video">
+                <video id="video" preload="auto">
                 	<source src="mp4/mov.mp4" type="video/mp4">
                 	你的浏览器不支持html5视频
                 </video>
             </div>
             <canvas id="canvas"></canvas>
 		    <canvas id="canvasnone"></canvas>
-            <div class="canvasstyle">
-            	<div class="colordiv">
-                画笔颜色 当前:<span></span>
-                <table width="100%" height="50" border="1" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td style="background-color:#F00;border: 2px solid rgb(0, 0, 0);"></td>
-                    <td style="background-color:#FF00FF;"></td>
-                    <td style="background-color:#3300FF;"></td>
-                    <td style="background-color:#FFFF00;"></td>
-                    <td style="background-color:#F08080;"></td>
-                  </tr>
-                  <tr>
-                    <td style="background-color:#CD00CD;"></td>
-                    <td style="background-color:#98FB98;"></td>
-                    <td style="background-color:#8E388E;"></td>
-                    <td style="background-color:#121212;"></td>
-                    <td style="background-color:#FFFFFF;"></td>
-                  </tr>
-                </table>
-                </div>
-                <div class="widthdiv">
-                画笔粗细 当前:<span>1</span>
-                <table width="100%" height="50" border="1" cellspacing="0" cellpadding="0">
-                  <tr>
-                    <td style="border: 2px solid rgb(0, 0, 0);">1</td>
-                    <td>2</td>
-                    <td>3</td>
-                    <td>4</td>
-                    <td>5</td>
-                  </tr>
-                  <tr>
-                    <td>6</td>
-                    <td>7</td>
-                    <td>8</td>
-                    <td>9</td>
-                    <td>10</td>
-                  </tr>
-                </table>
-                </div>
-            </div>
+            
         </div>
         <div class="listdiv">
+	        <div class="rddiv">
+            	<div class="rdcd1">
+                    <div class="rd"></div>
+                </div>
+            </div>
             <div class="butdiv2">
             	<div class="widdiv"></div>
                 <div class="date">
                 <span class="dq">0</span>s/<span class="yg">10</span>s
+                </div>
+            </div>
+            <div class="cddiv">
+            	<div class="rdcd2">
+                    <div class="cd"></div>
                 </div>
             </div>
             <div class="butdiv">
@@ -82,12 +53,54 @@
     			<input type="button" class="paused" value="暂停">
                 <input type="button" class="cTimetop" value="上一帧">
     			<input type="button" class="cTimebottom" value="下一帧">
+            	<input type="button" class="fullscr" value="全屏">
             	<input type="button" class="keepbut" value="截取">
+                <input type="button" class="entry" value="入点出点关">
+                <input type="button" class="loop" value="循环播放关">
             </div>
         </div>
     </div>
 </div>
-
+<div class="canvasstyle">
+    <div class="colordiv">
+    画笔颜色 当前:<span></span>
+    <table width="100%" height="50" border="1" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="background-color:#F00;border: 2px solid rgb(0, 0, 0);"></td>
+        <td style="background-color:#FF00FF;"></td>
+        <td style="background-color:#3300FF;"></td>
+        <td style="background-color:#FFFF00;"></td>
+        <td style="background-color:#F08080;"></td>
+      </tr>
+      <tr>
+        <td style="background-color:#CD00CD;"></td>
+        <td style="background-color:#98FB98;"></td>
+        <td style="background-color:#8E388E;"></td>
+        <td style="background-color:#121212;"></td>
+        <td style="background-color:#FFFFFF;"></td>
+      </tr>
+    </table>
+    </div>
+    <div class="widthdiv">
+    画笔粗细 当前:<span>1</span>
+    <table width="100%" height="50" border="1" cellspacing="0" cellpadding="0">
+      <tr>
+        <td style="border: 2px solid rgb(0, 0, 0);">1</td>
+        <td>2</td>
+        <td>3</td>
+        <td>4</td>
+        <td>5</td>
+      </tr>
+      <tr>
+        <td>6</td>
+        <td>7</td>
+        <td>8</td>
+        <td>9</td>
+        <td>10</td>
+      </tr>
+    </table>
+    </div>
+</div>
 <div class="float">
     <div class="rightdiv">
     	<h2 class="tit">Feedback</h2>
@@ -97,7 +110,7 @@
             	gnkldsmflsd那份快乐的斯捷克洛夫建设的离开杰里科今年离开
             </div>
         </div>
-        <div class="sendout">
+        <div class="sendout">	
         	<img id="imgs" src="#">
             <textarea class="textarea" name="" cols="" rows="" placeholder="输入框"></textarea>
             <input type="button" class="but" value="发送">
@@ -108,6 +121,11 @@
 <div id="nonediv">
     <div id="strokeStyle">red</div>
     <div id="lineWidth">1</div>
+    <div id="rdcd">关</div>
 </div>
 </body>
 </html>
+<script type="text/javascript">
+
+
+</script>

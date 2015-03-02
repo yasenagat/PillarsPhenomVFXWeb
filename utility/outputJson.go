@@ -8,7 +8,13 @@ import (
 )
 
 func OutputJsonLog(w http.ResponseWriter, ret int, reason string, i interface{}, logInfo string) {
-	out := &FeedbackMessage{ret, reason, i}
+	var str string
+	if i != nil {
+		rs, _ := json.Marshal(i)
+		str = string(rs)
+	}
+
+	out := &FeedbackMessage{ret, reason, str}
 	b, err := json.Marshal(out)
 	if err != nil {
 		return
@@ -21,7 +27,13 @@ func OutputJsonLog(w http.ResponseWriter, ret int, reason string, i interface{},
 }
 
 func OutputJson(w http.ResponseWriter, ret int, reason string, i interface{}) {
-	out := &FeedbackMessage{ret, reason, i}
+	var str string
+	if i != nil {
+		rs, _ := json.Marshal(i)
+		str = string(rs)
+	}
+
+	out := &FeedbackMessage{ret, reason, str}
 	b, err := json.Marshal(out)
 	if err != nil {
 		return

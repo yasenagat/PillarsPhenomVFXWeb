@@ -55,45 +55,73 @@ $(function(){
 		var bufferCanvas = document.getElementById("canvasnone");
 		var buffer = bufferCanvas.getContext("2d");
 		buffer.drawImage(video,0,0,bufferCanvas.width,bufferCanvas.height);
-
+		
 		var mycanvas = document.getElementById("canvas");
 		var ctx = mycanvas.getContext("2d");
 		buffer.drawImage(mycanvas,0,0,mycanvas.width,mycanvas.height);
-
+		
 		var mycanvas = document.getElementById("canvasnone");
 		var image = mycanvas.toDataURL("image/png");
 		$("#imgs").attr("src",image);
-
+		
 		var mycanvas = document.getElementById("canvas");
 		var ctx = mycanvas.getContext("2d");
 		ctx.clearRect(0,0,mycanvas.width,mycanvas.height);
-		/*keepraw();
-		var mycanvas = document.getElementById("canvas");
-		var ctx = mycanvas.getContext("2d");
-		var bufferCanvas = document.getElementById("canvasnone");
-		buffer.drawImage(bufferCanvas,10,0,ctx.width,ctx.height);
-
-		var image = mycanvas.toDataURL("image/png");
-		var imghtml = "<img src="+image+">";
-		$(".imgs").append(imghtml);
-		var height = $("#video").height();
-		var width = $("#video").width();
-		ctx.clearRect(0,0,width,height);
-		*/
 	});
 	video.addEventListener("timeupdate", function(){
-		$(".dq").html(Math.round(video.currentTime));
-		var time = video.currentTime;
-		var alltime = video.duration;
-		console.log(time);
-		var dqtime = time*(100/alltime);
-		$(".widdiv").css("width",dqtime+"%");
-//		$(".widdiv").animate({width:dqtime+'px'},50);
+		var display = $(".entry").val();
+		if(display == '入点出点开'){
+			var endwid = $(".cd").width();
+			var end = (100/1175)*endwid;
+			var ends = end/100*video.duration;
+			if(ends>=Math.round(video.currentTime)){
+				$(".dq").html(Math.round(video.currentTime));
+				var time = video.currentTime;
+				var alltime = video.duration;
+				var dqtime = time*(100/alltime);
+				$(".widdiv").css("width",dqtime+"%");
+			}else{
+				if($(".loop").val()=="循环播放开"){//循环播放
+					var startwid = $(".rd").width();
+					var start = (100/1175)*startwid;
+					$(".widdiv").css("width",start+"%");
+					document.getElementById('video').currentTime = (start/100*video.duration);
+				}else{
+					$(".widdiv").css("width",end+"%");
+					video.pause();
+				}
+			}
+		}
+		else{
+			$(".dq").html(Math.round(video.currentTime));
+			var time = video.currentTime;
+			var alltime = video.duration;
+			var dqtime = time*(100/alltime);
+			$(".widdiv").css("width",dqtime+"%");
+		}
 	});
 	$(".play").click(function(){
-		video.play();
+		var display = $(".entry").val();
+		if(display == '入点出点关'){
+			video.play();
+		}else{
+			if($("#rdcd").html()=="关"){
+				$("#rdcd").html("开");
+				var startwid = $(".rd").width();
+				var start = (100/1175)*startwid;
+				$(".widdiv").css("width",start+"%");
+				document.getElementById('video').currentTime = (start/100*video.duration);
+			}
+			video.play();
+		}
+		var bufferCanvas = document.getElementById("canvas");
+		var ctx = bufferCanvas.getContext("2d");
+		ctx.clearRect(0,0,bufferCanvas.width,bufferCanvas.height);
 	});
 	$(".paused").click(function(){
+		var bufferCanvas = document.getElementById("canvas");
+		var ctx = bufferCanvas.getContext("2d");
+		ctx.clearRect(0,0,bufferCanvas.width,bufferCanvas.height);
 		video.pause();
 	});
 	$(".cTimetop").click(function(){
@@ -120,12 +148,137 @@ $(function(){
 	$(".butdiv2").mouseleave(function(){
 		yorn = false;
 	});
+	
+	rudian = false;
+	$(".rdcd1").mousedown(function(){
+		rudianjs();
+		rudian = true;
+	});
+	$(".rdcd1").mousemove(function(){
+		if(rudian){
+			rudianjs();
+		}
+	});
+	$(".rdcd1").mouseup(function(){
+		rudian = false;
+	});
+	$(".rdcd1").mouseleave(function(){
+		rudian = false;
+	});
+	
+	chudian = false;
+	$(".rdcd2").mousedown(function(){
+		chudianjs();
+		chudian = true;
+	});
+	$(".rdcd2").mousemove(function(){
+		if(chudian){
+			chudianjs();
+		}
+	});
+	$(".rdcd2").mouseup(function(){
+		chudian = false;
+	});
+	$(".rdcd2").mouseleave(function(){
+		chudian = false;
+	});
+	
+	//全屏
+	$(".fullscr").click(function(){
+		var element = video;
+	  if(element.requestFullScreen) {
+		element.requestFullScreen();
+	  } else if(element.mozRequestFullScreen) {
+		element.mozRequestFullScreen();
+	  } else if(element.webkitRequestFullScreen) {
+		element.webkitRequestFullScreen();
+	  }
+	});
+	//入点出点
+	$(".entry").click(function(){
+		var str = $(this).val();
+		if(str=="入点出点关")
+		{
+			$(this).val("入点出点开");
+			$(".rddiv").slideDown("slow");
+			$(".cddiv").slideDown("slow");
+		}else{
+			$(this).val("入点出点关");
+			$(".rddiv").slideUp("slow");
+			$(".cddiv").slideUp("slow");
+		}
+	});
+	//循环播放
+	$(".loop").click(function(){
+		if(video.loop==true){
+		video.loop = false;
+		$(".loop").val("循环播放关");
+		}else{
+			$(".loop").val("循环播放开");
+			video.loop = true;
+			if(video.currentTime==video.duration){
+				video.currentTime = 0;
+				video.play();
+			}
+		}
+	});
+	//监听键盘事件
+	document.onkeydown=function(event){
+		if(document.activeElement.className=="textarea"){
+			return;
+		}
+		e = event ? event :(window.event ? window.event : null);
+		//播放/暂停
+		if(e.keyCode==32){
+			if(video.paused){
+				$(".play").click();
+			}else{
+				$(".paused").click();
+			}
+		}
+		//上一帧
+		if(e.keyCode==37){
+			$(".cTimetop").click();
+		}
+		//下一帧
+		if(e.keyCode==39){
+			$(".cTimebottom").click();
+		}
+		//全屏
+		if(e.keyCode==70){
+			$(".fullscr").click();
+		}
+		//截取
+		if(e.keyCode==67){
+			$(".keepbut").click();
+		}
+		//入点出点
+		if(e.keyCode==73){
+			$(".entry").click();
+		}
+		//循环播放开关
+		if(e.keyCode==76){
+			$(".loop").click();
+		}	
+	}
 });
 function widjs(){
 	var x=event.offsetX;
 	var time = (100/1175)*x;
 	$(".widdiv").css("width",time+"%");
 	document.getElementById('video').currentTime = (time/100*video.duration);
+}
+function rudianjs(){
+	var x=event.offsetX;
+	var time = (100/1175)*x;
+	$(".rd").css("width",time+"%");
+	$("#rdcd").html("关");
+}
+function chudianjs(){
+	var x=event.offsetX;
+	var time = (100/1175)*x;
+	$(".cd").css("width",time+"%");
+	$("#rdcd").html("关");
 }
 function sx(){
 	var video=document.getElementById("video");
@@ -210,9 +363,12 @@ function redraw(){
 		context.lineTo(point.x, point.y);
 		context.stroke();
 		context.closePath();
-		console.log(point);
 	}
 }
 });
+
+
+
+
 
 
