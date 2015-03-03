@@ -1,7 +1,7 @@
 package editoralAction
 
 import (
-	"CGWorldlineWeb/pillarsLog"
+	"PillarsPhenomVFXWeb/pillarsLog"
 	r3d "PillarsPhenomVFXWeb/r3dOperation"
 	s "PillarsPhenomVFXWeb/session"
 	es "PillarsPhenomVFXWeb/storage/editoralStorage"
