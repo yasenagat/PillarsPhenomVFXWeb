@@ -18,16 +18,21 @@ var librarys_ajax = function(pc){
 					$(".library").append("<li class='li1'><a href='javascript:void(0);' class='"+rs[0]["LibraryCode"]+"'>"+rs[0]["LibraryName"]+"</a></li>");
 				}
 				setTimeout(function(){
-					$(".library").on("click","a",function(){
-						materials_ajax("1", projectCode, $(this).attr("class"), 0, 20);
-						$("#pageflag").val("Library");
-						$("#pagecode").val($(this).attr("class"));
-					});
+					library_click();
 				},1000);
 			}
         },
         "json"
     );
+}
+var library_click = function(){
+	$(".library").on("click","a",function(){
+		var rs = materials_ajax("1", projectCode, $(this).attr("class"), 0, 20);
+		$(".strdiv .videodiv").html("");
+		fileList_create(rs);
+		$("#pageflag").val("Library");
+		$("#pagecode").val($(this).attr("class"));
+	});
 }
 //素材组数据
 var filetypes_ajax = function(pc){
@@ -42,7 +47,9 @@ var filetypes_ajax = function(pc){
 				}
 				setTimeout(function(){
 					$("#materialGroup").on("click","a",function(){
-						materials_ajax("2", projectCode, $(this).html(), 0, 20)
+						rs = materials_ajax("2", projectCode, $(this).html(), 0, 20)
+						$(".strdiv .videodiv").html("");
+						fileList_create(rs);
 					});
 				},1000);
 			}
@@ -63,8 +70,7 @@ var materials_ajax = function(flag, pc, lc, start, end){
         function(data) {
             if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				$(".strdiv .videodiv").html("");
-				fileList_create(rs);
+				return rs;				
 			}
         },
         "json"
@@ -77,10 +83,7 @@ var find_materials_ajax = function(pc, args){
         function(data) {
             if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				$(".strdiv .videodiv").html("");
-				fileList_create(rs);
-			}else{
-				alert(data.FeedbackCode+"");
+				return rs;
 			}
         },
         "json"
@@ -175,11 +178,19 @@ $(function(){
 	}
 	// All列表点击
 	$(".li1").on("click", "a", function(){
-		materials_ajax("2", projectCode, $(this).html(), 0, 20)
+		var rs = materials_ajax("2", projectCode, $(this).html(), 0, 20);
+		$(".strdiv .videodiv").html("");
+		fileList_create(rs);
+		$("#pageflag").val("Group");
+		$("#pagecode").val($(this).html());
 	});
 	// 搜索
 	$(".butsearch").click(function(){
-		find_materials_ajax(projectCode, $(".inpsearch").val())
+		var rs = find_materials_ajax(projectCode, $(".inpsearch").val());
+		$(".strdiv .videodiv").html("");
+		fileList_create(rs);
+		$("#pageflag").val("");
+		$("#pagecode").val("");
 	});
 	// 下载文件
 	$(".strdiv .videodiv").on("click",".disnone ul li",function(){
@@ -203,18 +214,22 @@ $(function(){
 		var scrollHeight = $(document).height();
 		var windowHeight = $(this).height();
 		if(scrollTop + windowHeight == scrollHeight) {
-			var start = $(".strdiv .videodiv").children(".videostr").length;
-			var end = start + 10;
 			var pageflag = $("#pageflag").val();
 			var pagecode = $("#pagecode").val();
-			//TODO 请求不同action
-			if(pageflag=="Library") {
-				//load_core("Library",pagecode,start, end, function(data) {
-			}else if(pageflag=="Group") {
-				//materials_ajax("2", projectCode, $(this).html(), 0, 20)
+			if(pageflag == "") {
+				return;
 			}
-			//var rs = {};
-			//fileList_create(rs)
+			
+			var start = $(".strdiv .videodiv").children(".videostr").length;
+			var end = start + 10;
+			//TODO 请求不同action
+			var rs = {};
+			if(pageflag == "Library") {
+				rs = materials_ajax("1", projectCode, pagecode, start, end);
+			}else if(pageflag == "Group") {
+				rs = materials_ajax("2", projectCode, pagecode, start, end);
+			}
+			fileList_create(rs);
 		}
 	});
 
@@ -239,9 +254,12 @@ $(function(){
 			if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
 				// TODO 页面显示新添加的库，
-
+				$(".library").append("<li class='li1'><a href='javascript:void(0);' class='"+rs["LibraryCode"]+"'>"+rs["LibraryName"]+"</a></li>");
+				library_click();
 				// 库保存成功，查询素材列表
-				materials_ajax("1", projectCode, rs["LibraryCode"], 0, 20)
+				rs = materials_ajax("1", projectCode, rs["LibraryCode"], 0, 20)
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
 			} else {
 				// TODO 保存失败显示位置
 				alert(data.FeedbackText);
