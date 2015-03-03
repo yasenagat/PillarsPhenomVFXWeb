@@ -14,31 +14,31 @@ import (
 	"strconv"
 )
 
-//func GetFiletypes(w http.ResponseWriter, r *http.Request) {
-//	if !s.CheckAuthority(w, r, "制片") {
-//		http.Redirect(w, r, "/404.html", http.StatusFound)
-//		return
-//	}
+func GetLibrarys(w http.ResponseWriter, r *http.Request) {
+	if !s.CheckAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
 
-//	r.ParseForm()
-//	olen := len(r.Form["ProjectCode"])
-//	if olen != 1 {
-//		u.OutputJson(w, 1, "Error parameter format", nil)
-//		return
-//	}
-//	if len(r.Form["ProjectCode"][0]) == 0 {
-//		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
-//		return
-//	}
-//	code := r.Form["ProjectCode"][0]
-//	filetypes, err := es.QueryFiletypes(&code)
-//	if err != nil {
-//		u.OutputJson(w, 13, "Query Filetypes failed!", nil)
-//		return
-//	}
+	r.ParseForm()
+	olen := len(r.Form["ProjectCode"])
+	if olen != 1 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+	if len(r.Form["ProjectCode"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+		return
+	}
+	code := r.Form["ProjectCode"][0]
+	filetypes, err := es.QueryLibrarys(&code)
+	if err != nil {
+		u.OutputJson(w, 13, "Query Filetypes failed!", nil)
+		return
+	}
 
-//	u.OutputJson(w, 0, "Query Filetypes succeed!", filetypes)
-//}
+	u.OutputJson(w, 0, "Query Filetypes succeed!", filetypes)
+}
 
 func AddLibrary(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
@@ -136,37 +136,48 @@ func GetLibraryFileList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	olen := len(r.Form["ProjectCode"]) + len(r.Form["LibraryCode"]) + len(r.Form["Start"]) + len(r.Form["End"])
-	if olen != 4 {
+	olen := len(r.Form["Flag"]) + len(r.Form["ProjectCode"]) + len(r.Form["LibraryCode"]) + len(r.Form["Start"]) + len(r.Form["End"])
+	if olen != 5 {
 		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
 
+	if len(r.Form["Flag"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter Flag", nil)
+		return
+	}
+
 	if len(r.Form["ProjectCode"][0]) == 0 {
-		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+		u.OutputJson(w, 13, "Error parameter ProjectCode", nil)
 		return
 	}
 
 	if len(r.Form["LibraryCode"][0]) == 0 {
-		u.OutputJson(w, 13, "Error parameter LibraryCode", nil)
+		u.OutputJson(w, 14, "Error parameter LibraryCode", nil)
 		return
 	}
 
 	start, err := strconv.ParseInt(r.Form["Start"][0], 10, 0)
 	if err != nil {
-		u.OutputJson(w, 14, "Error parameter Start", nil)
+		u.OutputJson(w, 15, "Error parameter Start", nil)
 		return
 	}
 
 	end, err := strconv.ParseInt(r.Form["End"][0], 10, 0)
 	if err != nil {
-		u.OutputJson(w, 15, "Error parameter End", nil)
+		u.OutputJson(w, 16, "Error parameter End", nil)
 		return
 	}
 
-	materials, err := es.QueryMaterials(r.Form["LibraryCode"][0], start, end)
+	var materials interface{}
+	if r.Form["Flag"][0] == "1" {
+		materials, err = es.QueryMaterialsByLibraryCode(r.Form["LibraryCode"][0], start, end)
+	} else if r.Form["Flag"][0] == "2" {
+		materials, err = es.QueryMaterialsByType(r.Form["ProjectCode"][0], r.Form["LibraryCode"][0], start, end)
+	}
+
 	if err != nil {
-		u.OutputJson(w, 16, "Query Materials failed!", nil)
+		u.OutputJson(w, 17, "Query Materials failed!", nil)
 		return
 	}
 
@@ -181,7 +192,7 @@ func FindMaterials(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 	olen := len(r.Form["ProjectCode"]) + len(r.Form["Args"])
-	if olen != 4 {
+	if olen != 2 {
 		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
@@ -196,9 +207,9 @@ func FindMaterials(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	materials, err := es.FindMaterials(r.Form["LibraryCode"][0], r.Form["Args"][0])
+	materials, err := es.FindMaterials(r.Form["ProjectCode"][0], r.Form["Args"][0])
 	if err != nil {
-		u.OutputJson(w, 16, "Find Materials failed!", nil)
+		u.OutputJson(w, 13, "Find Materials failed!", nil)
 		return
 	}
 

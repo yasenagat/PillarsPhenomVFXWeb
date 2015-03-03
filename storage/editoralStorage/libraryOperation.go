@@ -45,27 +45,31 @@ func QueryLibraryByLibraryCode(code *string) (*utility.Library, error) {
 	return &l, err
 }
 
-//func QueryLibrarys(projectCode *string) (*[]string, error) {
-//	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT DISTINCT material_type FROM material WHERE status = 0 AND project_code = ?`)
-//	if err != nil {
-//		pillarsLog.PillarsLogger.Print(err.Error())
-//		return nil, err
-//	}
-//	defer stmt.Close()
-//	result, err := stmt.Query(projectCode)
-//	if err != nil {
-//		pillarsLog.PillarsLogger.Print(err.Error())
-//		return nil, err
-//	}
-//	defer result.Close()
-//	var filetypes []string
-//	for result.Next() {
-//		var t string
-//		err = result.Scan(&(t))
-//		if err != nil {
-//			pillarsLog.PillarsLogger.Print(err.Error())
-//		}
-//		filetypes = append(filetypes, t)
-//	}
-//	return &filetypes, err
-//}
+func QueryLibrarys(projectCode *string) (*[]interface{}, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT library_code, library_name FROM library WHERE status = 0 AND project_code = ?`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(projectCode)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var filetypes []interface{}
+	type Library struct {
+		LibraryCode string
+		LibraryName string
+	}
+	for result.Next() {
+		var lb Library
+		err = result.Scan(&(lb.LibraryCode), &(lb.LibraryName))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+		filetypes = append(filetypes, lb)
+	}
+	return &filetypes, err
+}

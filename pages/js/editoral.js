@@ -1,47 +1,27 @@
+//得到url地址中code参数
+var projectCode = "";
 //url参数获取
 var getUrlParam = function(name){
 	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
 	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
 	if (r!=null) return unescape(r[2]); return null; //返回参数值
 }
-//列表数据
-var materials_ajax = function(pc, lc, start, end){
-	$.post("/editoral_library_materials",
-		{
-			ProjectCode: pc,
-			LibraryCode: lc,
-			Start: start,
-			End: end
-		},
-        function(data) {
-            if(data.FeedbackCode == 0) {
-				var rs = JSON.parse(data.Data);
-				// TODO 列表数据已返回，组织页面显示
-				$(".strdiv .videodiv").html("");
-				for(var i=0;i<rs.length;i++){
-
-					var html = '<span class="videostr"><input type="hidden" class="sourceid" value="'+rs[i]["MaterialCode"]+'"><input class="check" name="" type="checkbox" value=""><input class="play" type="button" value="回放"><div class="downdiv"><input class="downl" type="button" value="下载"><span class="disnone"><ul class="'+rs[i]["MaterialCode"]+'"><li>Source</li><li>DPX</li><li>JPG</li><li>Mov</li></ul></span></div><div class="files"><span class="name">'+rs[i]["MaterialName"]+'</span><span class="format">'+rs[i]["MaterialType"]+'</span><span class="long">'+rs[i]["Length"]+'</span></div></span>';
-					$(".strdiv .videodiv").append(html);
-				}
-			}
-        },
-        "json"
-    );
-}
 //Library数据
-var filetype_ajax = function(pc){
+var librarys_ajax = function(pc){
 	$.post("/editoral_library",
 		{ProjectCode: pc},
         function(data) {
             if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				// TODO 列表数据已返回，组织页面显示
+				// 组织页面显示
 				for(var i=0; i<rs.length; i++){
-					$("#materialGroup").html("<li><a href='javascript:void(0);'>"+rs[0]+"</a></li>");
+					$(".library").append("<li class='li1'><a href='javascript:void(0);' class='"+rs[0]["LibraryCode"]+"'>"+rs[0]["LibraryName"]+"</a></li>");
 				}
 				setTimeout(function(){
-					$("#materialGroup").on("click","a",function(){
-						$(this).html()
+					$(".library").on("click","a",function(){
+						materials_ajax("1", projectCode, $(this).attr("class"), 0, 20);
+						$("#pageflag").val("Library");
+						$("#pagecode").val($(this).attr("class"));
 					});
 				},1000);
 			}
@@ -50,19 +30,19 @@ var filetype_ajax = function(pc){
     );
 }
 //素材组数据
-var filetype_ajax = function(pc){
+var filetypes_ajax = function(pc){
 	$.post("/editoral_filetype",
 		{ProjectCode: pc},
         function(data) {
             if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				// TODO 列表数据已返回，组织页面显示
+				// 组织页面显示
 				for(var i=0; i<rs.length; i++){
 					$("#materialGroup").html("<li><a href='javascript:void(0);'>"+rs[0]+"</a></li>");
 				}
 				setTimeout(function(){
 					$("#materialGroup").on("click","a",function(){
-						$(this).html()
+						materials_ajax("2", projectCode, $(this).html(), 0, 20)
 					});
 				},1000);
 			}
@@ -70,21 +50,70 @@ var filetype_ajax = function(pc){
         "json"
     );
 }
-//虚拟表单提交，下载使用
-var post = function(URL, PARAMS) {
-    var temp = document.createElement("form");
-    temp.action = URL;
-    temp.method = "post";
-    temp.style.display = "none";
-    for (var x in PARAMS) {
-        var opt = document.createElement("textarea");
-        opt.name = x;
-        opt.value = PARAMS[x];
-        temp.appendChild(opt);
-    }
-    document.body.appendChild(temp);
-    temp.submit();
-    return temp;
+//左侧列表点击
+var materials_ajax = function(flag, pc, lc, start, end){
+	$.post("/editoral_library_materials",
+		{
+			Flag: flag,
+			ProjectCode: pc,
+			LibraryCode: lc,
+			Start: start,
+			End: end
+		},
+        function(data) {
+            if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+			}
+        },
+        "json"
+    );
+}
+//搜索
+var find_materials_ajax = function(pc, args){
+	$.post("/editoral_find_materials",
+		{ProjectCode: pc, Args: args},
+        function(data) {
+            if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+			}else{
+				alert(data.FeedbackCode+"");
+			}
+        },
+        "json"
+    );
+}
+//列表数据创建
+var fileList_create = function(rs){
+	for(var i=0;i<rs.length;i++){
+		var liInfo = "";
+		if(rs[i]["DpxPath"] == "Y") {
+			liInfo += "<li>DPX</li>";
+		}
+		if(rs[i]["JpgPath"] == "Y") {
+			liInfo += "<li>JPG</li>";
+		}
+		if(rs[i]["MovPath"] == "Y") {
+			liInfo += "<li>Mov</li>";
+		}
+		var html = '<span class="videostr">';
+		html += '<input type="hidden" class="sourceid" value="'+rs[i]["MaterialCode"]+'">';
+		html += '<input class="check" name="" type="checkbox" value="">';
+		html += '<input class="play" type="button" value="回放">';
+		html += '<div class="downdiv">';
+		html += '<input class="downl" type="button" value="下载">';
+		html += '<span class="disnone">';
+		html += '<ul class="'+rs[i]["MaterialCode"]+'">';
+		html += '<li>Source</li>'+liInfo+'</ul></span>';
+		html += '</div><div class="files">';
+		html += '<span class="name">'+rs[i]["MaterialName"]+'</span>';
+		html += '<span class="format">'+rs[i]["MaterialType"]+'</span>';
+		html += '<span class="long">'+rs[i]["Length"]+'</span></div></span>';
+		$(".strdiv .videodiv").append(html);
+	}
 }
 //Library添加
 var addLibrary_ajax = function(ln, lp, dp, jp, mp, pc, callback){
@@ -103,27 +132,58 @@ var addLibrary_ajax = function(ln, lp, dp, jp, mp, pc, callback){
         "json"
     );
 }
-//下载验证
-var downloadCheck_ajax = function(code, type, callback) {
-    $.post("/editoral_download_file1", JSON.stringify({MaterialCode: code, SourceType: type}),
+//下载文件
+var downloadCheck_ajax = function(code, type) {
+    $.post("/editoral_download_file_check", JSON.stringify({MaterialCode: code, SourceType: type}),
         function(data) {
-            callback(data);
+            if(data.FeedbackCode == 0) {
+				post("/editoral_download_file", {MaterialCode: code, SourceType: type});
+			}else{
+				alert("下载的文件不存在，请确认库的文件有效性！");
+			}
         },
         "json"
     );
 }
-//得到url地址中code参数
-var projectCode = "";
+//下载文件（此方式不可用）
+var downloadFile = function(code, type) {
+    $.post("/editoral_download_file", {MaterialCode: code, SourceType: type});
+}
+//虚拟表单提交，下载文件使用
+var post = function(URL, PARAMS) {
+    var temp = document.createElement("form");
+    temp.action = URL;
+    temp.method = "post";
+    temp.style.display = "none";
+    for (var x in PARAMS) {
+        var opt = document.createElement("textarea");
+        opt.name = x;
+        opt.value = PARAMS[x];
+        temp.appendChild(opt);
+    }
+    document.body.appendChild(temp);
+    temp.submit();
+    return temp;
+}
+
 
 $(function(){
 	projectCode = getUrlParam("code");
 	if (projectCode !== ""){
-		filetype_ajax(projectCode);
+		librarys_ajax(projectCode);
+		filetypes_ajax(projectCode);
 	}
-	// 搜索按钮，测试后台方法（下载文件）
+	// All列表点击
+	$(".li1").on("click", "a", function(){
+		materials_ajax("2", projectCode, $(this).html(), 0, 20)
+	});
+	// 搜索
+	$(".butsearch").click(function(){
+		find_materials_ajax(projectCode, $(".inpsearch").val())
+	});
+	// 下载文件
 	$(".strdiv .videodiv").on("click",".disnone ul li",function(){
 		var code = $(this).parent().attr("class");
-		code = "adsfas";
 		var type = $(this).html().trim();
 		post("/editoral_download_file", {MaterialCode: code, SourceType: type});
 	});
@@ -137,6 +197,27 @@ $(function(){
 		$(".outer").show(500);
 		$(".formdiv").show(500);
 	});
+	//瀑布流加载
+	$(window).scroll(function() {
+		var scrollTop = $(this).scrollTop();
+		var scrollHeight = $(document).height();
+		var windowHeight = $(this).height();
+		if(scrollTop + windowHeight == scrollHeight) {
+			var start = $(".strdiv .videodiv").children(".videostr").length;
+			var end = start + 10;
+			var pageflag = $("#pageflag").val();
+			var pagecode = $("#pagecode").val();
+			//TODO 请求不同action
+			if(pageflag=="Library") {
+				//load_core("Library",pagecode,start, end, function(data) {
+			}else if(pageflag=="Group") {
+				//materials_ajax("2", projectCode, $(this).html(), 0, 20)
+			}
+			//var rs = {};
+			//fileList_create(rs)
+		}
+	});
+
 	$(".outer").click(function(){
 		$(".outer").hide(500);
 		$(".formdiv").find(":text").val("");
@@ -160,7 +241,7 @@ $(function(){
 				// TODO 页面显示新添加的库，
 
 				// 库保存成功，查询素材列表
-				materials_ajax(projectCode, rs["LibraryCode"], 0, 20)
+				materials_ajax("1", projectCode, rs["LibraryCode"], 0, 20)
 			} else {
 				// TODO 保存失败显示位置
 				alert(data.FeedbackText);

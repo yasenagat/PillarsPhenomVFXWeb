@@ -13,6 +13,9 @@ type MaterialsOut struct {
 	MaterialType string
 	MaterialPath string
 	Length       string
+	DpxPath      string
+	JpgPath      string
+	MovPath      string
 }
 
 type MaterialOut struct {

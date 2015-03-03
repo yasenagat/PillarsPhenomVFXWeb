@@ -30,9 +30,7 @@
                     <span class="addbtn" id="addsou">+</span>
                 </div>
                 <div class="groupcont">
-                	<ul>
-                    	<li class="li1">20150101</li>
-                        <li class="li1">extra</li>
+                	<ul class="library">
                     </ul>
                 </div>
             </div>
@@ -42,13 +40,14 @@
                 </div>
                 <div class="groupcont">
                 	<ul>
-                    	<li class="li1">All</li>
+                    	<li class="li1"><a href="javascript:void(0);">All</a></li>
                         <li>
                             <ul id="materialGroup">
-                                <!--<li class="li2">R3d</li>
+                                <!--
+								<li class="li2">R3d</li>
                                 <li class="li2">Arriraw</li>
-                                <li class="li2">Canon</li>-->
-
+                                <li class="li2">Canon</li>
+								-->
                             </ul>
                         </li>
                     </ul>
@@ -100,6 +99,8 @@ document.write(d);
                 	<input type="button" value="批量下载">
                 </span>
                 <span class="spsearch">
+					<input type="hidden" id="pageflag" value="">
+					<input type="hidden" id="pagecode" value="">
                 	<input type="text" class="inpsearch" value="">
                 	<input type="button" class="butsearch" value="搜索">
                 </span>
