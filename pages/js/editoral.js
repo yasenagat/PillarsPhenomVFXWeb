@@ -27,11 +27,16 @@ var librarys_ajax = function(pc){
 }
 var library_click = function(){
 	$(".library").on("click","a",function(){
-		var rs = materials_ajax("1", projectCode, $(this).attr("class"), 0, 20);
-		$(".strdiv .videodiv").html("");
-		fileList_create(rs);
-		$("#pageflag").val("Library");
-		$("#pagecode").val($(this).attr("class"));
+		var code = $(this).attr("class");
+		materials_ajax("1", projectCode, code, 0, 10, function(data){
+			if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+				$("#pageflag").val("Library");
+				$("#pagecode").val(code);
+			}
+		});
 	});
 }
 //素材组数据
@@ -47,9 +52,16 @@ var filetypes_ajax = function(pc){
 				}
 				setTimeout(function(){
 					$("#materialGroup").on("click","a",function(){
-						rs = materials_ajax("2", projectCode, $(this).html(), 0, 20)
-						$(".strdiv .videodiv").html("");
-						fileList_create(rs);
+						var code = $(this).html();
+						materials_ajax("2", projectCode, code, 0, 10, function(data){
+							if(data.FeedbackCode == 0) {
+								var rs = JSON.parse(data.Data);
+								$(".strdiv .videodiv").html("");
+								fileList_create(rs);
+								$("#pageflag").val("Group");
+								$("#pagecode").val(code);
+							}
+						});
 					});
 				},1000);
 			}
@@ -58,7 +70,7 @@ var filetypes_ajax = function(pc){
     );
 }
 //左侧列表点击
-var materials_ajax = function(flag, pc, lc, start, end){
+var materials_ajax = function(flag, pc, lc, start, end, callback){
 	$.post("/editoral_library_materials",
 		{
 			Flag: flag,
@@ -68,23 +80,17 @@ var materials_ajax = function(flag, pc, lc, start, end){
 			End: end
 		},
         function(data) {
-            if(data.FeedbackCode == 0) {
-				var rs = JSON.parse(data.Data);
-				return rs;				
-			}
+            callback(data);
         },
         "json"
     );
 }
 //搜索
-var find_materials_ajax = function(pc, args){
+var find_materials_ajax = function(pc, args, callback){
 	$.post("/editoral_find_materials",
 		{ProjectCode: pc, Args: args},
         function(data) {
-            if(data.FeedbackCode == 0) {
-				var rs = JSON.parse(data.Data);
-				return rs;
-			}
+			callback(data);
         },
         "json"
     );
@@ -178,19 +184,29 @@ $(function(){
 	}
 	// All列表点击
 	$(".li1").on("click", "a", function(){
-		var rs = materials_ajax("2", projectCode, $(this).html(), 0, 20);
-		$(".strdiv .videodiv").html("");
-		fileList_create(rs);
-		$("#pageflag").val("Group");
-		$("#pagecode").val($(this).html());
+		var code = $(this).html();
+		materials_ajax("2", projectCode, code, 0, 10, function(data){
+			if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+				$("#pageflag").val("Group");
+				$("#pagecode").val(code);
+			}
+		});
 	});
 	// 搜索
 	$(".butsearch").click(function(){
-		var rs = find_materials_ajax(projectCode, $(".inpsearch").val());
-		$(".strdiv .videodiv").html("");
-		fileList_create(rs);
-		$("#pageflag").val("");
-		$("#pagecode").val("");
+		find_materials_ajax(projectCode, $(".inpsearch").val(), function(data){
+			if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+				$("#pageflag").val("");
+				$("#pagecode").val("");
+			}
+		});
+
 	});
 	// 下载文件
 	$(".strdiv .videodiv").on("click",".disnone ul li",function(){
@@ -216,20 +232,27 @@ $(function(){
 		if(scrollTop + windowHeight == scrollHeight) {
 			var pageflag = $("#pageflag").val();
 			var pagecode = $("#pagecode").val();
-			if(pageflag == "") {
+			if(pageflag == "" || pagecode == "") {
 				return;
 			}
-			
+
 			var start = $(".strdiv .videodiv").children(".videostr").length;
 			var end = start + 10;
-			//TODO 请求不同action
-			var rs = {};
 			if(pageflag == "Library") {
-				rs = materials_ajax("1", projectCode, pagecode, start, end);
+				materials_ajax("1", projectCode, pagecode, start, end, function(data){
+					if(data.FeedbackCode == 0) {
+						var rs = JSON.parse(data.Data);
+						fileList_create(rs);
+					}
+				});
 			}else if(pageflag == "Group") {
-				rs = materials_ajax("2", projectCode, pagecode, start, end);
+				materials_ajax("2", projectCode, pagecode, start, end, function(data){
+					if(data.FeedbackCode == 0) {
+						var rs = JSON.parse(data.Data);
+						fileList_create(rs);
+					}
+				});
 			}
-			fileList_create(rs);
 		}
 	});
 
@@ -253,13 +276,19 @@ $(function(){
 		addLibrary_ajax(name, url, dpxurl, transcodingurl, movurl, projectCode, function(data) {
 			if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				// TODO 页面显示新添加的库，
+				// 页面显示新添加的库
 				$(".library").append("<li class='li1'><a href='javascript:void(0);' class='"+rs["LibraryCode"]+"'>"+rs["LibraryName"]+"</a></li>");
 				library_click();
 				// 库保存成功，查询素材列表
-				rs = materials_ajax("1", projectCode, rs["LibraryCode"], 0, 20)
-				$(".strdiv .videodiv").html("");
-				fileList_create(rs);
+				materials_ajax("1", projectCode, rs["LibraryCode"], 0, 10, function(data){
+					if(data.FeedbackCode == 0) {
+						var mrs = JSON.parse(data.Data);
+						$(".strdiv .videodiv").html("");
+						fileList_create(mrs);
+						$("#pageflag").val("Library");
+						$("#pagecode").val(rs["LibraryCode"]);
+					}
+				});
 			} else {
 				// TODO 保存失败显示位置
 				alert(data.FeedbackText);
