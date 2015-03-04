@@ -103,10 +103,12 @@ void ClipFree(Clip clip) {
 const char * ClipMetaData(Clip clip) {
 	R3DSDK::Clip * foo = (R3DSDK::Clip *) clip;
 	std::string metadata;
-	for (std::size_t i = 0U; i < foo->MetadataCount(); i++)
-	{
-		metadata += foo->MetadataItemKey(i) + ":" + foo->MetadataItemAsString(i) + ",";
+	metadata = "{";
+	for (std::size_t i = 0U; i < foo->MetadataCount() - 1; i++)
+	{	
+		metadata += "\"" + foo->MetadataItemKey(i) + "\":" + "\"" + foo->MetadataItemAsString(i) + "\",";
 	}
+	metadata += "\"" + foo->MetadataItemKey(foo->MetadataCount() - 1) + "\":" + "\"" + foo->MetadataItemAsString(foo->MetadataCount() - 1) + "\"}";
 	unsigned int metaDataCharlength = strlen(metadata.c_str());
 	char * retChar = new char[metaDataCharlength + 1];
 	strcpy(retChar, metadata.c_str());
