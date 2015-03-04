@@ -237,10 +237,10 @@ dTree.prototype.addNode = function(pNode) {
 // Creates the node icon, url and text
 
 dTree.prototype.node = function(node, nodeId) {
-if(node.target=="0"){
-	var str = '<div class="dTreeNode">' + this.indent(node, nodeId)+'<span class=\''+nodeId+'\' style="display:none;">+</span>';
-}else{
-	var str = '<div class="dTreeNode">' + this.indent(node, nodeId)+'<span class=\''+nodeId+'\'>+</span>';
+if(node.target=="0"){//底层节点
+	var str = '<div class="dTreeNode">' + this.indent(node, nodeId)+'<span class=\''+nodeId+'\'>+<div><ul><li class="addGroup">创建素材组</li><li class="removeGroup">删除素材组</li><li class="addMaterial">添加素材</li><li class="removeMaterial">移除素材</li><li class="updGroup">修改</li></ul></div></span>';
+}else{//非底层节点
+	var str = '<div class="dTreeNode">' + this.indent(node, nodeId)+'<span class=\''+nodeId+'\'>+<div><ul><li class="addGroup">创建素材组</li><li class="removeGroup">删除素材组</li><li class="addMaterial">添加素材</li><li class="removeMaterial">移除素材</li><li class="updGroup">修改</li></ul></div></span>';
 }
 	if (this.config.useIcons) {
 
@@ -280,7 +280,8 @@ if(node.target=="0"){
 
 	//else if ((!this.config.folderLinks || !node.url) && node._hc && node.pid != this.root.id)
 	if(node.target=="1")
-		str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');" class="node">';
+		//str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');" class="node">';
+		str += '<a href="javascript: li(' + nodeId + ');" class="node">';
 	else{
 		str += '<a href="javascript: urlstr('+nodeId+')" class="node">';
 	}
@@ -325,7 +326,7 @@ dTree.prototype.indent = function(node, nodeId) {
 
 		if (node._hc) {
 
-			str += '<a href="javascript: ' + this.obj + '.o(' + nodeId + ');"><img id="j' + this.obj + nodeId + '" src="';
+			str += '<a href="javascript: li(' + nodeId + ');"><img id="j' + this.obj + nodeId + '" src="';
 
 			if (!this.config.useLines) str += (node._io) ? this.icon.nlMinus : this.icon.nlPlus;
 
@@ -693,15 +694,6 @@ if (!Array.prototype.pop) {
 
 	}
 };
-function li(string)
-{
-	if($("#dd"+string).css("display")=="block")
-	{
-		$("#dd"+string).css("display","none");
-	}else{
-		$("#dd"+string).css("display","block");
-	}
-}
 $(function(){
 	$(".dtree").on("blur",".texinp",function(){
 		var inputstr = $(this).val();//获得文本框内容
@@ -720,19 +712,25 @@ $(function(){
 			$("#dd"+inputid).remove();
 		}
 	});
-	$(".dtree").on("click","span",function(){
-		var nodesize = $(".dtree").find(".dTreeNode").length;
-		var thisclass = $(this).attr("class");
+	//添加素材组
+	$(".dtree").on("click",".addGroup",function(){
+		var nodesize = "";
+		$(".dtree").find(".dTreeNode").each(function() {
+            if(nodesize = ""){
+				nodesize = $(this).children("span").attr("class");
+			}
+			else{
+				if(nodesize*1<$(this).children("span").attr("class")*1){
+					nodesize = $(this).children("span").attr("class");
+				}
+				
+			}
+        });
+		nodesize++;
+		var thisclass = $(this).parents("span").attr("class");
 		//同等级的img 的数量
-		imglength = $(this).siblings("img").length + 
-					$(this).siblings("a").children("img").length;
-		/*var imgstr = "";
-		for(i=0;i<imglength+1;i++)
-		{
-			imgstr += "<img src='img/empty.gif'>";
-		}*/
-		
-		
+		imglength = $(this).parents("span").siblings("img").length + 
+					$(this).parents("span").siblings("a").children("img").length;
 		//$(".texinp").focus();
 		
 		var height = $(window).height();
@@ -744,26 +742,130 @@ $(function(){
 		$(".formdiv2").find(".imgsize").val(imglength);
 		$(".outer").show(500);
 		$(".formdiv2").show(500);
-		
-		
-		/*$("#dd"+thisclass).css("display","block");
-		$("#dd"+thisclass).append("<div class='dTreeNode'>"+imgstr+"<span class=\'"+nodesize+"\' style='display:none;'>+</span><input type='text' name=\'"+thisclass+"\' id=\'"+nodesize+"\' class='texinp'></div><div id=\'dd"+nodesize+"\' class='clip' style='display:block;'></div>");
-		*/
 	});
+	//点击添加素材组弹窗的确定按钮之后
 	$(".formdiv2").find(".submit").click(function(){
-		var nodesize = $(".formdiv2").find(".id").val();
-		var thisclass = $(".formdiv2").find(".pid").val();
-		var imglength = $(".formdiv2").find(".imgsize").val();
-		var names = $(".formdiv2").find(".names").val();
-		var imgstr = "";
-		for(i=0;i<imglength*1+1;i++)
-		{
-			imgstr += "<img src='img/empty.gif'>";
+		var thisclass = $(".formdiv2").find(".pid").val();//父ID
+		var names = $(".formdiv2").find(".names").val();//素材组的名称
+		var depict = $(".formdiv2").find(".depict").val();//素材的描述
+		//根据是否有父id判断是添加还是修改,若父ID不等于空则为添加，若父ID等于空则为修改
+		if(thisclass!=""){//添加
+			var imglength = $(".formdiv2").find(".imgsize").val();//层级关系，界面需要
+			//往后台添加数据,thisclass是父id，names是素材组的名称，depict是素材组的描述，添加完成后
+			var nodesize = $(".formdiv2").find(".id").val();//后台传过来的添加完之后的id
+			var imgstr = "";
+			for(i=0;i<imglength*1+1;i++)
+			{
+				imgstr += "<img src='img/empty.gif'>";
+			}
+			$("#dd"+thisclass).css("display","block");
+			$("#dd"+thisclass).append("<div class='dTreeNode'>"+imgstr+"<span class=\'"+nodesize+"\' style='display:;'>+<div><ul><li class='addGroup'>创建素材组</li><li class='removeGroup'>删除素材组</li><li class='addMaterial'>添加素材</li><li class='removeMaterial'>移除素材</li><li class='updGroup'>修改</li></ul></div></span><a href='javascript:li("+nodesize+");' class='node'>"+names+"</a></div><div id=\'dd"+nodesize+"\' class='clip' style='display:block;'></div>");
+		}else{//修改
+			//往后台传数据，thisclass是当前素材组id，names是当前素材组名称，depice是素材的描述
+			 //修改完之后，修改该素材组在树目录中的显示文字
+			 var code = $(".formdiv2").find(".id").val();
+			 $(".dtree").find("."+code).siblings(".node").html(names);
 		}
-		$("#dd"+thisclass).css("display","block");
-		$("#dd"+thisclass).append("<div class='dTreeNode'>"+imgstr+"<span class=\'"+nodesize+"\' style='display:;'>+</span><a href='javascript:li("+nodesize+");' class='node'>"+names+"</a></div><div id=\'dd"+nodesize+"\' class='clip' style='display:block;'></div>");
 		$(".outer").hide(500);
 		$(".formdiv2").find(":text").val("");
 		$(".formdiv2").hide(500);
 	});
+	//点击右侧加号
+	$(".dtree").on("click","span",function(){
+		if($(this).children("div").css("display")=="block"){
+			$(this).children("div").css("display","none");
+			return;
+		}
+		//初始化所有span
+		$(".dTreeNode span div").css("display","none");
+		//得到当前素材组的id，根据该id，判断该id是否有素材
+		var code = $(this).attr("class");//得到当前素材组的id
+		//根据该id，判断该id是否有素材
+		var flag = false;//有素材
+		if(flag){//如果有素材，不能添加素材组
+			$(this).find(".addGroup").css("display","none");
+		}else{
+			$(this).find(".addGroup").css("display","block");
+		}
+		//判断该素材组下拉菜单是否显示
+		if($(this).children("div").css("display")=='none'){
+			$(this).children("div").css("display","inline-block");
+		}else{
+			$(this).children("div").css("display","none");
+		}
+	});
+	//添加素材
+	$(".dtree").on("click",".addMaterial",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		//获得当前选中复选框的id
+		var str = "";
+		$('input[class="check"]:checked').each(function(){
+    		str += $(this).val()+",";
+		});
+		if(str==""){
+			alert("请选中右侧素材复选框再添加素材");
+			return;
+		}
+		//添加素材id到该素材组id，素材组id是str，素材id是thiscode
+		alert("素材组id："+thiscode+"素材id："+str);
+	});
+	//移除素材
+	$(".dtree").on("click",".removeMaterial",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		//获得当前选中复选框的id
+		var str = "";
+		$('input[class="check"]:checked').each(function(){
+    		str += $(this).val()+",";
+		});
+		//从素材组id中删除选中素材素材的id，材组id是str，素材id是thiscode
+		alert("素材组id："+thiscode+"素材id："+str);
+	});
+	//删除素材组
+	$(".dtree").on("click",".removeGroup",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		if(thiscode=="0")
+		{
+			alert("顶级目录不允许删除");
+			return;
+		}
+		if(window.confirm('你确定要删除该分组吗？')){
+			$(this).parents("span").parent().next("div").remove();
+			$(this).parents("span").parent().remove();
+		}
+		alert("删除的素材组id"+thiscode+"，属于该父id的素材组也要删除");
+	});
+	//修改信息
+	$(".dtree").on("click",".updGroup",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		//根据该素材组id，查询数据库该素材组的描述信息，显示到界面
+		var names = "当前素材组名称";
+		var depict = "当前素材组描述";
+		
+		var height = $(window).height();
+		var width = $(window).width();
+		$(".outer").css({"height":height+"px","width":width+"px"});
+		$(".formdiv2").css({"left":(width/2)-200+"px","top":(height/2)-100+"px"});
+		$(".formdiv2").find(".id").val(thiscode);
+		$(".formdiv2").find(".pid").val("");
+		$(".formdiv2").find(".names").val(names);
+		$(".formdiv2").find(".depict").val(depict);
+		$(".outer").show(500);
+		$(".formdiv2").show(500);
+	});
 });
+function li(string)
+{
+	//判断该素材组id string是否包含素材，若包含素材，下一层不显示，若不包含素材，下一层显示
+	var flag = false;//是否包含素材,包含素材
+	if(flag&&$("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
+		alert(string);
+	}else if(flag&&$("#dd"+string).css("display")=="block"){
+		$("#dd"+string).css("display","none");
+	}else if(!flag&&$("#dd"+string).css("display")=="none"){
+		$("#dd"+string).css("display","block");
+	}
+	else if(!flag&&$("#dd"+string).css("display")=="block")
+	{
+		$("#dd"+string).css("display","none");
+	}
+}

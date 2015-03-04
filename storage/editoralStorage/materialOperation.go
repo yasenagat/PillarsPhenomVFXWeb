@@ -136,7 +136,6 @@ func QueryMaterialByMaterialCode(materialCode *string) (*utility.MaterialOut, er
 			pillarsLog.PillarsLogger.Print(err.Error())
 		}
 	}
-
 	return &m, err
 }
 

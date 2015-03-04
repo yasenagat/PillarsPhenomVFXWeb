@@ -27,13 +27,13 @@ func RouterBinding() {
 	http.HandleFunc("/project_list", projectAction.ProjectList)
 	http.HandleFunc("/project_load", projectAction.LoadProject)
 
-	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/editoral_library", editoralAction.GetLibrarys)
 	http.HandleFunc("/editoral_library_add", editoralAction.AddLibrary)
 	http.HandleFunc("/editoral_library_materials", editoralAction.GetLibraryFileList)
 	http.HandleFunc("/editoral_find_materials", editoralAction.FindMaterials)
-	http.HandleFunc("/editoral_material", editoralAction.GetMaterialInfo)
 	http.HandleFunc("/editoral_filetype", editoralAction.GetFiletypes)
+	// ---------------------------- 尚未测试 ------------------------------
+	http.HandleFunc("/editoral_material", editoralAction.GetMaterialInfo)
 	http.HandleFunc("/editoral_folder_add", editoralAction.AddFolder)
 	http.HandleFunc("/editoral_folder_del", editoralAction.DeleteFolder)
 	http.HandleFunc("/editoral_folder_upd", editoralAction.UpdateFolder)
