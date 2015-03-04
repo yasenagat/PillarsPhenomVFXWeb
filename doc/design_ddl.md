@@ -97,7 +97,7 @@ CREATE TABLE `material` (
 ### 4.3 素材管理--用户添加的素材组
 CREATE TABLE `material_folder`(
 	`folder_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`folder_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	#`folder_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`folder_name` VARCHAR(255) NOT NULL,#素材组名
 	`father_code` CHAR(32) NOT NULL,#上级代码
 	`leaf_flag` CHAR(1) NOT NULL,#子节点标志，0否，1是
@@ -115,7 +115,7 @@ CREATE TABLE `material_folder`(
 CREATE TABLE `material_folder_data`(
 	`data_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`data_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-	`folder_code` VARCHAR(255) NOT NULL,#素材组的代码
+	`folder_id` INT UNSIGNED NOT NULL,#素材组的ID
 	`material_code` CHAR(32) NOT NULL,#素材的代码
 	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码

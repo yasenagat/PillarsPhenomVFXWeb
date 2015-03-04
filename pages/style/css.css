@@ -29,6 +29,10 @@ body *{
 	text-align:center;
 	background:#95d491;
 	overflow:hidden;
+	position: fixed;
+	width:100%;
+	top:0;
+	z-index:5;
 }
 .menu ul li{
 	padding:0px 10px 0px 10px;

@@ -61,27 +61,7 @@
                 </div>
                 <div class="groupcont">
 <script type="text/javascript">
-d = new dTree('d');
-/*
-第一个参数，表示当前节点的ID  epon jpon
-第二个参数，表示当前节点的父节点的ID
-第三个参数，节点要显示的文字
-第四个参数，点击该节点的超链接（注意也可以是某个servlet或是struts应用中的某个.do请求）
-第五个参数，鼠标移至该节点时显示的文字
-第六个参数，指定点击该节点时在哪个桢中打开超链接
-*/
-d.add(0,-1,'111','','','1');
-d.add(1,0,'2222','','','1');
-d.add(2,1,'2222','','','1');
-d.add(3,2,'2222','','','1');
-d.add(4,3,'22224','','','1');
-d.add(5,4,'22221','','','1');
-d.add(6,5,'22226','','','1');
-d.add(7,6,'2222','','','1');
-d.add(8,7,'2222','','','1');
-d.add(9,8,'22229','','','1');
-d.add(10,9,'发生','','','0');
-document.write(d);
+tree();
 </script>
                 </div>
             </div>
@@ -225,7 +205,7 @@ document.write(d);
                 <div class="videodiv">
                 	<span class="videostr">
                     	<input type="hidden" class="sourceid" value="1">
-                    	<input class="check" name="" type="checkbox" value="">
+                    	<input class="check" name="" type="checkbox" value="1">
                         <input class="play" type="button" value="回放">
                         <div class="downdiv">
                             <input class="downl" type="button" value="下载">

@@ -117,9 +117,9 @@ var fileList_create = function(rs){
 		if(rs[i]["MovPath"] == "Y") {
 			liInfo += "<li>Mov</li>";
 		}
-		var html = '<span class="videostr">';
+		var html = '<span class="videostr" id="span'+rs[i]["MaterialCode"]+'">';
 		html += '<input type="hidden" class="sourceid" value="'+rs[i]["MaterialCode"]+'">';
-		html += '<input class="check" name="" type="checkbox" value="">';
+		html += '<input class="check" name="" type="checkbox" value="'+rs[i]["MaterialCode"]+'">';
 		html += '<input class="play" type="button" value="回放">';
 		html += '<div class="downdiv">';
 		html += '<input class="downl" type="button" value="下载">';
@@ -132,7 +132,7 @@ var fileList_create = function(rs){
 		html += '<span class="long">'+rs[i]["Length"]+'</span></div></span>';
 		$(".strdiv .videodiv").append(html);
 	}
-	$(".files").on("click",function(){
+	$(".strdiv").on("click",".files",function(){
 		var rightdivabs = $(".rightdivabs").css("display");//当前是否悬浮
 		var sourceid = $(this).siblings(".sourceid").val();//选中的id
 		var absid = $(".float .sourceid").val();//右边悬浮的id
@@ -214,7 +214,17 @@ var post = function(URL, PARAMS) {
     temp.submit();
     return temp;
 }
+var tree = function(){
+	d = new dTree('d');
+	//TODO 查询素材组,若遍历length为0,后台数据库插入一条父id为-1,素材组名称为素材组的列.
+	//遍历查询,格式为d.add(id,父id,'素材名称','','','1');
+	d.add(1,-1,'2222','','','1');
+	d.add(2,1,'2222','','','1');
+	d.add(3,2,'2222','','','1');
+	d.add(4,3,'22224','','','1');
 
+	document.write(d);
+}
 
 $(function(){
 	projectCode = getUrlParam("code");
@@ -222,6 +232,7 @@ $(function(){
 		librarys_ajax(projectCode);
 		filetypes_ajax(projectCode);
 	}
+
 	// All列表点击
 	$(".li1").on("click", "a", function(){
 		var code = $(this).html();
@@ -235,6 +246,7 @@ $(function(){
 			}
 		});
 	});
+
 	// 搜索
 	$(".butsearch").click(function(){
 		find_materials_ajax(projectCode, $(".inpsearch").val(), function(data){
@@ -248,6 +260,7 @@ $(function(){
 		});
 
 	});
+
 	// 下载文件
 	$(".strdiv .videodiv").on("click",".disnone ul li",function(){
 		var code = $(this).parent().attr("class");
@@ -255,15 +268,6 @@ $(function(){
 		post("/editoral_download_file", {MaterialCode: code, SourceType: type});
 	});
 
-	$("#addsou").click(function(){
-		$(".url").val("/home/pillars/Videos");//设置默认路径
-		var height = $(window).height();
-		var width = $(window).width();
-		$(".outer").css({"height":height+"px","width":width+"px"});
-		$(".formdiv").css({"left":(width/2)-200+"px","top":(height/2)-200+"px"});
-		$(".outer").show(500);
-		$(".formdiv").show(500);
-	});
 	//瀑布流加载
 	$(window).scroll(function() {
 		var scrollTop = $(this).scrollTop();
@@ -282,6 +286,10 @@ $(function(){
 				materials_ajax("1", projectCode, pagecode, start, end, function(data){
 					if(data.FeedbackCode == 0) {
 						var rs = JSON.parse(data.Data);
+
+						if (rs == null) {
+							return false;
+						}
 						fileList_create(rs);
 					}
 				});
@@ -296,6 +304,16 @@ $(function(){
 		}
 	});
 
+
+	$("#addsou").click(function(){
+		$(".url").val("/home/pillars/Videos");// TODO delete 设置默认路径
+		var height = $(window).height();
+		var width = $(window).width();
+		$(".outer").css({"height":height+"px","width":width+"px"});
+		$(".formdiv").css({"left":(width/2)-200+"px","top":(height/2)-200+"px"});
+		$(".outer").show(500);
+		$(".formdiv").show(500);
+	});
 	$(".outer").click(function(){
 		$(".outer").hide(500);
 		$(".formdiv").find(":text").val("");
@@ -312,6 +330,7 @@ $(function(){
 		if(name==""||url==""){
 			return false;
 		}
+
 		//验证通过，ajax方式提交数据
 		addLibrary_ajax(name, url, dpxurl, transcodingurl, movurl, projectCode, function(data) {
 			if(data.FeedbackCode == 0) {
@@ -341,25 +360,7 @@ $(function(){
 	$(".again").click(function(){
 		$("#f1").find(":text").val("");
 	});
-	$(".files").click(function(){
-		var rightdivabs = $(".rightdivabs").css("display");//当前是否悬浮
-		var sourceid = $(this).siblings(".sourceid").val();//选中的id
-		var absid = $(".float .sourceid").val();//右边悬浮的id
 
-		if(rightdivabs=="block"&&sourceid==absid){
-			$(".rightdivabs").css("display","none");
-		}else{
-			$(".rightdivabs").css("display","block");
-			$(".float .sourceid").val(sourceid);
-			//根据sourceid从后台查询数据
-			$(".float .roughimg img").attr("src","");//缩略图
-			$(".float .names").html("name"+sourceid);//素材名
-			$(".float .size").html("size"+sourceid);//尺寸
-			$(".float .long").html("long"+sourceid);//长度
-			$(".float .speed").html("speed"+sourceid);//帧速率
-			$(".float .metadata").html("metadata"+sourceid);//基本信息
-		}
-	});
 	$(".addli").mouseenter(function(){
 		$(this).parent().css("background","#ccc");
 	});
@@ -372,7 +373,6 @@ $(function(){
 	$(".distreenode").on("click",".delbtn",function(){
 		$(this).parent().remove();
 	});
-
 	$(".distreenode").on("blur",".nameinp",function(){
 		var inputstr = $(this).val();//获得文本框内容
 		if(inputstr!=""){
@@ -418,5 +418,22 @@ function dos(str)
 		$("#dd"+str).css("display","block");
 	}else{
 		$("#dd"+str).css("display","none");
+	}
+}
+function li(string)
+{
+	//TODO 添加call后台方法,查找该分组string的素材,返回素材列表
+
+	//若列表length为0,flag=false
+	var flag = true;//是否包含素材,包含素材
+	if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
+		//TODO 到此 说明有素材,遍历该列表
+		//fileList_create(rs);
+	}else if( flag && $("#dd"+string).css("display")=="block"){
+		$("#dd"+string).css("display","none");
+	}else if(!flag && $("#dd"+string).css("display")=="none"){
+		$("#dd"+string).css("display","block");
+	}else if(!flag && $("#dd"+string).css("display")=="block") {
+		$("#dd"+string).css("display","none");
 	}
 }

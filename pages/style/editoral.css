@@ -4,6 +4,8 @@
 	overflow:hidden;
 	background:#EFEFEF;
 	border-right:5px solid #979797;
+	position:fixed;
+	top:60px;
 }
 .groupdiv{
 	overflow:hidden;
@@ -56,9 +58,10 @@
 /*	background:#979797;*/
 }
 .rightdiv{
-	float:left;
+	float:right;
 	width:875px;
 	padding-left:20px;
+	margin-top:60px;
 }
 .tit2{
 	height:80px;
@@ -243,7 +246,7 @@
 	height:30px;
 }
 .float {
-	position: absolute;
+	position: fixed;
 	top: 60px;
 	right: 0;
 }
@@ -268,9 +271,9 @@
 }
 .chatdiv {
 	padding: 5px;
-	overflow: hidden;
+	/*overflow: hidden;
 	overflow-x: hidden;
-	OVERFLOW-y: auto;
+	OVERFLOW-y: auto;*/
 	border: 1px solid #999;
 	background: #FFF;
 }
@@ -289,6 +292,9 @@
 .metadata{
 	line-height:25px;
 	padding:10px;
+	height:300px;
+	overflow-x: hidden;
+	overflow-y: auto;
 }
 .groupcont .delbtn {
 	float: right;
