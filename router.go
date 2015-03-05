@@ -38,6 +38,7 @@ func RouterBinding() {
 	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/editoral_folder_add", editoralAction.AddFolder)
 	http.HandleFunc("/editoral_folder_del", editoralAction.DeleteFolder)
+	http.HandleFunc("/editoral_folder_que", editoralAction.QueryFolder)
 	http.HandleFunc("/editoral_folder_upd", editoralAction.UpdateFolder)
 	http.HandleFunc("/editoral_folder_addfiles", editoralAction.AddFolderFiles)
 	// TODO 待实现中的接口

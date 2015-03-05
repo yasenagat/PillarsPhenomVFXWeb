@@ -13,6 +13,9 @@ var librarys_ajax = function(pc){
         function(data) {
             if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
+				if (rs == null) {
+					return;
+				}
 				// 组织页面显示
 				for(var i=0; i<rs.length; i++){
 					$(".library").append("<li class='li1'><a href='javascript:void(0);' class='"+rs[0]["LibraryCode"]+"'>"+rs[0]["LibraryName"]+"</a></li>");
@@ -46,6 +49,9 @@ var filetypes_ajax = function(pc){
         function(data) {
             if(data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
+				if (rs == null) {
+					return;
+				}
 				// 组织页面显示
 				for(var i=0; i<rs.length; i++){
 					$("#materialGroup").html("<li><a href='javascript:void(0);'>"+rs[0]+"</a></li>");
@@ -106,6 +112,10 @@ var materialInfo_ajax = function(mc, callback){
 }
 //列表数据创建
 var fileList_create = function(rs){
+	if (rs == null) {
+		return;
+	}
+	
 	for(var i=0;i<rs.length;i++){
 		var liInfo = "";
 		if(rs[i]["DpxPath"] == "Y") {

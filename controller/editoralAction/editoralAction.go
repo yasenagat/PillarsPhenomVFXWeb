@@ -379,6 +379,38 @@ func DeleteFolder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
+	olen := len(r.Form["ProjectCode"]) + len(r.Form["FolderCode"])
+	if olen != 2 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+
+	if len(r.Form["ProjectCode"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+		return
+	}
+
+	if len(r.Form["FolderCode"][0]) == 0 {
+		u.OutputJson(w, 13, "Error parameter FolderCode", nil)
+		return
+	}
+
+	result, _ := es.DeleteMaterialFolder(r.Form["FolderCode"][0], r.Form["ProjectCode"][0])
+	if result == false {
+		u.OutputJson(w, 14, "Delete material_folder failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Delete material_folder succeed!", nil)
+}
+
+func QueryFolder(w http.ResponseWriter, r *http.Request) {
+	if !s.CheckAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
 	olen := len(r.Form["FolderCode"])
 	if olen != 1 {
 		u.OutputJson(w, 1, "Error parameter format", nil)
@@ -390,14 +422,13 @@ func DeleteFolder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, _ := es.DeleteMaterialFolder(r.Form["FolderCode"][0])
-	if result == false {
-		u.OutputJson(w, 13, "Delete material_folder failed!", nil)
+	result, err := es.QueryFolderById(r.Form["FolderCode"][0])
+	if err != nil {
+		u.OutputJson(w, 13, "Query material_folder failed!", nil)
 		return
-		u.OutputJson(w, 16, "Insert into material_folder failed!", nil)
 	}
 
-	u.OutputJson(w, 0, "Delete material_folder succeed!", nil)
+	u.OutputJson(w, 0, "Query material_folder succeed!", result)
 }
 
 func UpdateFolder(w http.ResponseWriter, r *http.Request) {
@@ -408,12 +439,12 @@ func UpdateFolder(w http.ResponseWriter, r *http.Request) {
 	}
 
 	r.ParseForm()
-	olen := len(r.Form["FolderCode"]) + len(r.Form["FolderName"]) + len(r.Form["FatherCode"]) + len(r.Form["FolderDetail"])
-	if olen != 4 {
+	olen := len(r.Form["FolderCode"]) + len(r.Form["FolderName"]) + len(r.Form["FolderDetail"])
+	if olen != 3 {
 		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
-	var args = []string{"FolderCode", "FolderName", "FatherCode", "FolderDetail"}
+	var args = []string{"FolderCode", "FolderName", "FolderDetail"}
 	if !chectString(w, r, 12, args) {
 		return
 	}
@@ -421,13 +452,12 @@ func UpdateFolder(w http.ResponseWriter, r *http.Request) {
 	mf := u.MaterialFolder{
 		FolderCode:   r.Form["FolderCode"][0],
 		FolderName:   r.Form["FolderName"][0],
-		FatherCode:   r.Form["FatherCode"][0],
 		FolderDetail: r.Form["FolderDetail"][0],
 		UserCode:     userCode,
 	}
 	result, _ := es.UpdateMaterialFolder(&mf)
 	if result == false {
-		u.OutputJson(w, 16, "Update material_folder failed!", nil)
+		u.OutputJson(w, 15, "Update material_folder failed!", nil)
 		return
 	}
 

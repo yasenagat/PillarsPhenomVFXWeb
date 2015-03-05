@@ -365,6 +365,38 @@ var folder_add_ajax = function(pc, fn, fc, fd, callback){
     );
 }
 
+//查询素材组
+var folder_que_ajax = function(fc, callback){
+	$.post("/editoral_folder_que", {FolderCode: fc},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//修改素材组
+var folder_upd_ajax = function(fc, fn, fd, callback){
+	$.post("/editoral_folder_upd",
+		{FolderCode: fc, FolderName: fn, FolderDetail: fd},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//删除素材组
+var folder_del_ajax = function(pc, fc, callback){
+	$.post("/editoral_folder_del",
+		{ProjectCode: pc, FolderCode: fc},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
 $(function(){
 	$(".tree").on("blur",".texinp",function(){
 		var inputstr = $(this).val();//获得文本框内容
@@ -438,10 +470,14 @@ $(function(){
 				}
 			});
 		}else{//修改
-			//TODO 往后台传数据，thisclass是当前素材组要修改的id，names是当前素材组名称，depice是素材的描述
-			 //修改完之后，修改该素材组在树目录中的显示文字
-			 var code = $(".formdiv2").find(".id").val();
-			 $(".tree").find("."+code).siblings(".node").html(names);
+			// 往后台传数据，thisclass是当前素材组要修改的id，names是当前素材组名称，depice是素材的描述
+			var fid = $(".formdiv2").find(".id").val();
+			folder_upd_ajax(fid, names, depict, function(data){
+				if(data.FeedbackCode == 0){
+					var rs = JSON.parse(data.Data);					
+					$(".tree").find("."+rs["FolderCode"]).siblings(".node").html(rs["FolderName"]);			
+				}
+			});
 		}
 		$(".outer").hide(500);
 		$(".formdiv2").find(":text").val("");
@@ -508,31 +544,35 @@ $(function(){
 			alert("顶级目录不允许删除");
 			return;
 		}
-
+		var del = $(this).parents("span").parent();
 		if(window.confirm('你确定要删除该分组吗？')){
-			//TODO 删除该素材组id thiscode ,注意:关联删除
-
-			$(this).parents("span").parent().next("div").remove();
-			$(this).parents("span").parent().remove();
+			// 删除该素材组id thiscode			
+			folder_del_ajax(projectCode, thiscode, function(data){
+				if(data.FeedbackCode == 0){
+					del.next("div").remove();
+					del.remove();		
+				}
+			});			
 		}
 	});
 	//修改信息
 	$(".tree").on("click",".updGroup",function(){
 		var thiscode = $(this).parents("span").attr("class");//当前素材组id
-		//TODO 根据该素材组id，查询数据库该素材组的名称和描述信息，显示到界面文本框
-
-		var names = "";//当前素材组名称
-		var depict = "";//当前素材组描述信息
-
-		var height = $(window).height();
-		var width = $(window).width();
-		$(".outer").css({"height":height+"px","width":width+"px"});
-		$(".formdiv2").css({"left":(width/2)-200+"px","top":(height/2)-100+"px"});
-		$(".formdiv2").find(".id").val(thiscode);
-		$(".formdiv2").find(".pid").val("");
-		$(".formdiv2").find(".names").val(names);
-		$(".formdiv2").find(".depict").val(depict);
-		$(".outer").show(500);
-		$(".formdiv2").show(500);
+		// 根据该素材组id，查询数据库该素材组的名称和描述信息，显示到界面文本框
+		folder_que_ajax(thiscode, function(data){
+			if(data.FeedbackCode == 0){
+				var rs = JSON.parse(data.Data);					
+				var height = $(window).height();
+				var width = $(window).width();
+				$(".outer").css({"height":height+"px","width":width+"px"});
+				$(".formdiv2").css({"left":(width/2)-200+"px","top":(height/2)-100+"px"});
+				$(".formdiv2").find(".id").val(thiscode);
+				$(".formdiv2").find(".pid").val("");
+				$(".formdiv2").find(".names").val(rs["FolderName"]);
+				$(".formdiv2").find(".depict").val(rs["FolderDetail"]);
+				$(".outer").show(500);
+				$(".formdiv2").show(500);		
+			}
+		});
 	});
 });

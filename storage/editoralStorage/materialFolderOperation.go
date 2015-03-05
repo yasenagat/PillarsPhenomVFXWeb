@@ -66,8 +66,8 @@ func InsertMaterialFolder(g *utility.MaterialFolder) (*utility.MaterialFolder, e
 	return g, err
 }
 
-func DeleteMaterialFolder(folderCode string) (bool, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE material_folder SET status = 1 WHERE status = 0 AND (folder_code = ? OR father_code = ?)`)
+func DeleteMaterialFolder(folderCode string, projectCode string) (bool, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE material_folder SET status = 1 WHERE status = 0 AND (folder_id = ? OR father_code = ?)`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
@@ -80,14 +80,14 @@ func DeleteMaterialFolder(folderCode string) (bool, error) {
 		return false, err
 	}
 	// 删除素材组成功后，继续删除数据表的数据
-	stmt, err = mysqlUtility.DBConn.Prepare(`UPDATE material_folder_data SET status = 1 WHERE status = 0 AND folder_code = ?`)
+	stmt, err = mysqlUtility.DBConn.Prepare(`UPDATE material_folder_data SET status = 1 WHERE status = 0 AND folder_id = ? AND project_code = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(folderCode)
+	_, err = stmt.Exec(folderCode, projectCode)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
@@ -97,16 +97,40 @@ func DeleteMaterialFolder(folderCode string) (bool, error) {
 }
 
 func UpdateMaterialFolder(g *utility.MaterialFolder) (bool, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE material_folder SET folder_name = ?, father_code = ?, folder_detail = ?, user_code = ?, update_datetime = now() WHERE folder_code = ?`)
+	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE material_folder SET folder_name = ?, folder_detail = ?, user_code = ?, update_datetime = now() WHERE status = 0 AND folder_id = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(g.FolderName, g.FatherCode, g.FolderDetail, g.UserCode, g.FolderCode)
+	_, err = stmt.Exec(g.FolderName, g.FolderDetail, g.UserCode, g.FolderCode)
 	if err != nil {
 		return false, err
 	}
 
 	return true, err
+}
+
+func QueryFolderById(folderId string) (*utility.MaterialFolder, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare(`SELECT folder_name, folder_Detail FROM material_folder WHERE status = 0 AND folder_id = ?`)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(folderId)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+
+	var m utility.MaterialFolder
+	if result.Next() {
+		err = result.Scan(&(m.FolderName), &(m.FolderDetail))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+	}
+	return &m, err
 }
