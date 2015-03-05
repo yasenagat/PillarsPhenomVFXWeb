@@ -97,7 +97,6 @@ CREATE TABLE `material` (
 ### 4.3 素材管理--用户添加的素材组
 CREATE TABLE `material_folder`(
 	`folder_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	#`folder_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`folder_name` VARCHAR(255) NOT NULL,#素材组名
 	`father_code` CHAR(32) NOT NULL,#上级代码
 	`leaf_flag` CHAR(1) NOT NULL,#子节点标志，0否，1是
@@ -107,8 +106,7 @@ CREATE TABLE `material_folder`(
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
-	PRIMARY KEY (`folder_id`),
-	INDEX(`folder_code`)
+	PRIMARY KEY (`folder_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--用户添加的素材组数据

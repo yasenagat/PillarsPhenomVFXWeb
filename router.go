@@ -32,8 +32,10 @@ func RouterBinding() {
 	http.HandleFunc("/editoral_library_materials", editoralAction.GetLibraryFileList)
 	http.HandleFunc("/editoral_find_materials", editoralAction.FindMaterials)
 	http.HandleFunc("/editoral_filetype", editoralAction.GetFiletypes)
-	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/editoral_material", editoralAction.GetMaterialInfo)
+	http.HandleFunc("/editoral_folder", editoralAction.GetFolders)
+	http.HandleFunc("/editoral_folder_materials", editoralAction.QueryFolderMaterials)
+	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/editoral_folder_add", editoralAction.AddFolder)
 	http.HandleFunc("/editoral_folder_del", editoralAction.DeleteFolder)
 	http.HandleFunc("/editoral_folder_upd", editoralAction.UpdateFolder)

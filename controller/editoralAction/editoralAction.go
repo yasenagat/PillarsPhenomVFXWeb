@@ -268,6 +268,64 @@ func GetFiletypes(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 0, "Query Filetypes succeed!", filetypes)
 }
 
+func GetFolders(w http.ResponseWriter, r *http.Request) {
+	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
+	olen := len(r.Form["ProjectCode"])
+	if olen != 1 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+	if len(r.Form["ProjectCode"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+		return
+	}
+	code := r.Form["ProjectCode"][0]
+	folders, err := es.QueryFolders(&code, &userCode)
+	if err != nil {
+		u.OutputJson(w, 13, "Query Folders failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Query Folders succeed!", folders)
+}
+
+func QueryFolderMaterials(w http.ResponseWriter, r *http.Request) {
+	if !s.CheckAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+	r.ParseForm()
+	olen := len(r.Form["ProjectCode"]) + len(r.Form["FolderId"])
+	if olen != 2 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+
+	if len(r.Form["ProjectCode"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
+		return
+	}
+
+	if len(r.Form["FolderId"][0]) == 0 {
+		u.OutputJson(w, 13, "Error parameter FolderId", nil)
+		return
+	}
+
+	materials, err := es.FindFolderMaterials(r.Form["ProjectCode"][0], r.Form["FolderId"][0])
+	if err != nil {
+		u.OutputJson(w, 13, "Find Materials failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Find Materials succeed!", materials)
+}
+
 func chectString(w http.ResponseWriter, r *http.Request, num int, args []string) bool {
 	for _, str := range args {
 		if len(r.Form[str][0]) == 0 {
@@ -297,10 +355,7 @@ func AddFolder(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	temp := "insert"
-	code := u.GenerateCode(&temp)
 	mf := u.MaterialFolder{
-		FolderCode:   *code,
 		FolderName:   r.Form["FolderName"][0],
 		FatherCode:   r.Form["FatherCode"][0],
 		LeafFlag:     "0",
@@ -309,13 +364,12 @@ func AddFolder(w http.ResponseWriter, r *http.Request) {
 		ProjectCode:  r.Form["ProjectCode"][0],
 		Status:       0,
 	}
-	result, _ := es.InsertMaterialFolder(&mf)
-	if result == false {
+	result, err := es.InsertMaterialFolder(&mf)
+	if err != nil {
 		u.OutputJson(w, 16, "Insert into material_folder failed!", nil)
 		return
 	}
-
-	u.OutputJson(w, 0, "Add material_folder succeed!", mf)
+	u.OutputJson(w, 0, "Add material_folder succeed!", result)
 }
 
 func DeleteFolder(w http.ResponseWriter, r *http.Request) {
@@ -426,8 +480,7 @@ func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 		}
 		result, _ := es.InsertMaterialFolderData(&mfd)
 		if result == false {
-			b, _ := strconv.Atoi("1" + string(4+i))
-			fmt.Println("Insert failed-------->", b)
+			b, _ := strconv.Atoi("1" + strconv.Itoa(4+i))
 			u.OutputJson(w, b, "Insert into material_folder_data failed!", nil)
 			return
 		}

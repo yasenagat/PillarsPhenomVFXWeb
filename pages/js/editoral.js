@@ -6,7 +6,7 @@ var getUrlParam = function(name){
 	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
 	if (r!=null) return unescape(r[2]); return null; //返回参数值
 }
-//Library数据
+//左侧Library数据
 var librarys_ajax = function(pc){
 	$.post("/editoral_library",
 		{ProjectCode: pc},
@@ -39,7 +39,7 @@ var library_click = function(){
 		});
 	});
 }
-//素材组数据
+//左侧素材组数据
 var filetypes_ajax = function(pc){
 	$.post("/editoral_filetype",
 		{ProjectCode: pc},
@@ -69,7 +69,7 @@ var filetypes_ajax = function(pc){
         "json"
     );
 }
-//左侧列表点击
+//左侧列表点击,flag为判断点击的哪一个列表
 var materials_ajax = function(flag, pc, lc, start, end, callback){
 	$.post("/editoral_library_materials",
 		{
@@ -153,7 +153,6 @@ var fileList_create = function(rs){
 					var metaData = JSON.parse(rs["MetaData"]);
 					var metasHtml = "";
 					for (var s in metaData) {
-						// TODO div加样式带滚动条,小区域的
 						metasHtml += '<div><span>' + s + '</span>';
 						metasHtml += " : ";
 						metasHtml += '<span>' + metaData[s] + '</span></div>';
@@ -214,23 +213,42 @@ var post = function(URL, PARAMS) {
     temp.submit();
     return temp;
 }
-var tree = function(){
-	d = new dTree('d');
-	//TODO 查询素材组,若遍历length为0,后台数据库插入一条父id为-1,素材组名称为素材组的列.
-	//遍历查询,格式为d.add(id,父id,'素材名称','','','1');
-	d.add(1,-1,'2222','','','1');
-	d.add(2,1,'2222','','','1');
-	d.add(3,2,'2222','','','1');
-	d.add(4,3,'22224','','','1');
-
-	document.write(d);
+//左侧树形列表加载
+var folders_ajax = function(pc){
+	$.post("/editoral_folder",
+		{ProjectCode: pc},
+        function(data) {
+            if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				d = new dTree('d');
+				//遍历查询,格式为d.add(id,父id,'素材名称','','','1');
+				for(var i=0; i<rs.length; i++){
+					d.add(rs[i]["FolderCode"],rs[i]["FatherCode"],rs[i]["FolderName"],'','','1');
+				}
+				$(".tree").html(d + '');
+			}
+        },
+        "json"
+    );
 }
+//左侧树形列表点击
+var folders_click_ajax = function(pc, fi, callback){
+	$.post("/editoral_folder_materials",
+		{ProjectCode: pc, FolderId: fi},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
 
 $(function(){
 	projectCode = getUrlParam("code");
 	if (projectCode !== ""){
 		librarys_ajax(projectCode);
 		filetypes_ajax(projectCode);
+		folders_ajax(projectCode);
 	}
 
 	// All列表点击
@@ -411,29 +429,34 @@ $(function(){
 		//ltree("1",inputstr);//参数1目录层级，参数2文字内容
 	});
 });
-function dos(str)
-{
-	if($("#dd"+str).css("display")=="none")
-	{
+
+function dos(str) {
+	if ($("#dd"+str).css("display")=="none") {
 		$("#dd"+str).css("display","block");
-	}else{
+	} else {
 		$("#dd"+str).css("display","none");
 	}
 }
-function li(string)
-{
-	//TODO 添加call后台方法,查找该分组string的素材,返回素材列表
-
-	//若列表length为0,flag=false
-	var flag = true;//是否包含素材,包含素材
-	if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
-		//TODO 到此 说明有素材,遍历该列表
-		//fileList_create(rs);
-	}else if( flag && $("#dd"+string).css("display")=="block"){
-		$("#dd"+string).css("display","none");
-	}else if(!flag && $("#dd"+string).css("display")=="none"){
-		$("#dd"+string).css("display","block");
-	}else if(!flag && $("#dd"+string).css("display")=="block") {
-		$("#dd"+string).css("display","none");
-	}
+// 自定义分组点击事件
+function li(string) {
+	// 查找该分组string的素材,返回素材列表
+	folders_click_ajax(projectCode, string, function(data){
+		if(data.FeedbackCode == 0){
+			var rs = JSON.parse(data.Data);
+			var flag = true;//是否包含素材,包含素材
+			if(rs == null || rs.length == 0){//若列表length为0,flag=false
+				flag = false;
+			}
+			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+			}else if( flag && $("#dd"+string).css("display")=="block"){
+				$("#dd"+string).css("display","none");
+			}else if(!flag && $("#dd"+string).css("display")=="none"){
+				$("#dd"+string).css("display","block");
+			}else if(!flag && $("#dd"+string).css("display")=="block") {
+				$("#dd"+string).css("display","none");
+			}
+		}
+	});
 }
