@@ -397,6 +397,39 @@ var folder_del_ajax = function(pc, fc, callback){
     );
 }
 
+// 素材组添加素材
+var folder_addfiles_ajax = function(pc, fc, mc, callback){
+	$.post("/editoral_folder_addfiles",
+		JSON.stringify({ProjectCode: pc, FolderCode: fc, MaterialCodes: mc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+// 素材组删除已添加的素材
+var folder_delfiles_ajax = function(pc, fc, mc, callback){
+	$.post("/editoral_folder_delfiles",
+		JSON.stringify({ProjectCode: pc, FolderCode: fc, MaterialCodes: mc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+// 查询素材组是否添加素材
+var folder_countfiles_ajax = function(pc, fc, callback){
+	$.post("/editoral_folder_countfiles",
+		JSON.stringify({ProjectCode: pc, FolderCode: fc,}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
 $(function(){
 	$(".tree").on("blur",".texinp",function(){
 		var inputstr = $(this).val();//获得文本框内容
@@ -474,8 +507,8 @@ $(function(){
 			var fid = $(".formdiv2").find(".id").val();
 			folder_upd_ajax(fid, names, depict, function(data){
 				if(data.FeedbackCode == 0){
-					var rs = JSON.parse(data.Data);					
-					$(".tree").find("."+rs["FolderCode"]).siblings(".node").html(rs["FolderName"]);			
+					var rs = JSON.parse(data.Data);
+					$(".tree").find("."+rs["FolderCode"]).siblings(".node").html(rs["FolderName"]);
 				}
 			});
 		}
@@ -483,30 +516,77 @@ $(function(){
 		$(".formdiv2").find(":text").val("");
 		$(".formdiv2").hide(500);
 	});
+
 	//点击右侧加号
 	$(".tree").on("click","span",function(){
+		//判断当前菜单是否显示
 		if($(this).children("div").css("display")=="block"){
 			$(this).children("div").css("display","none");
 			return;
 		}
 		//初始化所有span
 		$(".dTreeNode span div").css("display","none");
-		//得到当前素材组的id，根据该id，判断该id是否有素材
 		var code = $(this).attr("class");//得到当前素材组的id
-		//TODO 根据该id code，求该素材组id是否有素材 有为true
+		//得到当前素材组的id，根据该id，判断该id是否有素材
 
-		var flag = false;//有素材
-		if(flag){//如果有素材，不能添加素材组
-			$(this).find(".addGroup").css("display","none");
-		}else{
-			$(this).find(".addGroup").css("display","block");
-		}
-		//判断该素材组下拉菜单是否显示
-		if($(this).children("div").css("display")=='none'){
-			$(this).children("div").css("display","inline-block");
-		}else{
-			$(this).children("div").css("display","none");
-		}
+		var thisDom = $(this);
+		// 根据该id code，求该素材组id是否有素材 有为true
+		//求该素材组id是否有下级目录
+		folder_countfiles_ajax(projectCode, code, function(data){
+			if(data.FeedbackCode == 0){
+				var rs = JSON.parse(data.Data);
+				//rs["IsHaveMaterial"],rs["IsHaveLeaf"],rs["FatherCode"]
+				//alert(rs["IsHaveMaterial"]);
+				// 根据当前组id code 查询该id 的父id是否是-1,赋值给thispid
+				if (rs["FatherCode"]=="-1") {
+					thisDom.find(".removeGroup").css("display","none");
+					thisDom.find(".updGroup").css("display","none");
+				}else{
+					thisDom.find(".removeGroup").css("display","block");
+					thisDom.find(".updGroup").css("display","block");
+				}
+				//rs["IsHaveMaterial"]//该分组包含素材,true是有素材
+				//rs["IsHaveLeaf"]//该分组是否有子目录,true是有
+				if(rs["IsHaveMaterial"])//若该分组包含素材 不能添加素材组 可以添加素材
+				{
+					thisDom.find(".addGroup").css("display","none");
+					thisDom.find(".addMaterial").css("display","block");
+					thisDom.find(".removeMaterial").css("display","block");
+				}
+				//若无素材 没子目录 添加素材 添加组
+				else if(!rs["IsHaveMaterial"]&&!rs["IsHaveLeaf"]){
+					thisDom.find(".addGroup").css("display","block");
+					thisDom.find(".addMaterial").css("display","block");
+					thisDom.find(".removeMaterial").css("display","none");
+				}
+				else if(!rs["IsHaveMaterial"]&&rs["IsHaveLeaf"])//若该分组不包含素材 有子目录 能添加素材组 不可以添加素材
+				{
+					thisDom.find(".addGroup").css("display","block");
+					thisDom.find(".addMaterial").css("display","none");
+					thisDom.find(".removeMaterial").css("display","none");
+				}
+				/*if(rs["IsHaveMaterial"]){//如果有素材，不能添加素材组
+					thisDom.find(".addGroup").css("display","none");
+					thisDom.find(".addMaterial").css("display","none");
+				}else{
+					thisDom.find(".addGroup").css("display","block");
+					if(rs["IsHaveLeaf"]){//如果有下级目录,为true
+						thisDom.find(".addMaterial").css("display","block");
+					}else{
+						thisDom.find(".addMaterial").css("display","none");
+					}
+				}*/
+				//判断该素材组下拉菜单是否显示
+				if(thisDom.children("div").css("display")=='none'){
+					thisDom.children("div").css("display","inline-block");
+				}else{
+					thisDom.children("div").css("display","none");
+				}
+				if($("#treeflag").val()=="0"){
+					thisDom.find(".removeMaterial").css("display","none");
+				}
+			}
+		});
 	});
 	//添加素材
 	$(".tree").on("click",".addMaterial",function(){
@@ -516,12 +596,16 @@ $(function(){
 		$('input[class="check"]:checked').each(function(){
 			strs.push($(this).val());
 		});
-		if(strs.length==0){
+		if(strs.length == 0){
 			alert("请选中右侧素材复选框再添加素材");
 			return;
 		}
-		//TODO 添加素材id到该素材组id,素材组id是thiscode,选中的素材id是strs,注意:添加时要做判断,以前添加过的
-
+		// 添加素材id到该素材组id,素材组id是thiscode,选中的素材id是strs
+		folder_addfiles_ajax(projectCode, thiscode, strs, function(data){
+			if(data.FeedbackCode == 0){
+				alert("素材添加成功!");
+			}
+		});
 	});
 	//移除素材
 	$(".tree").on("click",".removeMaterial",function(){
@@ -531,28 +615,31 @@ $(function(){
 		$('input[class="check"]:checked').each(function(){
     		strs.push($(this).val());
 		});
-		//TODO 从素材组id中删除选中素材素材的id:strs
-
-		$('input[class="check"]:checked').each(function(){
-			$("#span"+$(this).val()).remove();
+		if(strs.length==0){
+			alert("请选中素材再删除");
+			return;
+		}
+		// 从素材组id中删除选中素材素材的id:strs
+		folder_delfiles_ajax(projectCode, thiscode, strs, function(data){
+			if(data.FeedbackCode == 0){
+				$('input[class="check"]:checked').each(function(){
+					$("#span"+$(this).val()).remove();
+				});
+			}
 		});
 	});
 	//删除素材组
 	$(".tree").on("click",".removeGroup",function(){
 		var thiscode = $(this).parents("span").attr("class");//当前素材组id
-		if (thiscode=="0") {
-			alert("顶级目录不允许删除");
-			return;
-		}
 		var del = $(this).parents("span").parent();
 		if(window.confirm('你确定要删除该分组吗？')){
-			// 删除该素材组id thiscode			
+			// 删除该素材组id thiscode
 			folder_del_ajax(projectCode, thiscode, function(data){
 				if(data.FeedbackCode == 0){
 					del.next("div").remove();
-					del.remove();		
+					del.remove();
 				}
-			});			
+			});
 		}
 	});
 	//修改信息
@@ -561,7 +648,7 @@ $(function(){
 		// 根据该素材组id，查询数据库该素材组的名称和描述信息，显示到界面文本框
 		folder_que_ajax(thiscode, function(data){
 			if(data.FeedbackCode == 0){
-				var rs = JSON.parse(data.Data);					
+				var rs = JSON.parse(data.Data);
 				var height = $(window).height();
 				var width = $(window).width();
 				$(".outer").css({"height":height+"px","width":width+"px"});
@@ -571,7 +658,7 @@ $(function(){
 				$(".formdiv2").find(".names").val(rs["FolderName"]);
 				$(".formdiv2").find(".depict").val(rs["FolderDetail"]);
 				$(".outer").show(500);
-				$(".formdiv2").show(500);		
+				$(".formdiv2").show(500);
 			}
 		});
 	});

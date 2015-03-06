@@ -20,9 +20,8 @@ var librarys_ajax = function(pc){
 				for(var i=0; i<rs.length; i++){
 					$(".library").append("<li class='li1'><a href='javascript:void(0);' class='"+rs[0]["LibraryCode"]+"'>"+rs[0]["LibraryName"]+"</a></li>");
 				}
-				setTimeout(function(){
-					library_click();
-				},1000);
+
+				library_click();
 			}
         },
         "json"
@@ -30,6 +29,7 @@ var librarys_ajax = function(pc){
 }
 var library_click = function(){
 	$(".library").on("click","a",function(){
+		$("#treeflag").val("0");
 		var code = $(this).attr("class");
 		materials_ajax("1", projectCode, code, 0, 10, function(data){
 			if(data.FeedbackCode == 0) {
@@ -56,20 +56,20 @@ var filetypes_ajax = function(pc){
 				for(var i=0; i<rs.length; i++){
 					$("#materialGroup").html("<li><a href='javascript:void(0);'>"+rs[0]+"</a></li>");
 				}
-				setTimeout(function(){
-					$("#materialGroup").on("click","a",function(){
-						var code = $(this).html();
-						materials_ajax("2", projectCode, code, 0, 10, function(data){
-							if(data.FeedbackCode == 0) {
-								var rs = JSON.parse(data.Data);
-								$(".strdiv .videodiv").html("");
-								fileList_create(rs);
-								$("#pageflag").val("Group");
-								$("#pagecode").val(code);
-							}
-						});
+
+				$("#materialGroup").on("click","a",function(){
+					$("#treeflag").val("0");
+					var code = $(this).html();
+					materials_ajax("2", projectCode, code, 0, 10, function(data){
+						if(data.FeedbackCode == 0) {
+							var rs = JSON.parse(data.Data);
+							$(".strdiv .videodiv").html("");
+							fileList_create(rs);
+							$("#pageflag").val("Group");
+							$("#pagecode").val(code);
+						}
 					});
-				},1000);
+				});
 			}
         },
         "json"
@@ -112,10 +112,10 @@ var materialInfo_ajax = function(mc, callback){
 }
 //列表数据创建
 var fileList_create = function(rs){
-	if (rs == null) {
+	if (rs == null || rs.length == 0) {
 		return;
 	}
-	
+
 	for(var i=0;i<rs.length;i++){
 		var liInfo = "";
 		if(rs[i]["DpxPath"] == "Y") {
@@ -142,7 +142,8 @@ var fileList_create = function(rs){
 		html += '<span class="long">'+rs[i]["Length"]+'</span></div></span>';
 		$(".strdiv .videodiv").append(html);
 	}
-	$(".strdiv").on("click",".files",function(){
+
+	$(".strdiv .videodiv").on("click",".files",function(){
 		var rightdivabs = $(".rightdivabs").css("display");//当前是否悬浮
 		var sourceid = $(this).siblings(".sourceid").val();//选中的id
 		var absid = $(".float .sourceid").val();//右边悬浮的id
@@ -236,6 +237,7 @@ var folders_ajax = function(pc){
 					d.add(rs[i]["FolderCode"],rs[i]["FatherCode"],rs[i]["FolderName"],'','','1');
 				}
 				$(".tree").html(d + '');
+				$(".dtree").children("div.dTreeNode").addClass("grouptit");
 			}
         },
         "json"
@@ -263,6 +265,7 @@ $(function(){
 
 	// All列表点击
 	$(".li1").on("click", "a", function(){
+		$("#treeflag").val("0");
 		var code = $(this).html();
 		materials_ajax("2", projectCode, code, 0, 10, function(data){
 			if(data.FeedbackCode == 0) {
@@ -310,21 +313,18 @@ $(function(){
 
 			var start = $(".strdiv .videodiv").children(".videostr").length;
 			var end = start + 10;
+			var rs = [];
 			if(pageflag == "Library") {
 				materials_ajax("1", projectCode, pagecode, start, end, function(data){
 					if(data.FeedbackCode == 0) {
-						var rs = JSON.parse(data.Data);
-
-						if (rs == null) {
-							return false;
-						}
+						rs = JSON.parse(data.Data);
 						fileList_create(rs);
 					}
 				});
 			}else if(pageflag == "Group") {
 				materials_ajax("2", projectCode, pagecode, start, end, function(data){
 					if(data.FeedbackCode == 0) {
-						var rs = JSON.parse(data.Data);
+						rs = JSON.parse(data.Data);
 						fileList_create(rs);
 					}
 				});
@@ -449,12 +449,18 @@ function dos(str) {
 }
 // 自定义分组点击事件
 function li(string) {
+	//点击行
+	$("#treeflag").val("1");
+	$(".dtree").find(".dTreeNode").css("background","none");
+	$(".dtree").children("div.dTreeNode").css("background","#E3E3E3");
+	$(".dtree").find("."+string).parent().css("background","#979797");
 	// 查找该分组string的素材,返回素材列表
 	folders_click_ajax(projectCode, string, function(data){
 		if(data.FeedbackCode == 0){
 			var rs = JSON.parse(data.Data);
 			var flag = true;//是否包含素材,包含素材
 			if(rs == null || rs.length == 0){//若列表length为0,flag=false
+				$(".strdiv .videodiv").html("");
 				flag = false;
 			}
 			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏

@@ -56,8 +56,8 @@ type Material struct {
 	Width                 int
 	Height                int
 	VideoAudioFramerate   float32
-	TimecodeFramerate     int
-	VideoFrameCount       int
+	TimecodeFramerate     float32
+	VideoFrameCount       float32
 	StartAbsoluteTimecode string
 	EndAbsoluteTimecode   string
 	StartEdgeTimecode     string

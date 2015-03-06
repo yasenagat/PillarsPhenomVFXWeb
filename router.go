@@ -35,16 +35,17 @@ func RouterBinding() {
 	http.HandleFunc("/editoral_material", editoralAction.GetMaterialInfo)
 	http.HandleFunc("/editoral_folder", editoralAction.GetFolders)
 	http.HandleFunc("/editoral_folder_materials", editoralAction.QueryFolderMaterials)
-	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/editoral_folder_add", editoralAction.AddFolder)
 	http.HandleFunc("/editoral_folder_del", editoralAction.DeleteFolder)
 	http.HandleFunc("/editoral_folder_que", editoralAction.QueryFolder)
 	http.HandleFunc("/editoral_folder_upd", editoralAction.UpdateFolder)
 	http.HandleFunc("/editoral_folder_addfiles", editoralAction.AddFolderFiles)
-	// TODO 待实现中的接口
-	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
+	http.HandleFunc("/editoral_folder_delfiles", editoralAction.DeleteFolderFiles)
+	http.HandleFunc("/editoral_folder_countfiles", editoralAction.CountFolderFiles)
 	http.HandleFunc("/editoral_download_file", downloadAction.DownloadFile)
-	http.HandleFunc("/editoral_download_files", editoralAction.GetFiletypes)
+
+	// ---------------------------- 尚未测试 ------------------------------
+	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
 
 	//http.HandleFunc("/.*", NotFound) // TODO 想实现未知路由地址访问的404页面跳转
 }

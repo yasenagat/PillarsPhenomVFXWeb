@@ -23,6 +23,7 @@ body *{
 	border-right:1px solid #CCC;
 	border-bottom:1px solid #CCC;
 	overflow:hidden;
+	margin-top: 60px;
 }
 .menu{
 	height:60px;

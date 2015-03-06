@@ -111,8 +111,12 @@ func AddLibrary(w http.ResponseWriter, r *http.Request) {
 		m.Width = r3d.ClipWidth(clip)
 		m.Height = r3d.ClipHeight(clip)
 		m.VideoAudioFramerate = r3d.ClipVideoAudioFramerate(clip)
+		m.TimecodeFramerate = r3d.ClipTimecodeFramerate(clip)
+		m.VideoFrameCount = r3d.ClipVideoFrameCount(clip)
 		m.StartAbsoluteTimecode = r3d.ClipStartAbsoluteTimecode(clip)
 		m.EndAbsoluteTimecode = r3d.ClipEndAbsoluteTimecode(clip)
+		m.StartEdgeTimecode = r3d.ClipStartEdgeTimecode(clip)
+		m.EndEdgeTimecode = r3d.ClipEndEdgeTimecode(clip)
 		m.MetaData = r3d.ClipMetaData(clip)
 		m.Picture = "Picture测试数据"
 		m.UserCode = library.UserCode
@@ -499,7 +503,7 @@ func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	temp := "insert"
-	for i, value := range folderFiles.MaterialCodes {
+	for _, value := range folderFiles.MaterialCodes {
 		mfd := u.MaterialFolderData{
 			DataCode:     *u.GenerateCode(&temp),
 			FolderCode:   folderFiles.FolderCode,
@@ -510,11 +514,86 @@ func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 		}
 		result, _ := es.InsertMaterialFolderData(&mfd)
 		if result == false {
-			b, _ := strconv.Atoi("1" + strconv.Itoa(4+i))
-			u.OutputJson(w, b, "Insert into material_folder_data failed!", nil)
+			u.OutputJson(w, 14, "Insert into material_folder_data failed!", nil)
 			return
 		}
 	}
 
 	u.OutputJson(w, 0, "Insert into material_folder_data succeed!", nil)
+}
+
+func DeleteFolderFiles(w http.ResponseWriter, r *http.Request) {
+	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		u.OutputJson(w, 1, "Read body failed!", nil)
+		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		return
+	}
+
+	af := addFiles{}
+	err = json.Unmarshal(data, &af)
+	if err != nil {
+		u.OutputJson(w, 12, "Pramaters failed!", nil)
+		pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &af) failed!")
+		return
+	}
+
+	if len(af.ProjectCode) == 0 || len(af.FolderCode) == 0 || len(af.MaterialCodes) == 0 {
+		u.OutputJson(w, 13, "Pramaters failed!", nil)
+		pillarsLog.PillarsLogger.Print("Pramaters failed!")
+		return
+	}
+	var temp string
+	for _, value := range af.MaterialCodes {
+		temp += "'" + value + "', "
+	}
+	temp = temp[0 : len(temp)-2]
+	result, _ := es.DeleteMaterialFolderData(userCode, af.ProjectCode, af.FolderCode, temp)
+	if result == false {
+		u.OutputJson(w, 14, "Insert into material_folder_data failed!", nil)
+		return
+	}
+	u.OutputJson(w, 0, "Insert into material_folder_data succeed!", nil)
+}
+
+func CountFolderFiles(w http.ResponseWriter, r *http.Request) {
+	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		u.OutputJson(w, 1, "Read body failed!", nil)
+		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		return
+	}
+
+	af := addFiles{}
+	err = json.Unmarshal(data, &af)
+	if err != nil {
+		u.OutputJson(w, 12, "Pramaters failed!", nil)
+		pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &af) failed!")
+		return
+	}
+
+	if len(af.ProjectCode) == 0 || len(af.FolderCode) == 0 {
+		u.OutputJson(w, 13, "Pramaters failed!", nil)
+		pillarsLog.PillarsLogger.Print("Pramaters failed!")
+		return
+	}
+
+	result, err := es.QueryFolderMaterialsCount(&af.ProjectCode, &af.FolderCode)
+	if err != nil {
+		u.OutputJson(w, 14, "Query material_folder_data count failed!", nil)
+		return
+	}
+	u.OutputJson(w, 0, "Query material_folder_data count succeed!", result)
 }

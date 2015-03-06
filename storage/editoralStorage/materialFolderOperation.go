@@ -134,3 +134,36 @@ func QueryFolderById(folderId string) (*utility.MaterialFolder, error) {
 	}
 	return &m, err
 }
+
+func QueryFolderMaterialsCount(projectCode *string, id *string) (interface{}, error) {
+	type result struct {
+		IsHaveLeaf     bool
+		IsHaveMaterial bool
+		FatherCode     string
+	}
+	var rs result
+	var num int
+	// IsHaveLeaf
+	count := mysqlUtility.DBConn.QueryRow("SELECT COUNT(1) FROM material_folder WHERE status = 0 AND project_code = ? AND father_code = ?", projectCode, id)
+	count.Scan(&(num))
+	if num == 0 {
+		rs.IsHaveLeaf = false
+	} else {
+		rs.IsHaveLeaf = true
+	}
+
+	// IsHaveMaterial
+	count = mysqlUtility.DBConn.QueryRow("SELECT COUNT(1) FROM material_folder_data WHERE status = 0 AND project_code = ? AND folder_id = ?", projectCode, id)
+	err := count.Scan(&(num))
+	if num == 0 {
+		rs.IsHaveMaterial = false
+	} else {
+		rs.IsHaveMaterial = true
+	}
+
+	// FatherCode
+	count = mysqlUtility.DBConn.QueryRow("SELECT father_code FROM material_folder WHERE status = 0 AND project_code = ? AND folder_id = ?", projectCode, id)
+	err = count.Scan(&(rs.FatherCode))
+
+	return rs, err
+}
