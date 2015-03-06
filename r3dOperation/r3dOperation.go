@@ -1,8 +1,8 @@
 package r3dOperation
 
 // #cgo CFLAGS: -I ./cppFile/
-// #cgo LDFLAGS:  -L /home/chengxz/Go/src/PillarsPhenomVFXWeb/cppFile -L /home/chengxz/Go/src/PillarsPhenomVFXWeb/cppFile/Lib/linux64 -lr3d  -lR3DSDK -lstdc++ -lpthread -luuid -lm
-// #include "/home/chengxz/Go/src/PillarsPhenomVFXWeb/cppFile/r3d.h"
+// #cgo LDFLAGS:  -L /home/pillars/Go/src/PillarsPhenomVFXWeb/cppFile -L /home/pillars/Go/src/PillarsPhenomVFXWeb/cppFile/Lib/linux64 -lr3d  -lR3DSDK -lstdc++ -lpthread -luuid -lm
+// #include "/home/pillars/Go/src/PillarsPhenomVFXWeb/cppFile/r3d.h"
 // #include <stdlib.h>
 import "C"
 
