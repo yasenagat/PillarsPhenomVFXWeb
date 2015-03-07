@@ -142,37 +142,6 @@ var fileList_create = function(rs){
 		html += '<span class="long">'+rs[i]["Length"]+'</span></div></span>';
 		$(".strdiv .videodiv").append(html);
 	}
-
-	$(".strdiv .videodiv").on("click",".files",function(){
-		var rightdivabs = $(".rightdivabs").css("display");//当前是否悬浮
-		var sourceid = $(this).siblings(".sourceid").val();//选中的id
-		var absid = $(".float .sourceid").val();//右边悬浮的id
-		if(rightdivabs == "block" && sourceid == absid) {
-			$(".rightdivabs").css("display","none");
-		} else {
-			$(".rightdivabs").css("display","block");
-			$(".float .sourceid").val(sourceid);
-			//根据sourceid从后台查询数据
-			materialInfo_ajax(sourceid, function(data){
-				if(data.FeedbackCode == 0) {
-					var rs = JSON.parse(data.Data);
-					$(".float .roughimg img").attr("src", rs["Picture"]);//缩略图
-					$(".float .names").html(rs["MaterialName"]);//素材名
-					$(".float .size").html(rs["Size"]);//尺寸
-					$(".float .long").html(rs["Length"]);//长度
-					$(".float .speed").html(rs["VideoAudioFramerate"]);//帧速率
-					var metaData = JSON.parse(rs["MetaData"]);
-					var metasHtml = "";
-					for (var s in metaData) {
-						metasHtml += '<div><span>' + s + '</span>';
-						metasHtml += " : ";
-						metasHtml += '<span>' + metaData[s] + '</span></div>';
-					}
-					$(".float .metadata").html(metasHtml);//基本信息
-				}
-			});
-		}
-	});
 }
 //Library添加
 var addLibrary_ajax = function(ln, lp, dp, jp, mp, pc, callback){
@@ -332,6 +301,36 @@ $(function(){
 		}
 	});
 
+	$(".strdiv .videodiv").on("click",".files",function(){
+		var rightdivabs = $(".rightdivabs").css("display");//当前是否悬浮
+		var sourceid = $(this).siblings(".sourceid").val();//选中的id
+		var absid = $(".float .sourceid").val();//右边悬浮的id
+		if(rightdivabs == "block" && sourceid == absid) {
+			$(".rightdivabs").css("display","none");
+		} else {
+			$(".rightdivabs").css("display","block");
+			$(".float .sourceid").val(sourceid);
+			//根据sourceid从后台查询数据
+			materialInfo_ajax(sourceid, function(data){
+				if(data.FeedbackCode == 0) {
+					var rs = JSON.parse(data.Data);
+					$(".float .roughimg img").attr("src", rs["Picture"]);//缩略图
+					$(".float .names").html(rs["MaterialName"]);//素材名
+					$(".float .size").html(rs["Size"]);//尺寸
+					$(".float .long").html(rs["Length"]);//长度
+					$(".float .speed").html(rs["VideoAudioFramerate"]);//帧速率
+					var metaData = JSON.parse(rs["MetaData"]);
+					var metasHtml = "";
+					for (var s in metaData) {
+						metasHtml += '<div><span>' + s + '</span>';
+						metasHtml += " : ";
+						metasHtml += '<span>' + metaData[s] + '</span></div>';
+					}
+					$(".float .metadata").html(metasHtml);//基本信息
+				}
+			});
+		}
+	});
 
 	$("#addsou").click(function(){
 		$(".url").val("/home/pillars/Videos");// TODO delete 设置默认路径
@@ -376,6 +375,7 @@ $(function(){
 						$("#pagecode").val(rs["LibraryCode"]);
 					}
 				});
+				filetypes_ajax(projectCode);
 			} else {
 				// TODO 保存失败显示位置
 				alert(data.FeedbackText);
