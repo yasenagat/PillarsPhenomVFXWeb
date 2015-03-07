@@ -21,6 +21,7 @@
 			<div class="cont">
 				<div class="search">
 					<input type="text" class="inptext">
+					<input type="hidden" id="searchflag" value="">
 					<input type="button" value="搜索" class="inpsearch">
 					<input type="button" value="添加项目" class="inpbutton">
 				</div>

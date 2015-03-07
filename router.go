@@ -26,6 +26,7 @@ func RouterBinding() {
 	http.HandleFunc("/project_sel", projectAction.QueryProject)
 	http.HandleFunc("/project_list", projectAction.ProjectList)
 	http.HandleFunc("/project_load", projectAction.LoadProject)
+	http.HandleFunc("/project_find", projectAction.FindProjects)
 
 	http.HandleFunc("/editoral_library", editoralAction.GetLibrarys)
 	http.HandleFunc("/editoral_library_add", editoralAction.AddLibrary)

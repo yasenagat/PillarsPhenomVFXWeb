@@ -264,3 +264,29 @@ func LoadProject(w http.ResponseWriter, r *http.Request) {
 
 	u.OutputJson(w, 0, "Load project succeed!", projectList)
 }
+
+func FindProjects(w http.ResponseWriter, r *http.Request) {
+	if !s.CheckAuthority(w, r, "制片") {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
+	r.ParseForm()
+	olen := len(r.Form["Args"])
+	if olen != 1 {
+		u.OutputJson(w, 1, "Error parameter format", nil)
+		return
+	}
+	if len(r.Form["Args"][0]) == 0 {
+		u.OutputJson(w, 12, "Error parameter Args", nil)
+		return
+	}
+
+	projectList, err := ps.FindProjectList(r.Form["Args"][0])
+	if projectList == nil || err != nil {
+		u.OutputJson(w, 13, "Find project failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Find project succeed!", projectList)
+}
