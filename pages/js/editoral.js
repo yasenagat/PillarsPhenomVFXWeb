@@ -178,7 +178,7 @@ var downloadFile = function(code, type) {
     $.post("/editoral_download_file", {MaterialCode: code, SourceType: type});
 }
 //虚拟表单提交，下载文件使用
-var post = function(URL, PARAMS) {
+var post_download = function(URL, PARAMS) {
     var temp = document.createElement("form");
     temp.action = URL;
     temp.method = "post";
@@ -223,6 +223,42 @@ var folders_click_ajax = function(pc, fi, callback){
     );
 }
 
+var dos = function(str) {
+	if ($("#dd"+str).css("display")=="none") {
+		$("#dd"+str).css("display","block");
+	} else {
+		$("#dd"+str).css("display","none");
+	}
+}
+// 自定义分组点击事件
+var li = function(string) {
+	//点击行
+	$("#treeflag").val("1");
+	$(".dtree").find(".dTreeNode").css("background","none");
+	$(".dtree").children("div.dTreeNode").css("background","#E3E3E3");
+	$(".dtree").find("."+string).parent().css("background","#979797");
+	// 查找该分组string的素材,返回素材列表
+	folders_click_ajax(projectCode, string, function(data){
+		if(data.FeedbackCode == 0){
+			var rs = JSON.parse(data.Data);
+			var flag = true;//是否包含素材,包含素材
+			if(rs == null || rs.length == 0){//若列表length为0,flag=false
+				$(".strdiv .videodiv").html("");
+				flag = false;
+			}
+			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+			}else if( flag && $("#dd"+string).css("display")=="block"){
+				$("#dd"+string).css("display","none");
+			}else if(!flag && $("#dd"+string).css("display")=="none"){
+				$("#dd"+string).css("display","block");
+			}else if(!flag && $("#dd"+string).css("display")=="block") {
+				$("#dd"+string).css("display","none");
+			}
+		}
+	});
+}
 
 $(function(){
 	projectCode = getUrlParam("code");
@@ -265,7 +301,51 @@ $(function(){
 	$(".strdiv .videodiv").on("click",".disnone ul li",function(){
 		var code = $(this).parent().attr("class");
 		var type = $(this).html().trim();
-		post("/editoral_download_file", {MaterialCode: code, SourceType: type});
+		post_download("/editoral_download_file", {MaterialCode: code, SourceType: type});
+	});
+	// 批量下载文件
+	$("#butdownloads").click(function(){
+		//获得当前选中复选框的id
+		var strs = new Array();
+		$('input[class="check"]:checked').each(function(){
+			strs.push($(this).val());
+		});
+		if(strs.length == 0){
+			alert("请先勾选要下载的素材!");
+			return;
+		}
+		var type = "Source";
+
+		for(var i=0; i<strs.length; i++){
+			window.open("/editoral_download_file?MaterialCode="+strs[i]+"&SourceType="+type);
+		}
+
+		/*
+		function sub(i){
+			if(i == strs.length) {
+				return;
+			}
+			var temp = document.createElement("form");
+		    temp.action = "/editoral_download_file";
+		    temp.method = "get";
+		    temp.style.display = "none";
+		    var opt = document.createElement("textarea");
+		    opt.name = "MaterialCode";
+		    opt.value = strs[i];
+		    temp.appendChild(opt);
+			var opt2 = document.createElement("textarea");
+			opt2.name = "SourceType";
+		    opt2.value = type;
+		    temp.appendChild(opt2);
+		    document.body.appendChild(temp);
+			i += 1;
+			alert("第" + i + "个文件可以下载了!");
+		    temp.submit();
+			setTimeout(sub(i),10);
+		}
+		sub(0);
+		*/
+		//downloadCheck_ajax("/editoral_download_file", {MaterialCode: strs[i], SourceType: type});
 	});
 
 	//瀑布流加载
@@ -439,40 +519,3 @@ $(function(){
 		//ltree("1",inputstr);//参数1目录层级，参数2文字内容
 	});
 });
-
-function dos(str) {
-	if ($("#dd"+str).css("display")=="none") {
-		$("#dd"+str).css("display","block");
-	} else {
-		$("#dd"+str).css("display","none");
-	}
-}
-// 自定义分组点击事件
-function li(string) {
-	//点击行
-	$("#treeflag").val("1");
-	$(".dtree").find(".dTreeNode").css("background","none");
-	$(".dtree").children("div.dTreeNode").css("background","#E3E3E3");
-	$(".dtree").find("."+string).parent().css("background","#979797");
-	// 查找该分组string的素材,返回素材列表
-	folders_click_ajax(projectCode, string, function(data){
-		if(data.FeedbackCode == 0){
-			var rs = JSON.parse(data.Data);
-			var flag = true;//是否包含素材,包含素材
-			if(rs == null || rs.length == 0){//若列表length为0,flag=false
-				$(".strdiv .videodiv").html("");
-				flag = false;
-			}
-			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
-				$(".strdiv .videodiv").html("");
-				fileList_create(rs);
-			}else if( flag && $("#dd"+string).css("display")=="block"){
-				$("#dd"+string).css("display","none");
-			}else if(!flag && $("#dd"+string).css("display")=="none"){
-				$("#dd"+string).css("display","block");
-			}else if(!flag && $("#dd"+string).css("display")=="block") {
-				$("#dd"+string).css("display","none");
-			}
-		}
-	});
-}
