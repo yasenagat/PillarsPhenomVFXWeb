@@ -100,11 +100,20 @@ type MaterialFolderData struct {
 // 每个shot是material的一段，该表由EDL文件解析获得
 type Shot struct {
 	ShotCode       string
+	ShotNum        string
+	ProjectCode    string
 	MaterialCode   string
-	InPoint        string
-	OutPoint       string
-	FieldName      string
+	ShotType       string
+	StartDateTime  string
+	EndDateTime    string
+	FromClipName   string
+	SourceFile     string
+	ShotName       string
+	ShotFps        int
+	Width          int
+	Height         int
 	Status         int
+	Describe       string
 	InsertDatetime string
 	UpdateDatetime string
 }
@@ -118,18 +127,76 @@ type Thumbnail struct {
 	InsertDatetime string
 	UpdateDatetime string
 }
+type Relation struct {
+	RelationCode   string
+	ParentCode     string
+	ChildCode      string
+	ListName       string
+	IsShot         bool
+	Content        string //miaoasdf
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+/*制作需求 */
+type Requment struct {
+	RequmentCode   string
+	ShotCode       string
+	Important      int
+	Status         int
+	Content        string
+	Image          string
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+/*Note  */
+type Note struct {
+	NoteCode       string
+	ShotCode       string
+	Status         int
+	Content        string
+	Image          string
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+/*version*/
+type Version struct {
+	VersionCode    string
+	ShotCode       string
+	VendorCode     string
+	Status         int
+	Image          string /*缩略图*/
+	Demo           string
+	Product        string
+	InsertDatetime string
+	UpdateDatetime string
+}
+type EdlShot struct {
+	ShotNum       string
+	ShotType      string
+	StartDateTime string
+	EndDateTime   string
+	FromClipName  string
+	SourceFile    string
+}
 
 // 需求发给若干个接包方
-type Award struct {
-	AwardCode       string
-	ShotCode        string
-	RecieveUserCode string
-	Require         string
-	TargetPathBase  string
-	AdditionPath    string
-	Status          int
-	InsertDatetime  string
-	UpdateDatetime  string
+type Vendor struct {
+	VendorCode     string
+	ProjectCode    string
+	VendorName     string
+	OpenDetail     bool
+	OpenDemo       bool
+	DownMaterial   bool
+	UpDemo         bool
+	UpProduct      bool
+	Content        string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
 }
 
 // 接包方处理完之后上传到文件夹并在Daily里面进行记录
@@ -141,4 +208,15 @@ type Daily struct {
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
+}
+
+type Reference struct {
+	ReferenceCode string
+	ShotCode      string
+	ReferenceType string
+	MatName       string
+	MatType       string
+	MatContent    string
+	MatUrl        string
+	Status        int
 }

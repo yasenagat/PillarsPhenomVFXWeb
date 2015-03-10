@@ -23,3 +23,16 @@ type MaterialOut struct {
 	Size   string
 	Length string
 }
+
+type VendorAuth struct {
+	OpenDetail   bool
+	OpenDemo     bool
+	DownMaterial bool
+	UpDemo       bool
+	UpProduct    bool
+}
+type ReferenceDetail struct {
+	MatSource string
+	MatDpx    string
+	MatJPG    string
+}

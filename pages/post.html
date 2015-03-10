@@ -1,0 +1,444 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>post</title>
+<link rel="StyleSheet" href="style/posttree.css" type="text/css" />
+<script language="javascript" src="jslib/jquery-1.10.2.min.js"></script>
+<script language="javascript" src="js/post.js"></script>
+<script language="javascript" src="js/posttree.js"></script>
+<link href="style/css.css" rel="stylesheet" type="text/css">
+<link href="style/post.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+<div class="menu">
+
+    <ul>
+      <li><a href="#">project</a></li>
+      <li><a href="#">editoral</a></li>
+      <li><a href="#">post</a></li>
+      <li><a href="#">on-set</a></li>
+      <li><a href="#">playback</a></li>
+    </ul>
+</div>
+<div class="all">
+    <div class="cont">
+    	<div class="leftdiv">
+        	<div class="loadedl">
+	            	Load EDL
+					
+		<form name="f1" id="f1" class="f1" method="post" enctype="multipart/form-data" action="javascript:uploadAndSubmit();">
+			<input type="file" name="file" id="updedl" onchange="upload(this)">               
+		</form>
+		
+		<!--
+				<form name="f1" id="f1" class="f1" method="post" enctype="multipart/form-data" action="/post_upload_edl">
+					<input type="FILE" id="file" name="file"/>
+					<input type="SUBMIT" value="upload">               
+				</form>
+		-->		
+            </div>
+        	<div class="groupdiv">
+            	<div class="grouptit">
+                	<span class="tit1">创建的素材组</span>
+                    <span class="addbtn" id="addmaterial">+</span>
+                </div>
+                <div class="groupcont">
+					<script type="text/javascript">
+                    d = new dTree('d');
+                    /*
+                    第一个参数，表示当前节点的ID  epon jpon
+                    第二个参数，表示当前节点的父节点的ID
+                    第三个参数，节点要显示的文字
+                    第四个参数，点击该节点的超链接（注意也可以是某个servlet或是struts应用中的某个.do请求）
+                    第五个参数，鼠标移至该节点时显示的文字
+                    第六个参数，指定点击该节点时在哪个桢中打开超链接
+                    */
+                    d.add(0,-1,'111','','','1');
+                    d.add(1,0,'2222','','','1');
+                    d.add(2,1,'2222','','','1');
+                    d.add(3,2,'2222','','','1');
+                    d.add(4,3,'22224','','','1');
+                    d.add(5,4,'22221','','','1');
+                    d.add(6,5,'22226','','','1');
+                    d.add(7,6,'2222','','','1');
+                    d.add(8,7,'2222','','','1');
+                    d.add(9,8,'22229','','','1');
+                    d.add(10,2,'发生','','','1');
+                    document.write(d);
+                    </script>
+                </div>
+            </div>
+            
+        	<div class="groupdiv">
+            	<div class="grouptit">
+                	<span class="tit1">Library</span>
+                    <span class="addbtn" id="addsou">+</span>
+                </div>
+                <div class="groupcont">
+                	<ul>
+                    	<li class="li1"><a href="#">20150101</a></li>
+                        <li class="li1">extra</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="rightdiv">
+        	<div class="tit2">
+            	<span class="sp1">
+                	<input type="button" value="列表">
+                    <input type="button" value="视图">
+                </span>
+                <span class="sp2">
+                    <input type="button" value="+" class="updfile">
+	                <input type="button" value="-">
+                	<input type="button" value="回放">
+                </span>
+                <span class="sp3">
+                	<input type="button" value="批量下载">
+                </span>
+                <span class="spsearch">
+                	<input type="text" class="inpsearch" value="" placeholder="搜索">
+                	<input type="button" class="butsearch" value="">
+                </span>
+            </div>
+            <div class="bgimgdiv">
+            	<div class="tit3">
+                缩略图形式：
+                </div>
+                <div class="videodiv">
+                    <span class="videoimg">
+                    	<input type="hidden" id="code" value="1">
+                    	<input class="check" name="checks" type="checkbox" value="1">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    <span class="videoimg">
+						<input type="hidden" id="code" value="1">
+                    	<input class="check" name="checks" type="checkbox" value="1">
+                        <input class="play" type="button" value="回放">
+                        <input class="downl" type="button" value="下载">
+                        <span class="disnone">
+                        	<ul>
+                            	<li>Source</li>
+                                <li>DPX</li>
+                                <li>JPG</li>
+                                <li>Mov</li>
+                            </ul>
+                        </span>
+                        <div class="files">
+                        </div>
+                    </span>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="float">
+	<input type="hidden" class="sourceid" value="1">
+	<div class="rightdivabs">
+    	<h2 class="tit">镜头详细信息页面</h2>
+        <div class="chatdiv">
+        	<div class="ovhi">
+                <div class="roughimg">
+                <img src="#">
+                </div>
+                
+                <table height="155" width="150" border="0" cellspacing="0" cellpadding="0" class="tab1">
+                  <tr>
+                    <td width="100" align="right">镜头:</td>
+                    <td class="names"></td>
+                  </tr>
+                  <tr>
+                    <td align="right">尺寸:</td>
+                    <td class="size"></td>
+                  </tr>
+                  <tr>
+                    <td align="right">帧速率:</td>
+                    <td class="long"></td>
+                  </tr>
+                  <tr>
+                    <td align="right">始码:</td>
+                    <td class="speed"></td>
+                  </tr>
+                  <tr>
+                    <td align="right">止码:</td>
+                    <td class="speed"></td>
+                  </tr>
+                </table>
+            </div>
+            <div class="ovhi">
+            <ul class="withtit">
+            	<li class="basic">基本信息</li>
+                <li class="need">制作需求</li>
+                <li class="material">素材</li>
+                <li class="note">Note</li>
+                <li class="edition">版本</li>
+            </ul>
+            </div>
+            
+            
+            
+        </div>
+        <div class="metadata">
+            	<div class="basicinfo">
+                	<table width="100%" border="0" cellspacing="10" cellpadding="0">
+                      <tr>
+                        <td width="30%" align="right" colspan="2">
+                        	<input type="button" value="编辑" id="submits">
+                        </td>
+                      </tr>
+                      <tr>
+                        <td width="30%" align="right">素材名</td>
+                        <td width="70%" class="names"></td>
+                      </tr>
+                      <tr>
+                        <td align="right">尺寸</td>
+                        <td class="size"></td>
+                      </tr>
+                      <tr>
+                        <td align="right">帧速率</td>
+                        <td class="speed"></td>
+                      </tr>
+                      <tr>
+                        <td align="right">始码</td>
+                        <td class="start">&nbsp;</td>
+                      </tr>
+                      <tr>
+                        <td align="right">止码</td>
+                        <td class="end">&nbsp;</td>
+                      </tr>
+                      <tr>
+                        <td align="right">等等</td>
+                        <td>&nbsp;</td>
+                      </tr>
+                      <tr>
+                        <td align="right">描述</td>
+                        <td class="bewrite">&nbsp;</td>
+                      </tr>
+                    </table>
+                </div>
+                <div class="needinfo">
+                <span class="addmark">.
+                </span>
+                	<div class="piece">
+                    	<div class="number">1
+                        	<div class="del">X</div>
+                        </div>
+                        <div class="news">
+                        	<div class="imgradius">
+                            	<img src="http://tp4.sinaimg.cn/2610618495/180/22887572721/1" width="60" height="60">
+                            </div>
+                            <div class="stage">
+                            fas
+                            </div>
+                        </div>
+                    </div>
+                    <div class="piece">
+                    	<div class="number">2
+                        	<div class="del">X</div>
+                        </div>
+                        <div class="news">
+                        	<div class="imgradius">
+                            	<img src="#" width="60" height="60">
+                            </div>
+                            <div class="stage">
+                            fas
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="materialinfo">
+                	<span class="addmaterial">.</span>
+                    <div class="format">
+                    	<div class="source">
+                        	Source
+                        	<div class="symbol">
+                            	.
+                                <div class="bolpoab">
+                                	<ul>
+                                    	<li>下载</li>
+                                        <li>编辑</li>
+                                        <li>删除</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="source">
+                        	DPX
+                        	<div class="symbol">
+                            	.
+                                <div class="bolpoab">
+                                	<ul>
+                                    	<li>下载</li>
+                                        <li>编辑</li>
+                                        <li>删除</li>
+                                    </ul>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="source">
+                        	JPG
+                        	<div class="symbol">
+                            	.
+                                <div class="bolpoab">
+                                	<ul>
+                                    	<li>下载</li>
+                                        <li>编辑</li>
+                                        <li>删除</li>
+                                    </ul>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="consult">
+                    <h2>参考素材</h2>
+                    <table border="0" width="100%">
+                        <tr>
+                            <td width="25%">素材名</td>
+                            <td width="25%">素材格式</td>
+                            <td colspan="2">描述</td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td class="symbol2" width="5%">.
+                            <div class="bolpoab2">
+                                <ul>
+                                    <li>下载</li>
+                                    <li>编辑</li>
+                                    <li>删除</li>
+								</ul>
+                            </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            
+                        </tr>
+                    </table>
+                </div>
+                </div>
+                <div class="noteinfo">
+                	<div class="chat">
+                    	<div class="newinfo">
+                        fsdfjklh
+                        </div>
+                        <div class="newinfo">
+                        fsdfjklh
+                        </div>
+                        <div class="newinfo">
+                        fsdfjklh
+                        </div>
+                        
+                    </div>
+                    <div class="sendout">
+                    	<img id="imgs" src="#">
+                        <textarea class="textarea" placeholder="输入框"></textarea>
+                        <input class="but" type="button" value="发送">
+                    </div>
+                </div>
+                <div class="editioninfo">
+                	<div class="tag">
+                    	<div class="num">
+                        v0001
+                        </div>
+                        <div class="frame">
+                        	<div class="imgs">
+                            	<img src="" alt="缩略图">
+                            </div>
+                            <div class="menu_tab">
+                                +
+	                            <div class="bolpoabs">
+                                	<ul>
+                                    	<li>查看小样</li>
+                                        <li>下载成品</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tag">
+                    	<div class="num">
+                        v0001
+                        </div>
+                        <div class="frame">
+                        	<div class="imgs">
+                            	<img src="" alt="缩略图">
+                            </div>
+                            <div class="menu_tab">
+                                +
+	                            <div class="bolpoabs">
+                                	<ul>
+                                    	<li>查看小样</li>
+                                        <li>下载成品</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+		</div>
+        
+    </div>
+</div>
+
+<div class="outer"></div>
+<div class="formdiv1">
+	<form id="f1">
+    <h2>添加镜头</h2>
+    <table width="100%" border="0" cellspacing="0" cellpadding="10">
+      <tr>
+        <td width="30%" align="right">镜头名</td>
+        <td width="70%"><input type="text"></td>
+      </tr>
+      <tr>
+        <td align="right">尺寸</td>
+        <td><input type="text"></td>
+      </tr>
+      <tr>
+        <td align="right">&nbsp;</td>
+        <td>W<input type="text" id="sizew">H<input type="text" id="sizeh"></td>
+      </tr>
+      <tr>
+        <td align="right">帧速率</td>
+        <td><input type="text"></td>
+      </tr>
+      <tr>
+        <td align="right">类型</td>
+        <td><input type="text"></td>
+      </tr>
+      <tr>
+        <td align="right">描述</td>
+        <td><input type="text"></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+        <input type="button" value="确定" class="subut">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+</body>
+</html>

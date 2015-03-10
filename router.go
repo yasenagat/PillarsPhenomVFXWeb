@@ -4,6 +4,7 @@ import (
 	"PillarsPhenomVFXWeb/controller/downloadAction"
 	"PillarsPhenomVFXWeb/controller/editoralAction"
 	"PillarsPhenomVFXWeb/controller/loginAction"
+	"PillarsPhenomVFXWeb/controller/postAction"
 	"PillarsPhenomVFXWeb/controller/projectAction"
 	"PillarsPhenomVFXWeb/controller/userAction"
 	"net/http"
@@ -47,6 +48,8 @@ func RouterBinding() {
 
 	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
+
+	http.HandleFunc("/post_upload_edl", postAction.LoadEdlFile)
 
 	//http.HandleFunc("/.*", NotFound) // TODO 想实现未知路由地址访问的404页面跳转
 }
