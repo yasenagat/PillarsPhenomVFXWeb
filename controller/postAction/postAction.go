@@ -3,7 +3,7 @@ package postAction
 import (
 	"PillarsPhenomVFXWeb/pillarsLog"
 	"PillarsPhenomVFXWeb/storage/postStorage"
-	"PillarsPhenomVFXWeb/utility"
+	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -14,45 +14,56 @@ import (
 )
 
 func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
-	file, handler, err := r.FormFile("file")
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
-		fmt.Println(err.Error())
-		msg := "获取上传文件错误:" + err.Error()
-		utility.OutputJson(w, 1, msg, nil)
+		u.OutputJson(w, 1, "parse upload error!", nil)
 		return
 	}
-	defer file.Close()
-	fmt.Println("---->3")
-	fmt.Fprintf(w, "%v", handler.Header)
-	f, err := os.OpenFile("./upload/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 066)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer f.Close()
-	io.Copy(f, file)
-	fmt.Println("----->method:", r.Method)
-	///////result 为镜头的信息
-	//result, err := utility.AnalyseEdl(file)
-	//if err != nil && err.Error() != "EOF" {
-	//	msg := "解析文件错误:" + err.Error()
-	//	utility.OutputJson(w, 2, msg, nil)
-	//	return
-	//}
-	//if len(result) == 0 {
-	//	utility.OutputJson(w, 3, "文件格式是否正确", nil)
-	//	return
-	//}
-	//code := "ssssssssssssssssssss" //project code
-	/**************数据库插入 about result********************/
-	//err = postStorage.InsertMultipleShot(code, result)
-	//if err != nil {
-	//	utility.OutputJson(w, 4, err.Error(), nil)
-	//	return
-	//}
-	////////////////////插入成功后该做什么处理？？？!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-	//utility.OutputJson(w, 0, "EDL FIle 插入成功.", nil)
+	formData := r.MultipartForm
+	files := formData.File["files"]
+	if len(files) > 0 {
+		file, err := files[0].Open()
+		defer file.Close()
+		if err != nil {
+			u.OutputJson(w, 12, "open edl file error!", nil)
+			return
+		}
+		out, err := os.Create("./upload/" + files[0].Filename)
+		defer out.Close()
+		if err != nil {
+			u.OutputJson(w, 13, "create edl file failed!", nil)
+			return
+		}
+		_, err = io.Copy(out, file)
+		if err != nil {
+			fmt.Println("io failed")
+			u.OutputJson(w, 14, "io copy edl file failed!", nil)
+		}
+		// 解析edl文件得到镜头的信息
+		shots, err := u.ReadEdl(out.Name())
+		if err != nil && err.Error() != "EOF" {
+			msg := "解析文件错误:" + err.Error()
+			u.OutputJson(w, 15, msg, nil)
+			return
+		}
+		if len(shots) == 0 {
+			u.OutputJson(w, 16, "edl not find short!", nil)
+			return
+		}
+		projectCode := formData.Value["ProjectCode"][0]
+		// 保存镜头信息
+		err = postStorage.InsertMultipleShot(projectCode, shots)
+		if err != nil {
+			u.OutputJson(w, 17, err.Error(), nil)
+			return
+		}
 
+		//插入成功后该做什么处理？？？
+		u.OutputJson(w, 0, "upload success!", nil)
+	}
+
+	//请求没有文件,返回错误信息
+	u.OutputJson(w, 204, "not find upload file!", nil)
 }
 
 ////shot struct
@@ -60,41 +71,41 @@ func AddShot(w http.ResponseWriter, r *http.Request) {
 	//1:jie shou json zifuchuan
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		utility.OutputJson(w, 1, "Read body failed!", nil)
+		u.OutputJson(w, 1, "Read body failed!", nil)
 		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
 	//2:  json  unmarshal()  get the shot object
-	var shot utility.Shot
+	var shot u.Shot
 	err = json.Unmarshal(data, &shot)
 	if err != nil {
-		utility.OutputJson(w, 1, err.Error(), nil)
+		u.OutputJson(w, 1, err.Error(), nil)
 		return
 	}
 	name := "nShot"
-	shot.ShotCode = *utility.GenerateCode(&name)
+	shot.ShotCode = *u.GenerateCode(&name)
 	//3: insert into mysql
 	err = postStorage.AddSingleShot(&shot)
 	if err != nil {
-		utility.OutputJson(w, 1, err.Error(), nil)
+		u.OutputJson(w, 1, err.Error(), nil)
 		return
 	}
 	result, err := postStorage.QueryShotByShotCode(&shot.ShotCode)
 	if err != nil {
-		utility.OutputJson(w, 1, err.Error(), nil)
+		u.OutputJson(w, 1, err.Error(), nil)
 		return
 	}
 	//4:return shot to client
 	//content,_:= json.Marshal(shot)
 	//这里缺少前后台通信规则！！按照自定义协议，打包协议结构，然后json编码为字符串，发往前端
-	utility.OutputJson(w, 0, "addshot success.", result)
+	u.OutputJson(w, 0, "addshot success.", result)
 }
 
 ////shotCode
 func DeleteShot(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		utility.OutputJson(w, 1, "Read body failed!", nil)
+		u.OutputJson(w, 1, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
@@ -102,11 +113,11 @@ func DeleteShot(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(data, &code)
 	err = postStorage.DeleteSingleShot(&code)
 	if err != nil {
-		utility.OutputJson(w, 2, "Read body failed!", nil)
+		u.OutputJson(w, 2, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	utility.OutputJson(w, 0, "Deleteshot success.", nil)
+	u.OutputJson(w, 0, "Deleteshot success.", nil)
 }
 
 type ss struct {
@@ -118,7 +129,7 @@ type ss struct {
 func ModifyShotName(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		utility.OutputJson(w, 1, "Read body failed!", nil)
+		u.OutputJson(w, 1, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
@@ -126,18 +137,18 @@ func ModifyShotName(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(data, &result)
 	err = postStorage.ModifyShotName(&result.ShotCode, &result.ShotName)
 	if err != nil {
-		utility.OutputJson(w, 1, "ModifyShotName error", err)
+		u.OutputJson(w, 1, "ModifyShotName error", err)
 		////pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	utility.OutputJson(w, 0, "ModifyShotName success.", nil)
+	u.OutputJson(w, 0, "ModifyShotName success.", nil)
 }
 
 // RECEVE: noteCode  RETURN: notes struct  (an Array)
 func QueryShotByShotCode(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		utility.OutputJson(w, 1, "Read body failed!", nil)
+		u.OutputJson(w, 1, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
@@ -145,18 +156,18 @@ func QueryShotByShotCode(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(data, &code)
 	result, err := postStorage.QueryShotByShotCode(&code)
 	if err != nil {
-		utility.OutputJson(w, 2, "Read body failed!", nil)
+		u.OutputJson(w, 2, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	utility.OutputJson(w, 0, "Deleteshot success.", result)
+	u.OutputJson(w, 0, "Deleteshot success.", result)
 }
 
 // RECEVE: sourceFile name   RETURN: notes struct  (an Array)
 func QueryShotByProjectCode(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		utility.OutputJson(w, 1, "Read body failed!", nil)
+		u.OutputJson(w, 1, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
@@ -164,11 +175,11 @@ func QueryShotByProjectCode(w http.ResponseWriter, r *http.Request) {
 	json.Unmarshal(data, &name)
 	result, err := postStorage.QueryShotByProjectCode(&name)
 	if err != nil {
-		utility.OutputJson(w, 2, "Read body failed!", nil)
+		u.OutputJson(w, 2, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	utility.OutputJson(w, 0, "Deleteshot success.", result)
+	u.OutputJson(w, 0, "Deleteshot success.", result)
 }
 
 /*      限定上传文件大小

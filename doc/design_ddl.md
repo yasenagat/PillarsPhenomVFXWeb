@@ -62,7 +62,8 @@ CREATE TABLE `library`(
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
 	PRIMARY KEY (`library_id`),
-	INDEX(`library_code`)
+	INDEX(`library_code`),
+	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--素材信息
@@ -91,7 +92,8 @@ CREATE TABLE `material` (
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
 	PRIMARY KEY (`material_id`),
-	INDEX(`material_code`)
+	INDEX(`material_code`),
+	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--用户添加的素材组
@@ -106,7 +108,8 @@ CREATE TABLE `material_folder`(
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
-	PRIMARY KEY (`folder_id`)
+	PRIMARY KEY (`folder_id`),
+	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 ### 4.3 素材管理--用户添加的素材组数据
@@ -121,7 +124,8 @@ CREATE TABLE `material_folder_data`(
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
 	PRIMARY KEY (`data_id`),
-	INDEX(`data_code`)
+	INDEX(`data_code`),
+	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -134,25 +138,24 @@ CREATE TABLE `shot` (
     `shot_num` CHAR(11) NOT NULL,# EDL文件中数量号,作用未知，001,002
     `start_time` CHAR(11) NOT NULL,#该shot的入点，格式为00:00:00:00
     `end_time` CHAR(11) NOT NULL,#该shot的出点，格式为00:00:00:00
-    `clip_name` VARCHAR(32) NOT NULL,#
+    `clip_name` VARCHAR(32) NOT NULL,#剪辑文件名称
     `soure_file` VARCHAR(32) NOT NULL,#该shot 的源文件名字
     `shot_type` VARCHAR(32) NOT NULL,
-　　　　`shot_name` VARCHAR(32) NOT NULL,# 可以自定义修改的镜头名字
-　　　　`shot_fps` SMALLINT NOT NULL,
-　　　　`width` SMALLINT NOT NULL,#尺寸宽，格式为1920*1080
-　　　　`height` SMALLINT NOT NULL,#尺寸高，格式为1920*1080
+	`shot_name` VARCHAR(32) NOT NULL,# 可以自定义修改的镜头名字
+	`shot_fps` SMALLINT NOT NULL,
+	`width` SMALLINT NOT NULL,#尺寸宽，格式为1920*1080
+	`height` SMALLINT NOT NULL,#尺寸高，格式为1920*1080
     `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `descrube` VARCHAR(500) NOT NULL,#镜头的描述
-    `requment` CHAR(32),#制作需求列表
-    `reference` CHAR(32),#　素材参照表
-    `produce` CHAR(32),#　制作素材
-    `version` CHAR(32),#　版本
+    `shot_detail` VARCHAR(500) NOT NULL,#镜头的描述
+    `requment` VARCHAR(32),#制作需求列表
+    `reference` VARCHAR(32),#　素材参照表
+    `produce` VARCHAR(32),#　制作素材
+    `version` VARCHAR(32),#　版本
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`shot_id`),
-	INDEX(`field_name`),
+	INDEX(`shot_code`),
 	INDEX(`project_code`)
-	INDEX(`shot_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
@@ -173,7 +176,7 @@ CREATE TABLE `relation` (
     `relation_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `relation_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
     `parent_code` CHAR(32) NOT NULL,#上一层级的code
-   `child_code` CHAR(32) NOT NULL,#　当前的项目code
+	`child_code` CHAR(32) NOT NULL,#　当前的项目code
     `list_name` VARCHAR(32) NOT NULL,#　当前层级的名字
     `isShot` BOOLEAN DEFAULT false, # 辅助区分是镜头还是分组的标题
     `content` VARCHAR(100),#描述
@@ -191,11 +194,11 @@ CREATE TABLE `vendor` (
     `vendor_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
     `project_code` CHAR(32) NOT NULL,
     `vendorName` CHAR(32) NOT NULL,#接包方用户名
- `open_detail` BOOLEAN DEFAULT false,
-`open_demo` BOOLEAN DEFAULT false,
-`down_material` BOOLEAN DEFAULT false,
-`up_demo` BOOLEAN DEFAULT false,
-`up_product` BOOLEAN DEFAULT false,
+	`open_detail` BOOLEAN DEFAULT false,
+	`open_demo` BOOLEAN DEFAULT false,
+	`down_material` BOOLEAN DEFAULT false,
+	`up_demo` BOOLEAN DEFAULT false,
+	`up_product` BOOLEAN DEFAULT false,
     `content` VARCHAR(2047) NOT NULL,#对于制作的具体说明
     `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -211,8 +214,8 @@ CREATE TABLE `note` (
     `note_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
     `shot_code` CHAR(32) NOT NULL,#对应的镜头
     `award_code` CHAR(32) ,#对应的哪个包
-　`content` VARCHAR(100),#讨论的内容
-`thumbnail`BLOB NOT NULL,#最大64K　　存储图片
+	`content` VARCHAR(100),#讨论的内容
+	`thumbnail`BLOB NOT NULL,#最大64K　　存储图片
     `target_path` VARCHAR(2047) NOT NULL,#目标路径
     `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -226,13 +229,13 @@ CREATE TABLE `note` (
 
 制作需求表
 CREATE TABLE `requment`(
- `requment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `requment_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`requment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`requment_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`shot_code` CHAR(32) NOT NULL,#对应的镜头
 	`important` INT,#优先级
-	 `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+	`status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
 	`thumbnail`BLOB NOT NULL,#最大64K　　存储图片
- `content` VARCHAR(100),
+	`content` VARCHAR(100),
     `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`requment_id`),
@@ -241,32 +244,32 @@ CREATE TABLE `requment`(
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 版本信息
 CREATE TABLE `version`(
- `version_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `version_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-    `shot_code` CHAR(32) NOT NULL,#对应的镜头
-    `vendor_code` CHAR(32) NOT NULL,#对应的哪个包
+	`version_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`version_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`shot_code` CHAR(32) NOT NULL,#对应的镜头
+	`vendor_code` CHAR(32) NOT NULL,#对应的哪个包
 	`thumbnail`BLOB NOT NULL,#最大64K　　存储图片
 	`demo` VARCHAR(5000) ,＃也应该存储路径吗？？？？
 	`product` VARCHAR(200), #存储路径
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`version_id`),
 	INDEX(`shot_code`),
 	INDEX(`version_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE `reference`(
- `reference_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `reference_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-    `shot_code` CHAR(32) NOT NULL,#对应的镜头
-`reference_type` CHAR(32) DEFAULT '参考素材'，
-   `mat_name` CHAR(32) ,#素材名
-`mat_type` CHAR(32) NOT NULL,＃格式
-`mat_content` VARCHAR(200),＃描述
-`mat_url` VARCHAR(1000) NOT NULL,＃路径
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	`reference_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`reference_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`shot_code` CHAR(32) NOT NULL,#对应的镜头
+	`reference_type` CHAR(32) DEFAULT '参考素材'，
+	`mat_name` CHAR(32) ,#素材名
+	`mat_type` CHAR(32) NOT NULL,＃格式
+	`mat_content` VARCHAR(200),＃描述
+	`mat_url` VARCHAR(1000) NOT NULL,＃路径
+	`status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	`update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`reference_id`),
 	INDEX(`shot_code`),
 	INDEX(`reference_code`)

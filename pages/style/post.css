@@ -429,6 +429,7 @@
 	display:block;
 }
 .loadedl{
+	height:50px;
 	line-height:50px;
 	font-size:25px;
 	text-align:center;
@@ -469,7 +470,7 @@
 #sizew, #sizeh{
 	width:80px;
 }
-#updedl{
+#edlfile{
 	position:absolute;
 	top:10px;
 	left:5px;

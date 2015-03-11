@@ -6,11 +6,44 @@ var getUrlParam = function(name){
 	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
 	if (r!=null) return unescape(r[2]); return null; //返回参数值
 }
+//上传edl文件
+function uploadEdl(selectFile) {
+	var filename = selectFile.value;
+	var mime = filename.toLowerCase().substr(filename.lastIndexOf("."));
+    if (mime != ".edl") {
+        alert("请选择edl格式的文件上传");
+        selectFile.outerHTML = selectFile.outerHTML;
+        return false;
+    }
+	var form = document.getElementById("edl-form");
+	var edlfile = document.getElementById("edlfile");
+	var files = edlfile.files;
+	var formData = new FormData();
+	for(var i=0; i<files.length; i++){
+		var file = files[i];
+		formData.append("files", file, file.name);
+	}
+	formData.append("ProjectCode", projectCode);
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "post_upload_edl", true);
+	xhr.onload = function(){
+		if(xhr.status === 200){
+			var rs = JSON.parse(xhr.responseText);
+			if(rs.FeedbackCode == 0) {
+				alert(rs.FeedbackText);
+			}else{
+				alert(rs.FeedbackText);
+			}
+		}else{
+			alert("upload error");
+		}
+	}
+	xhr.send(formData);
+}
 
 // JavaScript Document
 $(function(){
 	projectCode = getUrlParam("code");
-	$("#updedl").click();
 	//初始化右侧窗口 隐藏
 	$(".metadata").children(".basicinfo").css("display","block");
 	$(".videodiv").on("click",".videoimg",function(){
@@ -104,70 +137,3 @@ $(function(){
 		$(".formdiv1").hide(500);
 	});
 });
-function upload(fnUpload) {
-    var filename = fnUpload.value;
-    var mime = filename.toLowerCase().substr(filename.lastIndexOf("."));
-    if (mime != ".edl") {
-        alert("请选择edl格式的文件上传");
-        fnUpload.outerHTML = fnUpload.outerHTML;
-        return false;
-    } else {
-        $("#f1").submit();
-    }
-}
-function uploadAndSubmit() {
-    var form = document.forms["f1"];
-    if (form["file"].files.length > 0) {
-        // 寻找表单域中的 <input type="file" ... /> 标签
-        var file = form["file"].files[0];
-        // try sending
-        var reader = new FileReader();
-
-        reader.onloadstart = function() {
-            // 这个事件在读取开始时触发
-            console.log("onloadstart");
-        }
-        reader.onprogress = function(p) {
-            // 这个事件在读取进行中定时触发
-            console.log("onprogress");
-        }
-
-        reader.onload = function() {
-            // 这个事件在读取成功结束后触发
-            //alert("读取成功结束");
-        }
-
-        reader.onloadend = function() {
-            // 这个事件在读取结束后，无论成功或者失败都会触发
-            if (reader.error) {
-                console.log(reader.error);
-            } else {
-                // 构造 XMLHttpRequest 对象，发送文件 Binary 数据
-                var xhr = new XMLHttpRequest();
-                xhr.open("POST", "/post_upload_edl");
-                //xhr.overrideMimeType("application/octet-stream");
-                //xhr.sendAsBinary(reader.result);
-				/*
-                xhr.onreadystatechange = function() {
-                    if (xhr.readyState == 4) {
-                        if (xhr.status == 200) {
-                            console.log("upload complete");
-                            console.log("response: " + xhr.responseText);
-                        }
-                    }
-                }
-				*/
-				xhr.onload = function(){};
-
-				var formData = new FormData();
-				formData.append('name', 'file');
-				formData.append('file', reader.result);
-				xhr.send(formData);
-            }
-        }
-
-        reader.readAsBinaryString(file);
-    } else {
-        alert("Please choose a file.");
-    }
-}

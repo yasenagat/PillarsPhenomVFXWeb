@@ -26,18 +26,10 @@
     <div class="cont">
     	<div class="leftdiv">
         	<div class="loadedl">
-	            	Load EDL
-					
-		<form name="f1" id="f1" class="f1" method="post" enctype="multipart/form-data" action="javascript:uploadAndSubmit();">
-			<input type="file" name="file" id="updedl" onchange="upload(this)">               
-		</form>
-		
-		<!--
-				<form name="f1" id="f1" class="f1" method="post" enctype="multipart/form-data" action="/post_upload_edl">
-					<input type="FILE" id="file" name="file"/>
-					<input type="SUBMIT" value="upload">               
+	            Load EDL
+				<form id="edl-form" class="f1">
+					<input id="edlfile" type="file" name="file" accept=".edl" onchange="uploadEdl(this)">
 				</form>
-		-->		
             </div>
         	<div class="groupdiv">
             	<div class="grouptit">
@@ -70,7 +62,7 @@
                     </script>
                 </div>
             </div>
-            
+
         	<div class="groupdiv">
             	<div class="grouptit">
                 	<span class="tit1">Library</span>
@@ -140,7 +132,7 @@
                         <div class="files">
                         </div>
                     </span>
-                    
+
                 </div>
             </div>
         </div>
@@ -157,7 +149,7 @@
                 <div class="roughimg">
                 <img src="#">
                 </div>
-                
+
                 <table height="155" width="150" border="0" cellspacing="0" cellpadding="0" class="tab1">
                   <tr>
                     <td width="100" align="right">镜头:</td>
@@ -190,9 +182,9 @@
                 <li class="edition">版本</li>
             </ul>
             </div>
-            
-            
-            
+
+
+
         </div>
         <div class="metadata">
             	<div class="basicinfo">
@@ -289,7 +281,7 @@
                                         <li>删除</li>
                                     </ul>
                                 </div>
-                                
+
                             </div>
                         </div>
                         <div class="source">
@@ -303,7 +295,7 @@
                                         <li>删除</li>
                                     </ul>
                                 </div>
-                                
+
                             </div>
                         </div>
                     </div>
@@ -334,7 +326,7 @@
                             <td></td>
                             <td></td>
                             <td></td>
-                            
+
                         </tr>
                     </table>
                 </div>
@@ -350,7 +342,7 @@
                         <div class="newinfo">
                         fsdfjklh
                         </div>
-                        
+
                     </div>
                     <div class="sendout">
                     	<img id="imgs" src="#">
@@ -399,7 +391,7 @@
                     </div>
                 </div>
 		</div>
-        
+
     </div>
 </div>
 

@@ -19,7 +19,8 @@ func CopyEdlShot(tx *sql.Tx, n int, edls []*utility.EdlShot) ([]utility.Shot, er
 		shot.StartDateTime = edls[i].StartDateTime
 		shot.EndDateTime = edls[i].EndDateTime
 		shot.ShotCode = *utility.GenerateCode(&shot.ShotNum)
-		stmt, err := tx.Prepare("SELECT material_code,width,height,timecode_framerate FROM material WHERE material_name=?") //通过素材表查信息
+		//通过素材表查信息
+		stmt, err := tx.Prepare("SELECT material_code, width, height, timecode_framerate FROM material WHERE status = 0 AND project_code = ? AND material_name = ?")
 		if err != nil {
 			return []utility.Shot{}, err
 			break
@@ -43,7 +44,7 @@ func InsertMultipleShot(code string, edls []*utility.EdlShot) error {
 	}
 
 	for i := length - 1; i >= 0; i-- {
-		stmt, err := tx.Prepare("INSERT INTO  `shot`(shot_code,project_code,material_code,shot_num,start_time,end_time,clip_name,soure_file,shot_type,shot_name,shot_fps,width,height,status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+		stmt, err := tx.Prepare("INSERT INTO `shot`(shot_code,project_code,material_code,shot_num,start_time,end_time,clip_name,soure_file,shot_type,shot_name,shot_fps,width,height,status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
 		if err != nil {
 			tx.Rollback()
 			return err
