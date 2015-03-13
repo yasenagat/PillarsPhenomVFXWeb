@@ -133,30 +133,92 @@ CREATE TABLE `material_folder_data`(
 CREATE TABLE `shot` (
     `shot_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
     `shot_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-    `project_code` CHAR(32) NOT NULL,#　当前的项目code
-    `material_code` CHAR(32) NOT NULL ,#计算生成的唯一识别符
+    `project_code` CHAR(32) NOT NULL,#当前的项目code
+    `material_code` CHAR(32) NOT NULL ,#soure_file对应的素材名称的素材code
+    `library_code` CHAR(32) NOT NULL ,#素材对应的库code
+    `picture` MEDIUMTEXT NOT NULL ,#镜头缩略图根据始码抓取素材中的一帧
     `shot_num` CHAR(11) NOT NULL,# EDL文件中数量号,作用未知，001,002
     `start_time` CHAR(11) NOT NULL,#该shot的入点，格式为00:00:00:00
     `end_time` CHAR(11) NOT NULL,#该shot的出点，格式为00:00:00:00
-    `clip_name` VARCHAR(32) NOT NULL,#剪辑文件名称
-    `soure_file` VARCHAR(32) NOT NULL,#该shot 的源文件名字
-    `shot_type` VARCHAR(32) NOT NULL,
-	`shot_name` VARCHAR(32) NOT NULL,# 可以自定义修改的镜头名字
-	`shot_fps` SMALLINT NOT NULL,
+    `from_clip_name` VARCHAR(100) NOT NULL,#剪辑文件名称
+    `soure_file` VARCHAR(100) NOT NULL,#对应的素材名称
+    `shot_type` VARCHAR(32) NOT NULL,#镜头类型
+	`shot_name` VARCHAR(100) NOT NULL,# 可以自定义修改的镜头名字
+	`shot_fps` SMALLINT NOT NULL,#帧速率
 	`width` SMALLINT NOT NULL,#尺寸宽，格式为1920*1080
 	`height` SMALLINT NOT NULL,#尺寸高，格式为1920*1080
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `shot_detail` VARCHAR(500) NOT NULL,#镜头的描述
-    `requment` VARCHAR(32),#制作需求列表
-    `reference` VARCHAR(32),#　素材参照表
-    `produce` VARCHAR(32),#　制作素材
-    `version` VARCHAR(32),#　版本
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    `edl_code` CHAR(32),#edl文件生成的code
+    `edl_name` VARCHAR(100),#edl文件名称
+    `shot_flag` VARCHAR(10),#edl或者手动添加的标识
+	`user_code` CHAR(32) NOT NULL,#用户代码
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+    `insert_datetime` TIMESTAMP,
+    `update_datetime` TIMESTAMP,
 	PRIMARY KEY (`shot_id`),
 	INDEX(`shot_code`),
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+镜头的制作需求列表
+CREATE TABLE `shot_demand` (
+    `demand_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `demand_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `shot_code` CHAR(32) NOT NULL,#对应的镜头
+    `project_code` CHAR(32) NOT NULL,#项目code
+	`picture` MEDIUMTEXT NOT NULL ,#Base64编码图片
+	`demand_detail` VARCHAR(100) NOT NULL,#需求的内容描述
+	`demand_level` VARCHAR(10) NOT NULL,#需求的优先级
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+    `user_code` CHAR(32) NOT NULL,#用户代码
+	`insert_datetime` TIMESTAMP,
+    `update_datetime` TIMESTAMP,
+	PRIMARY KEY (`demand_id`),
+	INDEX(`demand_code`),
+	INDEX(`shot_code`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+镜头的相关素材
+CREATE TABLE `shot_material` (
+    `material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `shot_code` CHAR(32) NOT NULL,#对应的镜头
+    `project_code` CHAR(32) NOT NULL,#项目code
+	`picture` MEDIUMTEXT NOT NULL ,#Base64编码图片
+	`material_detail` VARCHAR(100) NOT NULL,#需求的内容描述
+	`demand_level` VARCHAR(10) NOT NULL,#需求的优先级
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+    `user_code` CHAR(32) NOT NULL,#用户代码
+	`insert_datetime` TIMESTAMP,
+    `update_datetime` TIMESTAMP,
+	PRIMARY KEY (`demand_id`),
+	INDEX(`material_code`),
+	INDEX(`shot_code`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+镜头的相关沟通信息
+CREATE TABLE `shot_note` (
+    `note_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+    `note_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+    `shot_code` CHAR(32) NOT NULL,#对应的镜头
+    `project_code` CHAR(32) NOT NULL,#项目code
+	`picture` MEDIUMTEXT NOT NULL ,#Base64编码图片
+	`note_detail` VARCHAR(1000),#讨论的内容
+    `note_type` VARCHAR(100) NOT NULL,#分类
+    `note_verson` VARCHAR(100) NOT NULL,#版本
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`user_code` CHAR(32) NOT NULL,#用户代码
+    `insert_datetime` TIMESTAMP,
+    `update_datetime` TIMESTAMP,
+	PRIMARY KEY (`note_id`),
+	INDEX(`note_code`),
+	INDEX(`shot_code`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 
 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
 CREATE TABLE `thumbnail` (
@@ -165,7 +227,8 @@ CREATE TABLE `thumbnail` (
     `shot_code` CHAR(32) NOT NULL,#对应的镜头
     `thumbnail_image` BLOB NOT NULL,#最大64K
     `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    `user_code` CHAR(32) NOT NULL,#用户代码
+	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`thumbnail_id`),
 	INDEX(`shot_code`),
@@ -209,21 +272,7 @@ CREATE TABLE `vendor` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 接包方处理完之后上传到文件夹并在Daily里面进行记录
-CREATE TABLE `note` (
-    `note_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `note_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-    `shot_code` CHAR(32) NOT NULL,#对应的镜头
-    `award_code` CHAR(32) ,#对应的哪个包
-	`content` VARCHAR(100),#讨论的内容
-	`thumbnail`BLOB NOT NULL,#最大64K　　存储图片
-    `target_path` VARCHAR(2047) NOT NULL,#目标路径
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`note_id`),
-	INDEX(`shot_code`),
-	INDEX(`note_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 权限管理
 

@@ -1,5 +1,4 @@
 /* CSS Document */
-
 .leftdiv {
     background: none repeat scroll 0 0 #efefef;
     border-right: 5px solid #979797;
@@ -67,7 +66,6 @@
 }
 /**/
 .spsearch {
-    margin-left: 100px;
 	background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
     border-radius: 0;
     display: block;
@@ -127,33 +125,7 @@
     position: absolute;
     top: 43%;
 }
-.videoimg .downl {
-    bottom: 5px;
-    position: absolute;
-    right: 5px;
-}
-.videoimg .disnone {
-    background: none repeat scroll 0 0 #d8d8d8;
-    border: 2px solid #979797;
-    display: none;
-    left: 150px;
-    padding: 5px;
-    position: absolute;
-    top: 140px;
-    z-index: 1;
-}
-.videoimg .downl:hover .videoimg .disnone{
-	display:block;
-}
-.videoimg .disnone ul li {
-    font-size: 16px;
-}
-.videoimg .files {
-    border: 1px solid #60f;
-    height: 100px;
-    margin: 20px auto 0;
-    width: 150px;
-}
+
 
 .outer {
     background: none repeat scroll 0 0 rgb(0, 0, 0);
@@ -204,6 +176,10 @@
     width: 200px;
 	float:left;
 }
+.roughimg img{
+	height:150px;
+	width:200px;
+}
 .chatdiv table{
 	float:left;
 }
@@ -213,11 +189,13 @@
 	float:left;
 	border:1px solid #ccc;
 	cursor:pointer;
+	height:35px;
+	line-height:35px;
 }
 .basic{
 	background:#ccc;
 }
-.metadata .basicinfo,.metadata .needinfo,.metadata .materialinfo,.metadata .noteinfo{
+.metadata .basicinfo,.metadata .needinfo,.metadata .materialinfo,.metadata .noteinfo,.metadata .editioninfo{
 	display:none;
 }
 .basicinfo input[type="text"]{
@@ -246,6 +224,7 @@
 	padding:10px;
 	border:2px solid #ccc;
 	background:#FFF;
+	position:relative;
 }
 .imgradius{
 	width:60px;
@@ -261,11 +240,10 @@
 	width:240px;
 }
 .addmark{
-	float:right;
 	text-align:right;
-	margin-bottom:10px;
 	margin-right:10px;
 	width:380px;
+	overflow:hidden;
 }
 .del{
 	display:none;
@@ -301,10 +279,12 @@
 }
 .tab1{
 	float:right;
+	margin-left:10px;
 }
 .consult{
 	float:left;
 	width:100%;
+	position:relative;
 }
 .consult h2{
 	font-size:20px;
@@ -470,11 +450,112 @@
 #sizew, #sizeh{
 	width:80px;
 }
-#edlfile{
+#updedl{
 	position:absolute;
 	top:10px;
 	left:5px;
 	font-size:30px;
 	opacity:0;
 	filter: alpha(opacity=0);
+}
+.formdiv2 {
+    background: none repeat scroll 0 0 #fff;
+    display: none;
+    font-size: 20px;
+    overflow: hidden;
+    position: absolute;
+    width: 400px;
+    z-index: 9999;
+}
+.formdiv2 input[type="text"] {
+    border: 2px solid #999;
+    height: 30px;
+    width: 200px;
+}
+.videoimg .downl {
+    bottom: 5px;
+    position: absolute;
+    right: 5px;
+}
+.videoimg .disnone {
+    background: none repeat scroll 0 0 #d8d8d8;
+    border: 2px solid #979797;
+    display: none;
+    left: 150px;
+    padding: 5px;
+    position: absolute;
+    top: 140px;
+    z-index: 1;
+}
+.downdiv:hover .disnone{
+	display:block;
+}
+.videoimg .disnone ul li {
+    font-size: 16px;
+	cursor:pointer;
+}
+.videoimg .disnone ul li:hover{
+	background:#999;
+}
+.videoimg .files {
+    height: 100px;
+    margin: 20px auto 0;
+    width: 150px;
+}
+.videoimg .view{
+	position:absolute;
+	width:200px;
+	height:150px;
+	top:0; left:0;
+}
+.files img{
+	height:100px;
+	width:150px;
+}
+.grouptit {
+    background: none repeat scroll 0 0 #e3e3e3;
+    height: 50px;
+    line-height: 50px;
+}
+.addmaterial{
+	position:absolute;
+	right:10px;
+	top:0px;
+}
+#submits{
+	height: 30px;
+    width: 100px;
+}
+#demand{
+	border:2px solid #CCC;
+	height:55px;
+	width:235px;
+	resize: none;
+}
+.edit{
+	position:absolute;
+	right:11px;
+	top:52px;
+}
+.make{
+	border: 1px solid #ccc;
+    height: 300px;
+    overflow-x: hidden;
+    overflow-y: auto;
+	width:100%;
+	padding-top:10px;
+}
+.videoimg .names{
+	position:absolute;
+	width:100%;
+	top:130px;
+	text-align:center;
+}
+.videoimg .state{
+	position:absolute;
+	top:5px;
+	right:5px;
+	height:20px;
+	width:20px;
+	background:#09F;
 }

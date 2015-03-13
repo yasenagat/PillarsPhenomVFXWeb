@@ -46,10 +46,10 @@ func RouterBinding() {
 	http.HandleFunc("/editoral_folder_countfiles", editoralAction.CountFolderFiles)
 	http.HandleFunc("/editoral_download_file", downloadAction.DownloadFile)
 
-	// ---------------------------- 尚未测试 ------------------------------
-	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
-
 	http.HandleFunc("/post_upload_edl", postAction.LoadEdlFile)
+	// ---------------------------- 尚未测试 ------------------------------
+	http.HandleFunc("/post_shot_que", postAction.QueryShotByShotCode)
 
+	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
 	//http.HandleFunc("/.*", NotFound) // TODO 想实现未知路由地址访问的404页面跳转
 }

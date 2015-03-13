@@ -97,23 +97,39 @@ type MaterialFolderData struct {
 	UpdateDatetime string
 }
 
-// 每个shot是material的一段，该表由EDL文件解析获得
+// EDL文件解析
+type EdlShot struct {
+	ShotNum      string
+	ShotType     string
+	StartTime    string
+	EndTime      string
+	FromClipName string
+	SourceFile   string
+}
+
+// 每个shot是material的一段
 type Shot struct {
 	ShotCode       string
-	ShotNum        string
 	ProjectCode    string
 	MaterialCode   string
-	ShotType       string
-	StartDateTime  string
-	EndDateTime    string
+	LibraryCode    string
+	Picture        string
+	ShotNum        string
+	StartTime      string
+	EndTime        string
 	FromClipName   string
 	SourceFile     string
+	ShotType       string
 	ShotName       string
 	ShotFps        int
 	Width          int
 	Height         int
+	ShotDetail     string
+	EdlCode        string
+	EdlName        string
+	ShotFlag       string
+	UserCode       string
 	Status         int
-	Describe       string
 	InsertDatetime string
 	UpdateDatetime string
 }
@@ -173,14 +189,6 @@ type Version struct {
 	Product        string
 	InsertDatetime string
 	UpdateDatetime string
-}
-type EdlShot struct {
-	ShotNum       string
-	ShotType      string
-	StartDateTime string
-	EndDateTime   string
-	FromClipName  string
-	SourceFile    string
 }
 
 // 需求发给若干个接包方

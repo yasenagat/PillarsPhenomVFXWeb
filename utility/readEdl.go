@@ -27,44 +27,8 @@ func ReadEdl(filePth string) ([]*EdlShot, error) {
 			}
 			s = &EdlShot{}
 			s.ShotNum = string(line[:3])
-			s.StartDateTime = string(line[29:40])
-			s.EndDateTime = string(line[41:52])
-
-			flag += 1
-		} else if string(line[2:6]) == "FROM" {
-			s.FromClipName = strings.TrimSpace(string(line[19:]))
-		} else if string(line[2:8]) == "SOURCE" {
-			s.SourceFile = strings.TrimSpace(string(line[15:]))
-		} else if string(line[0:2]) == "* " {
-			s.ShotType = strings.TrimSpace(string(line[2:]))
-		}
-
-		if err != nil {
-			if err == io.EOF {
-				shots = append(shots, s)
-			}
-			return shots, err
-		}
-	}
-	return shots, nil
-}
-
-func AnalyseEdl(file io.Reader) ([]*EdlShot, error) {
-
-	bfRd := bufio.NewReader(file)
-	var shots []*EdlShot
-	var s *EdlShot
-	flag := 0
-	for {
-		line, err := bfRd.ReadBytes('\n')
-		if v, _ := regexp.MatchString("^[0-9]+$", string(line[:3])); v {
-			if flag > 0 {
-				shots = append(shots, s)
-			}
-			s = &EdlShot{}
-			s.ShotNum = string(line[:3])
-			s.StartDateTime = string(line[29:40])
-			s.EndDateTime = string(line[41:52])
+			s.StartTime = string(line[29:40])
+			s.EndTime = string(line[41:52])
 
 			flag += 1
 		} else if string(line[2:6]) == "FROM" {
