@@ -29,7 +29,6 @@ INSERT INTO user(user_code,password,display_name,picture,email,phone,user_author
 ### 4.2 项目管理--项目列表
 CREATE TABLE `project` (
 	`project_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`user_code` CHAR(32) NOT NULL,
 	`project_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`project_name` VARCHAR(255) NOT NULL,#项目名称
 	`picture` MEDIUMTEXT NOT NULL,#项目缩略图的base64编码
@@ -38,6 +37,7 @@ CREATE TABLE `project` (
 	`start_datetime` TIMESTAMP,#项目开始时间
 	`end_datetime` TIMESTAMP,#项目结束时间
 	`project_detail` VARCHAR(1000) NOT NULL,#项目描述（备注）
+	`user_code` CHAR(32) NOT NULL,
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
@@ -56,8 +56,8 @@ CREATE TABLE `library`(
 	`dpx_path` VARCHAR(1000),#DPX路径
 	`jpg_path` VARCHAR(1000),#Jpg路径
 	`mov_path` VARCHAR(1000),#Mov小样路径
-	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
@@ -86,8 +86,8 @@ CREATE TABLE `material` (
 	`end_edge_timecode` VARCHAR(20) NOT NULL,#止码，格式为00:00:00:00
 	`meta_data` text NOT NULL,#元数据，string JSON
 	`picture` MEDIUMTEXT NOT NULL,#缩略图，Base64编码
-	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
@@ -103,8 +103,8 @@ CREATE TABLE `material_folder`(
 	`father_code` CHAR(32) NOT NULL,#上级代码
 	`leaf_flag` CHAR(1) NOT NULL,#子节点标志，0否，1是
 	`folder_detail` VARCHAR(1000) NOT NULL,#描述
-	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
@@ -118,8 +118,8 @@ CREATE TABLE `material_folder_data`(
 	`data_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`folder_id` INT UNSIGNED NOT NULL,#素材组的ID
 	`material_code` CHAR(32) NOT NULL,#素材的代码
-	`user_code` CHAR(32) NOT NULL,#用户代码
 	`project_code` CHAR(32) NOT NULL,#项目代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
 	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
 	`update_datetime` TIMESTAMP,
@@ -150,7 +150,7 @@ CREATE TABLE `shot` (
     `shot_detail` VARCHAR(500) NOT NULL,#镜头的描述
     `edl_code` CHAR(32),#edl文件生成的code
     `edl_name` VARCHAR(100),#edl文件名称
-    `shot_flag` VARCHAR(10),#edl或者手动添加的标识
+    `shot_flag` VARCHAR(10),#edl(0)或者手动添加(1)的标识
 	`user_code` CHAR(32) NOT NULL,#用户代码
     `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
     `insert_datetime` TIMESTAMP,
@@ -166,11 +166,11 @@ CREATE TABLE `shot_demand` (
     `demand_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
     `shot_code` CHAR(32) NOT NULL,#对应的镜头
     `project_code` CHAR(32) NOT NULL,#项目code
-	`picture` MEDIUMTEXT NOT NULL ,#Base64编码图片
-	`demand_detail` VARCHAR(100) NOT NULL,#需求的内容描述
-	`demand_level` VARCHAR(10) NOT NULL,#需求的优先级
-    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`picture` MEDIUMTEXT,#Base64编码图片
+	`demand_detail` VARCHAR(100),#需求的内容描述
+	`demand_level` TINYINT UNSIGNED,#需求的优先级
     `user_code` CHAR(32) NOT NULL,#用户代码
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
     `update_datetime` TIMESTAMP,
 	PRIMARY KEY (`demand_id`),
@@ -188,8 +188,8 @@ CREATE TABLE `shot_material` (
 	`picture` MEDIUMTEXT NOT NULL ,#Base64编码图片
 	`material_detail` VARCHAR(100) NOT NULL,#需求的内容描述
 	`demand_level` VARCHAR(10) NOT NULL,#需求的优先级
-    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
     `user_code` CHAR(32) NOT NULL,#用户代码
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`insert_datetime` TIMESTAMP,
     `update_datetime` TIMESTAMP,
 	PRIMARY KEY (`demand_id`),
@@ -208,8 +208,8 @@ CREATE TABLE `shot_note` (
 	`note_detail` VARCHAR(1000),#讨论的内容
     `note_type` VARCHAR(100) NOT NULL,#分类
     `note_verson` VARCHAR(100) NOT NULL,#版本
-    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
 	`user_code` CHAR(32) NOT NULL,#用户代码
+    `status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
     `insert_datetime` TIMESTAMP,
     `update_datetime` TIMESTAMP,
 	PRIMARY KEY (`note_id`),
@@ -226,8 +226,8 @@ CREATE TABLE `thumbnail` (
     `thumbnail_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
     `shot_code` CHAR(32) NOT NULL,#对应的镜头
     `thumbnail_image` BLOB NOT NULL,#最大64K
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
     `user_code` CHAR(32) NOT NULL,#用户代码
+    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
 	`insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 	PRIMARY KEY (`thumbnail_id`),
@@ -273,26 +273,8 @@ CREATE TABLE `vendor` (
 
 接包方处理完之后上传到文件夹并在Daily里面进行记录
 
-
-权限管理
-
-制作需求表
-CREATE TABLE `requment`(
-	`requment_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`requment_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-	`shot_code` CHAR(32) NOT NULL,#对应的镜头
-	`important` INT,#优先级
-	`status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-	`thumbnail`BLOB NOT NULL,#最大64K　　存储图片
-	`content` VARCHAR(100),
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`requment_id`),
-	INDEX(`shot_code`),
-	INDEX(`requment_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 版本信息
-CREATE TABLE `version`(
+CREATE TABLE `shot_version`(
 	`version_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`version_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
 	`shot_code` CHAR(32) NOT NULL,#对应的镜头

@@ -134,6 +134,20 @@ type Shot struct {
 	UpdateDatetime string
 }
 
+/* 制作需求 */
+type ShotDemand struct {
+	DemandCode     string
+	ShotCode       string
+	ProjectCode    string
+	Picture        string
+	DemandDetail   string
+	DemandLevel    int
+	UserCode       string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
 // 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
 type Thumbnail struct {
 	ThumbnailCode  string
@@ -151,18 +165,6 @@ type Relation struct {
 	IsShot         bool
 	Content        string //miaoasdf
 	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-/*制作需求 */
-type Requment struct {
-	RequmentCode   string
-	ShotCode       string
-	Important      int
-	Status         int
-	Content        string
-	Image          string
 	InsertDatetime string
 	UpdateDatetime string
 }

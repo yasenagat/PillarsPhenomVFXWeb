@@ -1,7 +1,6 @@
 package postStorage
 
 import (
-	"CGWorldlineWeb/pillarsLog"
 	"PillarsPhenomVFXWeb/mysqlUtility"
 	"PillarsPhenomVFXWeb/utility"
 	"fmt"
@@ -26,6 +25,7 @@ func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot
 		shot.EndTime = edls[i].EndTime
 		shot.EdlCode = edlCode
 		shot.EdlName = edlName
+		shot.ShotFlag = "0"
 		//通过SourceFile关联素材表material_name查信息
 		stmt, err := mysqlUtility.DBConn.Prepare("SELECT material_code, library_code, width, height, timecode_framerate FROM material WHERE status = 0 AND project_code = ? AND material_name = ?")
 		if err != nil {
@@ -43,7 +43,6 @@ func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot
 	return shots, nil
 }
 
-//add a edl file shots start a transaction
 func InsertMultipleShot(userCode string, projectCode string, shots []utility.Shot) error {
 	tx, _ := mysqlUtility.DBConn.Begin()
 	for i := 0; i < len(shots); i++ {
@@ -77,36 +76,50 @@ func QueryShotByShotCode(code *string) (*utility.Shot, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &shot, nil
+	return &s, nil
 }
 
-func UpdateShot(s *utility.Shot) (bool, error) {
+func UpdateShot(s *utility.Shot) error {
 	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE shot SET shot_name = ?, width = ?, height = ?, shot_fps = ?, start_time = ?, end_time = ?, shot_detail = ?, user_code = ?, update_datetime = now() WHERE status = 0 AND shot_code = ?`)
-	if err != nil {
-		pillarsLog.PillarsLogger.Print(err.Error())
-		return false, err
-	}
-	defer stmt.Close()
-	_, err = stmt.Exec(s.ShotName, s.Width, s.Height, s.ShotFps, s.StartTime, s.EndTime, s.ShotDetail, s.UserCode)
-	if err != nil {
-		return false, err
-	}
-
-	return true, err
-}
-
-func ModifyShotName(name *string, userCode *string, code *string) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot` SET shot_name = ?, user_code = ?, update_datetime = now() WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return err
 	}
-	_, err = stmt.Exec(name, userCode, code)
+	defer stmt.Close()
+	_, err = stmt.Exec(s.ShotName, s.Width, s.Height, s.ShotFps, s.StartTime, s.EndTime, s.ShotDetail, s.UserCode, s.ShotCode)
 	if err != nil {
-		stmt.Close()
+		return err
+	}
+
+	return nil
+}
+
+func AddSingleShot(s *utility.Shot) error {
+	stmt, err := mysqlUtility.DBConn.Prepare("INSERT INTO `shot`(shot_code, project_code, shot_type, shot_name, shot_fps, width, height, shot_detail, shot_flag, user_code, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(s.ShotCode, s.ProjectCode, s.ShotType, s.ShotName, s.ShotFps, s.Width, s.Height, s.ShotDetail, s.ShotFlag, s.UserCode, s.Status)
+	if err != nil {
 		return err
 	}
 	return nil
 }
+
+func ModifyShotName(s *utility.Shot) error {
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot` SET shot_name = ?, user_code = ?, update_datetime = now() WHERE status = 0 AND shot_code = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(s.ShotName, s.UserCode, s.ShotCode)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// --------------------------------------------------------------
 
 //cover old shot   start a transaction   code is ProjectCode
 //func CoverMultipleShot(code string, edls []*utility.EdlShot) error {
@@ -150,21 +163,6 @@ func ModifyShotName(name *string, userCode *string, code *string) error {
 //	tx.Commit()
 //	return nil
 //}
-
-func AddSingleShot(shot *utility.Shot) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("INSERT INTO  `shot`(shot_code,project_code,material_code,shot_num,start_time,end_time,clip_name,soure_file,shot_type,shot_name,shot_fps,width,height,status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec(shot.ShotCode, shot.ProjectCode, shot.MaterialCode, shot.ShotNum, shot.StartTime, shot.EndTime, shot.FromClipName, shot.SourceFile,
-		shot.ShotType, shot.ShotName, shot.ShotFps, shot.Width, shot.Height, shot.Status)
-	if err != nil {
-		stmt.Close()
-		return err
-	}
-	return nil
-}
-
 func DeleteSingleShot(code *string) error {
 	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot` SET status=1 WHERE shot_code=?")
 	if err != nil {
@@ -177,7 +175,6 @@ func DeleteSingleShot(code *string) error {
 	}
 	return nil
 }
-
 func QueryShotByProjectCode(code *string) ([]utility.Shot, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code,material_code,shot_num,start_time,end_time,clip_name,soure_file,shot_type,shot_name,shot_fps,width,height,status,insert_datetime,update_datetime FROM `shot` WHERE project_code= ? AND status=0")
 	defer stmt.Close()
