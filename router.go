@@ -57,6 +57,18 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_demand_del", postAction.DeleteDemand)
 	http.HandleFunc("/post_shot_demand_upd", postAction.UpdateDemand)
 	http.HandleFunc("/post_shot_demand_que", postAction.QueryDemands)
+	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
+	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
+
+	//http.HandleFunc("/post_shot_folder", editoralAction.GetFolders)
+	//http.HandleFunc("/post_shot_folder_materials", editoralAction.QueryFolderMaterials)
+	//http.HandleFunc("/post_shot_folder_add", editoralAction.AddFolder)
+	//http.HandleFunc("/post_shot_folder_del", editoralAction.DeleteFolder)
+	//http.HandleFunc("/post_shot_folder_que", editoralAction.QueryFolder)
+	//http.HandleFunc("/post_shot_folder_upd", editoralAction.UpdateFolder)
+	//http.HandleFunc("/post_shot_folder_addfiles", editoralAction.AddFolderFiles)
+	//http.HandleFunc("/post_shot_folder_delfiles", editoralAction.DeleteFolderFiles)
+	//http.HandleFunc("/post_shot_folder_countfiles", editoralAction.CountFolderFiles)
 
 	// ---------------------------- 待实现 ------------------------------
 	http.HandleFunc("/post_shot_del", postAction.ModifyShotName)
@@ -64,8 +76,6 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_material_add", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_material_upd", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_material_del", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_note_que", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_note_add", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_version_que", postAction.ModifyShotName)
 
 	//

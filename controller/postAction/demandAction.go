@@ -101,6 +101,12 @@ func UpdateDemand(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryDemands(w http.ResponseWriter, r *http.Request) {
+	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.DeleteRequment: ioutil.ReadAll(r.Body) failed!")

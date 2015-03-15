@@ -1,6 +1,7 @@
 package postStorage
 
 import (
+	"CGWorldlineWeb/pillarsLog"
 	"PillarsPhenomVFXWeb/mysqlUtility"
 	"PillarsPhenomVFXWeb/utility"
 	"fmt"
@@ -31,13 +32,13 @@ func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot
 		if err != nil {
 			return nil, err
 		}
+		defer stmt.Close()
 		result := stmt.QueryRow(projectCode, shot.SourceFile)
 		err = result.Scan(&shot.MaterialCode, &shot.LibraryCode, &shot.Width, &shot.Height, &shot.ShotFps)
 		if err != nil {
 			return nil, err
 		}
 		shots = append(shots, shot)
-		stmt.Close()
 	}
 
 	return shots, nil
@@ -117,6 +118,31 @@ func ModifyShotName(s *utility.Shot) error {
 		return err
 	}
 	return nil
+}
+
+func FindFolderShots(code string, id string) (*[]utility.MaterialsOut, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT c.material_code, a.material_name, a.material_type, a.material_path, IF(IFNULL(b.dpx_path, 'Y') <> 'Y', 'N', 'Y') AS dpx_path, IF(IFNULL(b.jpg_path, 'Y') <> 'Y', 'N', 'Y') AS jpg_path, IF(IFNULL(b.mov_path, 'Y') <> 'Y', 'N', 'Y') AS mov_path FROM material a, library b, shot_folder_data c WHERE a.library_code = b.library_code AND a.material_code = c.material_code AND a.status = 0 AND b.status = 0 AND c.status = 0 AND c.project_code = ? AND c.folder_id = ? ORDER BY a.update_datetime DESC")
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(code, id)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var materials []utility.MaterialsOut
+	for result.Next() {
+		var m utility.MaterialsOut
+		err = result.Scan(&(m.MaterialCode), &(m.MaterialName), &(m.MaterialType), &(m.MaterialPath), &(m.Length), &(m.DpxPath), &(m.JpgPath), &(m.MovPath))
+		if err != nil {
+			pillarsLog.PillarsLogger.Print(err.Error())
+		}
+		materials = append(materials, m)
+	}
+	return &materials, err
 }
 
 // --------------------------------------------------------------

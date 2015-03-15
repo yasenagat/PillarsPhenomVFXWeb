@@ -45,7 +45,7 @@ type Library struct {
 	UpdateDatetime string
 }
 
-// 所有的Material（素材）及素材的MetaData（元数据）
+// 原始素材
 type Material struct {
 	LibraryCode           string
 	MaterialCode          string
@@ -71,7 +71,7 @@ type Material struct {
 	UpdateDatetime        string
 }
 
-// 用户添加的素材组
+// 用户自定义素材组
 type MaterialFolder struct {
 	FolderCode     string
 	FolderName     string
@@ -85,7 +85,7 @@ type MaterialFolder struct {
 	UpdateDatetime string
 }
 
-// 用户添加的素材组数据
+// 用户自定义素材组数据
 type MaterialFolderData struct {
 	DataCode       string
 	FolderCode     string
@@ -107,7 +107,7 @@ type EdlShot struct {
 	SourceFile   string
 }
 
-// 每个shot是material的一段
+// 镜头,每个shot是material的一段
 type Shot struct {
 	ShotCode       string
 	ProjectCode    string
@@ -125,6 +125,7 @@ type Shot struct {
 	Width          int
 	Height         int
 	ShotDetail     string
+	ShotStatus     string
 	EdlCode        string
 	EdlName        string
 	ShotFlag       string
@@ -134,7 +135,7 @@ type Shot struct {
 	UpdateDatetime string
 }
 
-/* 制作需求 */
+// 镜头制作需求
 type ShotDemand struct {
 	DemandCode     string
 	ShotCode       string
@@ -147,6 +148,49 @@ type ShotDemand struct {
 	InsertDatetime string
 	UpdateDatetime string
 }
+
+// 镜头Note
+type ShotNote struct {
+	NoteCode       string
+	ShotCode       string
+	ProjectCode    string
+	Picture        string
+	NoteDetail     string
+	NoteType       string
+	NoteVerson     string
+	UserCode       string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 用户自定义镜头组
+type ShotFolder struct {
+	FolderCode     string
+	FolderName     string
+	FatherCode     string
+	LeafFlag       string
+	FolderDetail   string
+	UserCode       string
+	ProjectCode    string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 用户自定义镜头组数据
+type ShotFolderData struct {
+	DataCode       string
+	FolderCode     string
+	ShotCode       string
+	UserCode       string
+	ProjectCode    string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+//---------------------- 华丽分割线以下内容尚未使用 -------------------------
 
 // 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
 type Thumbnail struct {
@@ -165,17 +209,6 @@ type Relation struct {
 	IsShot         bool
 	Content        string //miaoasdf
 	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-/*Note  */
-type Note struct {
-	NoteCode       string
-	ShotCode       string
-	Status         int
-	Content        string
-	Image          string
 	InsertDatetime string
 	UpdateDatetime string
 }
