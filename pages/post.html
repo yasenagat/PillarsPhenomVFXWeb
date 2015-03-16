@@ -15,7 +15,7 @@
 <div class="menu">
     <ul>
       <li><a href="#">project</a></li>
-      <li><a href="#">editoral</a></li>
+      <li><a href="#" class="editoralpage">editoral</a></li>
       <li><a href="#">post</a></li>
       <li><a href="#">on-set</a></li>
       <li><a href="#">playback</a></li>
@@ -27,33 +27,13 @@
                 <div class="loadedl">
                     Load EDL
                     <form id="edl-form" class="f1">
-                        <input id="edlfile" type="file" name="file" accept=".edl" onchange="uploadEdl(this)">
+                        <input id="edlfile" type="file" name="file" class="updedl" accept=".edl" onchange="uploadEdl(this)">
                     </form>
                 </div>
         	<div class="groupdiv">
-                <div class="groupcont tree">
-					<script type="text/javascript">
-                    d = new dTree('d');
-                    /*
-                    第一个参数，表示当前节点的ID  epon jpon
-                    第二个参数，表示当前节点的父节点的ID
-                    第三个参数，节点要显示的文字
-                    第四个参数，点击该节点的超链接（注意也可以是某个servlet或是struts应用中的某个.do请求）
-                    第五个参数，鼠标移至该节点时显示的文字
-                    第六个参数，指定点击该节点时在哪个桢中打开超链接
-                    */
-                    d.add(3,-1,'3','','','1');
-                    d.add(4,3,'4','','','1');
-                    d.add(5,4,'5','','','1');
-                    d.add(6,5,'6','','','1');
-                    d.add(7,5,'7','','','1');
-                    d.add(8,5,'8','','','1');
-                    d.add(9,5,'9','','','1');
-                    document.write(d);
-                    </script>
-                </div>
+                <div class="groupcont tree"></div>
             </div>
-            
+
         	<div class="groupdiv">
             	<div class="grouptit">
                 	<span class="tit1">Library</span>
@@ -137,7 +117,7 @@
                         	<img src="">
                         </div>
                     </span>
-                    
+
                 </div>
             </div>
         </div>
@@ -181,9 +161,9 @@
                     <li class="edition">版本</li>
                 </ul>
             </div>
-            
-            
-            
+
+
+
         </div>
         <div class="metadata">
             <div class="basicinfo">
@@ -223,7 +203,7 @@
                 <span class="addmark">+
                 </span>
                 <div class="make">
-                    
+
                 </div>
             </div>
             <div class="materialinfo">
@@ -252,7 +232,7 @@
                                     <li>删除</li>
                                 </ul>
                             </div>
-                            
+
                         </div>
                     </div>
                     <div class="source">
@@ -266,7 +246,7 @@
                                     <li>删除</li>
                                 </ul>
                             </div>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -274,7 +254,7 @@
                     <h2>参考素材</h2>
                     <span class="addmaterial">+</span>
                     <table border="0" width="100%" class="edittable">
-                        
+
                     </table>
                 </div>
             </div>
@@ -288,10 +268,10 @@
                 </div>
             </div>
             <div class="editioninfo">
-                
+
             </div>
 		</div>
-        
+
     </div>
 </div>
 

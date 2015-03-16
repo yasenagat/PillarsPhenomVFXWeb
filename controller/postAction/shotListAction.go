@@ -22,21 +22,21 @@ func GetShotList(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.GetShotList: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	var code string
-	err = json.Unmarshal(data, &code)
+
+	var i interim
+	err = json.Unmarshal(data, &i)
 	if err != nil {
-		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.GetShotList: json.Unmarshal(data, &code) failed!")
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.GetShotList: json.Unmarshal(data, &interim) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
-	if len(code) == 0 {
+	if len(i.ProjectCode) == 0 {
 		u.OutputJson(w, 13, "Error parameter ShotCode", nil)
 		return
 	}
 
-	shotList, err := ps.QueryFolders(&code, &userCode)
+	shotList, err := ps.QueryFolders(&i.ProjectCode, &userCode)
 	if err != nil {
-		u.OutputJson(w, 13, "Query Filetypes failed!", nil)
+		u.OutputJson(w, 14, "Query Filetypes failed!", nil)
 		return
 	}
 

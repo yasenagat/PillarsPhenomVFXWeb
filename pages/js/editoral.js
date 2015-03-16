@@ -266,6 +266,7 @@ $(function(){
 		librarys_ajax(projectCode);
 		filetypes_ajax(projectCode);
 		folders_ajax(projectCode);
+		$(".postpage").attr("href","post.html?code="+projectCode)
 	}
 
 	// All列表点击

@@ -18,13 +18,13 @@ func AddNote(n *utility.ShotNote) error {
 	return nil
 }
 
-func QueryNotes(code *string) (*[]utility.ShotNote, error) {
+func QueryNotes(shotCode *string) (*[]utility.ShotNote, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare("SELECT note_code, picture, note_detail, note_type, note_verson FROM shot_note WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Query(code)
+	result, err := stmt.Query(shotCode)
 	if err != nil {
 		return nil, err
 	}

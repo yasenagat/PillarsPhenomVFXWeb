@@ -44,13 +44,13 @@ func UpdateDemand(d *utility.ShotDemand) error {
 	return nil
 }
 
-func QueryDemands(code *string) (*[]utility.ShotDemand, error) {
+func QueryDemands(shotCode *string) (*[]utility.ShotDemand, error) {
 	stmt, err := mysqlUtility.DBConn.Prepare("SELECT demand_code, picture, demand_detail, demand_level FROM shot_demand WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
-	result, err := stmt.Query(code)
+	result, err := stmt.Query(shotCode)
 	if err != nil {
 		return nil, err
 	}

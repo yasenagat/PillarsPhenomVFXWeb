@@ -49,6 +49,7 @@ func RouterBinding() {
 	http.HandleFunc("/post_upload_edl", postAction.LoadEdlFile)
 
 	// ---------------------------- 尚未测试 ------------------------------
+	http.HandleFunc("/post_shot_list", postAction.QueryShots)
 	http.HandleFunc("/post_shot_que", postAction.QueryShotByShotCode)
 	http.HandleFunc("/post_shot_upd", postAction.UpdateShot)
 	http.HandleFunc("/post_shot_add", postAction.AddShot)
@@ -60,15 +61,15 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
 	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
 
-	//http.HandleFunc("/post_shot_folder", editoralAction.GetFolders)
-	//http.HandleFunc("/post_shot_folder_materials", editoralAction.QueryFolderMaterials)
-	//http.HandleFunc("/post_shot_folder_add", editoralAction.AddFolder)
-	//http.HandleFunc("/post_shot_folder_del", editoralAction.DeleteFolder)
-	//http.HandleFunc("/post_shot_folder_que", editoralAction.QueryFolder)
-	//http.HandleFunc("/post_shot_folder_upd", editoralAction.UpdateFolder)
-	//http.HandleFunc("/post_shot_folder_addfiles", editoralAction.AddFolderFiles)
-	//http.HandleFunc("/post_shot_folder_delfiles", editoralAction.DeleteFolderFiles)
-	//http.HandleFunc("/post_shot_folder_countfiles", editoralAction.CountFolderFiles)
+	http.HandleFunc("/post_shot_folder", postAction.GetShotList)
+	http.HandleFunc("/post_shot_folder_shots", postAction.QueryFolderShots)
+	http.HandleFunc("/post_shot_folder_add", postAction.AddFolder)
+	http.HandleFunc("/post_shot_folder_del", postAction.DeleteFolder)
+	http.HandleFunc("/post_shot_folder_que", postAction.QueryFolder)
+	http.HandleFunc("/post_shot_folder_upd", postAction.UpdateFolder)
+	http.HandleFunc("/post_shot_folder_addfiles", postAction.AddFolderFiles)
+	http.HandleFunc("/post_shot_folder_delfiles", postAction.DeleteFolderFiles)
+	http.HandleFunc("/post_shot_folder_countfiles", postAction.CountFolderFiles)
 
 	// ---------------------------- 待实现 ------------------------------
 	http.HandleFunc("/post_shot_del", postAction.ModifyShotName)

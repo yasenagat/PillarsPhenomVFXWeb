@@ -13,6 +13,11 @@ import (
 	"net/http"
 )
 
+type interim struct {
+	ProjectCode string
+	ShotCode    string
+}
+
 func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
@@ -78,17 +83,50 @@ func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 204, "not find upload file!", nil)
 }
 
+func QueryShots(w http.ResponseWriter, r *http.Request) {
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.QueryShots: ioutil.ReadAll(r.Body) failed!")
+		return
+	}
+	var i interim
+	err = json.Unmarshal(data, &i)
+	if err != nil {
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.QueryShots: json.Unmarshal(data, &ProjectCode) failed!")
+		return
+	}
+	if len(i.ProjectCode) == 0 {
+		u.OutputJson(w, 13, "Parameter ProjectCode failed!", nil)
+		return
+	}
+	shots, err := postStorage.QueryShots(&i.ProjectCode)
+	if shots == nil || err != nil {
+		u.OutputJson(w, 14, "Query shot list failed!", nil)
+		return
+	}
+
+	u.OutputJson(w, 0, "Query shot list success.", shots)
+}
+
 func QueryShotByShotCode(w http.ResponseWriter, r *http.Request) {
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.QueryShotByShotCode: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	var code string
-	json.Unmarshal(data, &code)
-	shot, err := postStorage.QueryShotByShotCode(&code)
+	var i interim
+	err = json.Unmarshal(data, &i)
+	if err != nil {
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.QueryShotByShotCode: json.Unmarshal(data, &ShotCode) failed!")
+		return
+	}
+	if len(i.ShotCode) == 0 {
+		u.OutputJson(w, 13, "Parameter ShotCode failed!", nil)
+		return
+	}
+	shot, err := postStorage.QueryShotByShotCode(&i.ShotCode)
 	if shot == nil || err != nil {
-		u.OutputJson(w, 12, "Query shot failed!", nil)
+		u.OutputJson(w, 14, "Query shot failed!", nil)
 		return
 	}
 	u.OutputJson(w, 0, "Query shot success.", shot)
@@ -196,9 +234,9 @@ func DeleteShot(w http.ResponseWriter, r *http.Request) {
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	var code string
-	json.Unmarshal(data, &code)
-	err = postStorage.DeleteSingleShot(&code)
+	var i interim
+	err = json.Unmarshal(data, &i)
+	err = postStorage.DeleteSingleShot(&i.ProjectCode)
 	if err != nil {
 		u.OutputJson(w, 2, "Read body failed!", nil)
 		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")

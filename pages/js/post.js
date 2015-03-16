@@ -1,7 +1,114 @@
+
+// ---------------------- start ----------------------
+//得到url地址中code参数
+var projectCode = "";
+//url参数获取
+var getUrlParam = function(name){
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	if (r!=null) return unescape(r[2]); return null; //返回参数值
+}
+//上传edl文件
+function uploadEdl(selectFile) {
+	var filename = selectFile.value;
+	var mime = filename.toLowerCase().substr(filename.lastIndexOf("."));
+    if (mime != ".edl") {
+        alert("请选择edl格式的文件上传");
+        selectFile.outerHTML = selectFile.outerHTML;
+        return false;
+    }
+	var form = document.getElementById("edl-form");
+	var edlfile = document.getElementById("edlfile");
+	var files = edlfile.files;
+	var formData = new FormData();
+	for(var i=0; i<files.length; i++){
+		var file = files[i];
+		formData.append("files", file, file.name);
+	}
+	formData.append("ProjectCode", projectCode);
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "post_upload_edl", true);
+	xhr.onload = function(){
+		if(xhr.status === 200){
+			var rs = JSON.parse(xhr.responseText);
+			if(rs.FeedbackCode == 0) {
+				var shotList = JSON.parse(rs.Data);
+				alert(shotList.length+"");
+				// TODO 创建页面内容
+				for (var i=0; i<shotList.length; i++){
+
+				}
+			}else{
+				alert(rs.FeedbackText);
+			}
+		}else{
+			alert("upload error");
+		}
+	}
+	xhr.send(formData);
+}
+//自定义镜头组列表加载
+var folders_ajax = function(pc){
+	$.post("/post_shot_folder",
+		JSON.stringify({ProjectCode: pc}),
+        function(data) {
+            if(data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				d = new dTree('d');
+				//遍历查询,格式为d.add(id,父id,'素材名称','','','1');
+				for(var i=0; i<rs.length; i++){
+					d.add(rs[i]["FolderCode"],rs[i]["FatherCode"],rs[i]["FolderName"],'','','1');
+				}
+				$(".tree").html(d + '');
+				$(".dtree").children("div.dTreeNode").addClass("grouptit");
+			}
+        },
+        "json"
+    );
+}
+//查询"Load EDL"的镜头
+var shots_ajax = function(pc, callback){
+	$.post("/post_shot_list",
+		JSON.stringify({ProjectCode: pc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+
+// ---------------------- End -----------------------
+
 // JavaScript Document
 $(function(){
+	// ---------------------- start ----------------------
+	projectCode = getUrlParam("code");
+	if (projectCode !== ""){
+		$(".editoralpage").attr("href","editoral.html?code=" + projectCode);
+		folders_ajax(projectCode);
+	}else{
+		return;
+	}
+
+	shots_ajax(projectCode, function(data){
+		if(data.FeedbackCode == 0) {
+			var rs = JSON.parse(data.Data);
+			if(rs == null || rs.length === 0){
+				alert("NO Data!");
+				// TODO 没有数据,"Load EDL"可以点击
+				return;
+			}
+			alert(rs.length+"");
+			//rs[0]["ShotCode"]
+			//TODO 有数据,"Load EDL"禁止点击,创建页面镜头视图列表
+		}
+	});
+
+	// ---------------------- End ----------------------
+
+
 	$(".dtree").children("div.dTreeNode").css("background","#e3e3e3");
-	$("#updedl").click();
+
 	//初始化右侧窗口 隐藏
 	$(".metadata").children(".basicinfo").css("display","block");
 	$(".videodiv").on("click",".view",function(){
@@ -64,7 +171,7 @@ $(function(){
 		}
 		//获得当前镜头的镜头名
 		var names = $(this).html().trim();
-		
+
 		$(this).html("<input type='text' class='updlab'>");
 		$(this).children("input").focus();//获得焦点
 		$(this).children("input").val(names);
@@ -75,7 +182,7 @@ $(function(){
 		//获得修改后文本框的文字
 		var names = $(this).val();
 		//TODO 往数据库中根据该code修改该镜头的镜头名称
-		
+
 		//修改页面显示内容
 		$(this).parent().html(names);
 	});
@@ -113,7 +220,7 @@ $(function(){
 	var need = function(code){//制作需求
 		//TODO 根据镜头id查询制作需求list,并遍历
 		var html = "";//要拼接的html
-		
+
 		for(i=0;i<2;i++){
 			var code = (i*1)+1;
 			var imgurl = "";
@@ -122,7 +229,7 @@ $(function(){
 			html += '<div class="piece"><input type="hidden" class="makecode" value="'+code+'"><div class="number">'+length+'<div class="del">X</div></div><div class="news"><div class="imgradius"><img src="'+imgurl+'" width="60" height="60"></div><div class="stage">'+mation+'</div><input type="button" value="编辑" class="edit"></div>                        </div>';
 		}
 		$(".needinfo .make").html(html);
-		
+
 	}
 	var material = function(code){
 		//TODO 根据该镜头code查询该镜头的参考素材列表
@@ -163,7 +270,7 @@ $(function(){
 			var end = $(".basicinfo").find("#endinp").val();//止码
 			var bewrite = $(".basicinfo").find("#bewriteinp").val();//描述
 			//后台保存方法
-			
+
 			//文本框改成字符串
 			$(".basicinfo").find(".names").html(names);
 			$(".basicinfo").find(".size").html(size);
@@ -199,7 +306,7 @@ $(function(){
 		//获得该制作需求code
 		var code =$(this).parent().siblings(".makecode").val();
 		//TODO 从数据库中删除该code
-		
+
 		$(this).parents(".piece").remove();
 	});
 	$(".addmark").click(function(){
@@ -218,14 +325,14 @@ $(function(){
 		//获取当前参考素材的code
 		var code = $(this).parent().attr("name");
 		//TODO 数据库根据该code获取相应的下载地址
-		
+
 	});
 	//参考素材的删除
 	$(".edittable").on("click",".delete",function(){
 		//获取当前参考素材的code
 		var code = $(this).parent().attr("name");
 		//TODO 数据库删除该code
-		
+
 		//删除该页面对应的数据
 		$(this).parents("tr").remove();
 	});
@@ -235,7 +342,7 @@ $(function(){
 		var html = "";
 		for(i=0;i<10;i++){
 			var content =""+i;
-			html += "<div class='newinfo'>"+content+"</div>";	
+			html += "<div class='newinfo'>"+content+"</div>";
 		}
 		$(".noteinfo").find(".chat").html(html);
 	}
@@ -246,7 +353,7 @@ $(function(){
 		//获得镜头code
 		var code = $(".sourceid").val();
 		//TODO 把消息对应该镜头code记录到数据库
-		
+
 		var html = '<div class="newinfo">'+txt+'</div>';
 		//添加到页面
 		$(".chat").append(html);

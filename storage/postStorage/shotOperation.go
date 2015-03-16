@@ -65,15 +65,47 @@ func InsertMultipleShot(userCode string, projectCode string, shots []utility.Sho
 	return nil
 }
 
-func QueryShotByShotCode(code *string) (*utility.Shot, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code, material_code, library_code, shot_num, start_time, end_time, from_clip_name, soure_file, shot_type, shot_name, shot_fps, width, height, edl_code, edl_name, shot_flag FROM `shot` WHERE status = 0 AND shot_code = ?")
+func QueryShots(projectCode *string) (*[]map[string]interface{}, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT a.shot_code, a.shot_name, a.shot_status, a.picture, IF(IFNULL(b.library_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS source_path, IF(IFNULL(b.dpx_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS dpx_path, IF(IFNULL(b.jpg_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS jpg_path, IF(IFNULL(b.mov_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS mov_path FROM shot a LEFT JOIN library b ON a.library_code = b.library_code AND a.status = 0 AND b.status = 0 WHERE a.project_code = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(projectCode)
+	if err != nil {
+		return nil, err
+	}
+	defer result.Close()
+	var shots []map[string]interface{}
+	for result.Next() {
+		var arr [8]interface{}
+		err = result.Scan(&arr[0], &arr[1], &arr[2], &arr[3], &arr[4], &arr[5], &arr[6], &arr[7])
+		if err != nil {
+			return nil, err
+		}
+		s := make(map[string]interface{})
+		s["ShotCode"] = arr[0]
+		s["ShotName"] = arr[1]
+		s["ShotStatus"] = arr[2]
+		s["Picture"] = arr[3]
+		s["SourcePath"] = arr[4]
+		s["DpxPath"] = arr[5]
+		s["JpgPath"] = arr[6]
+		s["MovPath"] = arr[7]
+		shots = append(shots, s)
+	}
+	return &shots, err
+}
+
+func QueryShotByShotCode(shotCode *string) (*utility.Shot, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code, shot_name, width, height, shot_fps, start_time, end_time, shot_status, shot_detail, soure_file, shot_type, shot_flag FROM `shot` WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 	var s utility.Shot
-	result := stmt.QueryRow(code)
-	err = result.Scan(&s.ShotCode, &s.MaterialCode, &s.LibraryCode, &s.ShotNum, &s.StartTime, &s.EndTime, &s.FromClipName, &s.SourceFile, &s.ShotType, &s.ShotName, &s.ShotFps, &s.Width, &s.Height, &s.EdlCode, &s.EdlName, &s.ShotFlag)
+	result := stmt.QueryRow(shotCode)
+	err = result.Scan(&s.ShotCode, &s.ShotName, &s.Width, &s.Height, &s.ShotFps, &s.StartTime, &s.EndTime, &s.ShotStatus, &s.ShotDetail, &s.SourceFile, &s.ShotType, &s.ShotFlag)
 	if err != nil {
 		return nil, err
 	}

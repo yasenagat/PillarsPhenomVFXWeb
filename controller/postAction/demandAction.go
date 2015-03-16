@@ -112,17 +112,17 @@ func QueryDemands(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.DeleteRequment: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	var code string
-	err = json.Unmarshal(data, &code)
+	var i interim
+	err = json.Unmarshal(data, &i)
 	if err != nil {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.DeleteRequment: json.Unmarshal(data, &demand) failed!")
 		return
 	}
 	// TODO 检查传入字段的有效性
 
-	result, err := postStorage.QueryDemands(&code)
+	result, err := postStorage.QueryDemands(&i.ShotCode)
 	if result == nil || err != nil {
-		u.OutputJsonLog(w, 13, "Query ShotDemands failed!", nil, "postAction.QueryDemands: postStorage.QueryReqByShot(&code) failed!")
+		u.OutputJsonLog(w, 13, "Query ShotDemands failed!", nil, "postAction.QueryDemands: postStorage.QueryDemands(&ShotCode) failed!")
 		return
 	}
 
