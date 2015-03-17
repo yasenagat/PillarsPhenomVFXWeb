@@ -48,16 +48,17 @@ func RouterBinding() {
 
 	http.HandleFunc("/post_upload_edl", postAction.LoadEdlFile)
 
-	// ---------------------------- 尚未测试 ------------------------------
+	http.HandleFunc("/post_shot_demand_que", postAction.QueryDemands)
+	http.HandleFunc("/post_shot_updshotname", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_list", postAction.QueryShots)
 	http.HandleFunc("/post_shot_que", postAction.QueryShotByShotCode)
+
+	// ---------------------------- 尚未测试 ------------------------------
 	http.HandleFunc("/post_shot_upd", postAction.UpdateShot)
 	http.HandleFunc("/post_shot_add", postAction.AddShot)
-	http.HandleFunc("/post_shot_updshotname", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_demand_add", postAction.AddDemand)
 	http.HandleFunc("/post_shot_demand_del", postAction.DeleteDemand)
 	http.HandleFunc("/post_shot_demand_upd", postAction.UpdateDemand)
-	http.HandleFunc("/post_shot_demand_que", postAction.QueryDemands)
 	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
 	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
 

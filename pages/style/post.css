@@ -230,6 +230,8 @@
 	width:60px;
 	height:60px;
 	float:left;
+	position:relative;
+	overflow:hidden;
 }
 .imgradius img{
 	border-radius:50%;
@@ -331,12 +333,26 @@
     padding: 10px;
     word-break: break-all;
 }
+.newinfo{
+	background: none repeat scroll 0 0 #ccc;
+    border: 2px solid #999;
+    font-size: 20px;
+    line-height: 22px;
+    margin: 5px;
+    overflow: hidden;
+    padding: 10px;
+    word-break: break-all;
+}
+.newinfo img{
+	width:300px;
+}
 .sendout {
     background: none repeat scroll 0 0 #fff;
     border: 1px solid #999;
     margin-top: 15px;
     overflow: hidden;
     padding: 5px;
+	position:relative;
 }
 .sendout img {
     height: 35px;
@@ -537,6 +553,11 @@
 	right:11px;
 	top:52px;
 }
+.addedit{
+	position:absolute;
+	right:11px;
+	top:52px;
+}
 .make{
 	border: 1px solid #ccc;
     height: 300px;
@@ -555,7 +576,95 @@
 	position:absolute;
 	top:5px;
 	right:5px;
-	height:20px;
-	width:20px;
-	background:#09F;
+	height:0px;
+	width:0px;
+}
+.formdiv1 .size, .formdiv1 .types{
+	width:200px;
+	height:30px;
+	border:2px solid #999;
+}
+.venul{
+	position:relative;
+}
+.addvgr{
+	padding: 0 5px;
+    position: absolute;
+    right: 0;
+}
+.addvgr div{
+	background: none repeat scroll 0 0 #ccc;
+    padding: 0 5px;
+    position: absolute;
+    right: 20px;
+    z-index: 1;
+	display:none;
+	width:150px;
+}
+.vendiv{
+	min-height:400px;
+}
+.addvgr div ul li:hover{
+	cursor:pointer;
+	background:#999;
+}
+.formdiv3,.formdiv4,.formdiv5{
+	background: none repeat scroll 0 0 #fff;
+    display: none;
+    font-size: 20px;
+    overflow: hidden;
+    position: absolute;
+    width: 400px;
+    z-index: 9999;
+}
+.formdiv3 h2,.formdiv4 h2,.formdiv5 h2{
+	font-size:30px;
+	text-align:center;
+	margin-top:10px;
+}
+.formdiv3 [type="text"],.formdiv4 [type="text"],.formdiv5 [type="text"],.explain{
+	border: 2px solid #999;
+    height: 30px;
+    width: 200px;
+}
+#factorysel{
+	width:200px;
+}
+.formdiv6,.formdiv7{
+	background: none repeat scroll 0 0 #fff;
+    display: none;
+    font-size: 20px;
+    overflow: hidden;
+    position: absolute;
+    width: 400px;
+    z-index: 9999;
+}
+.formdiv6 h2,.formdiv7 h2{
+	font-size:30px;
+	text-align:center;
+	margin-top:10px;
+}
+#file_input{
+	position:absolute;
+	left:0;
+	top:0;
+	font-size: 45px;
+	opacity:0;
+	filter: alpha(opacity=0);
+}
+.fileimg{
+	position:absolute;
+	left:5px;
+	top:5px;
+	font-size:30px;
+	height:35px;
+	width:50px;
+	opacity:0;
+	filter: alpha(opacity=0);
+}
+#descrinp{
+	width: 200px;
+	height: 85px;
+}
+
 }

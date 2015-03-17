@@ -96,12 +96,12 @@ func QueryShots(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(i.ProjectCode) == 0 {
-		u.OutputJson(w, 13, "Parameter ProjectCode failed!", nil)
+		u.OutputJsonLog(w, 13, "Parameter ProjectCode failed!", nil, "postAction.QueryShots: Parameter ProjectCode failed!")
 		return
 	}
 	shots, err := postStorage.QueryShots(&i.ProjectCode)
 	if shots == nil || err != nil {
-		u.OutputJson(w, 14, "Query shot list failed!", nil)
+		u.OutputJsonLog(w, 14, "Query shot list failed!", nil, "postAction.QueryShots: QueryShots(&i.ProjectCode) failed!")
 		return
 	}
 
@@ -121,12 +121,12 @@ func QueryShotByShotCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if len(i.ShotCode) == 0 {
-		u.OutputJson(w, 13, "Parameter ShotCode failed!", nil)
+		u.OutputJsonLog(w, 13, "Parameter ShotCode failed!", nil, "postAction.QueryShotByShotCode: Parameter ShotCode failed!")
 		return
 	}
 	shot, err := postStorage.QueryShotByShotCode(&i.ShotCode)
 	if shot == nil || err != nil {
-		u.OutputJson(w, 14, "Query shot failed!", nil)
+		u.OutputJsonLog(w, 14, "Query shot failed!", nil, "postAction.QueryShotByShotCode: QueryShotByShotCode(&i.ShotCode) failed!")
 		return
 	}
 	u.OutputJson(w, 0, "Query shot success.", shot)
@@ -212,7 +212,10 @@ func ModifyShotName(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.ModifyShotName: json.Unmarshal(data, &shot) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(shot.ShotCode) == 0 || len(shot.ShotName) == 0 {
+		u.OutputJson(w, 13, "Parameter ShotName OR ShotCode failed!", nil)
+		return
+	}
 	shot.UserCode = userCode
 
 	err = postStorage.ModifyShotName(&shot)
@@ -243,23 +246,4 @@ func DeleteShot(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	u.OutputJson(w, 0, "Deleteshot success.", nil)
-}
-
-// RECEVE: sourceFile name   RETURN: notes struct  (an Array)
-func QueryShotByProjectCode(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		u.OutputJson(w, 1, "Read body failed!", nil)
-		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
-		return
-	}
-	var name string
-	json.Unmarshal(data, &name)
-	result, err := postStorage.QueryShotByProjectCode(&name)
-	if err != nil {
-		u.OutputJson(w, 2, "Read body failed!", nil)
-		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
-		return
-	}
-	u.OutputJson(w, 0, "Deleteshot success.", result)
 }

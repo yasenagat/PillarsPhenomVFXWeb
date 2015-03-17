@@ -27,17 +27,20 @@ func AddDemand(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.AddDemand: json.Unmarshal(data, &demand) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(demand.ProjectCode) == 0 || len(demand.ShotCode) == 0 || (len(demand.DemandDetail) == 0 && len(demand.Picture) == 0) {
+		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.AddDemand: Parameters Checked failed!")
+		return
+	}
 	demand.DemandCode = *u.GenerateCode(&userCode)
 	demand.UserCode = userCode
 
 	err = postStorage.AddDemand(&demand)
 	if err != nil {
-		u.OutputJsonLog(w, 13, err.Error(), nil, "postAction.AddDemand: postStorage.AddDemand(&demand) failed!")
+		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.AddDemand: postStorage.AddDemand(&demand) failed!")
 		return
 	}
 
-	u.OutputJson(w, 0, "addAction success.", demand)
+	u.OutputJson(w, 0, "Add success.", demand)
 }
 
 func DeleteDemand(w http.ResponseWriter, r *http.Request) {
@@ -88,16 +91,19 @@ func UpdateDemand(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.UpdateDemand: json.Unmarshal(data, &demand) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(demand.DemandCode) == 0 || (len(demand.DemandDetail) == 0 && len(demand.Picture) == 0) {
+		u.OutputJsonLog(w, 13, "Parameter DemandCode Or DemandDetail And Picture failed!", nil, "postAction.UpdateDemand: Parameter DemandCode Or DemandDetail And Picture failed!")
+		return
+	}
 	demand.UserCode = userCode
 
 	err = postStorage.UpdateDemand(&demand)
 	if err != nil {
-		u.OutputJsonLog(w, 13, err.Error(), nil, "postAction.UpdateDemand: postStorage.UpdateDemand(&demand) failed!")
+		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.UpdateDemand: postStorage.UpdateDemand(&demand) failed!")
 		return
 	}
 
-	u.OutputJson(w, 0, "Delete success.", nil)
+	u.OutputJson(w, 0, "Update success.", nil)
 }
 
 func QueryDemands(w http.ResponseWriter, r *http.Request) {
@@ -109,20 +115,23 @@ func QueryDemands(w http.ResponseWriter, r *http.Request) {
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.DeleteRequment: ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.QueryDemands: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
 	var i interim
 	err = json.Unmarshal(data, &i)
 	if err != nil {
-		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.DeleteRequment: json.Unmarshal(data, &demand) failed!")
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.QueryDemands: json.Unmarshal(data, &ShotCode) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(i.ShotCode) == 0 {
+		u.OutputJsonLog(w, 13, "Parameter ShotCode failed!", nil, "postAction.QueryDemands: Parameter ShotCode failed!")
+		return
+	}
 
 	result, err := postStorage.QueryDemands(&i.ShotCode)
 	if result == nil || err != nil {
-		u.OutputJsonLog(w, 13, "Query ShotDemands failed!", nil, "postAction.QueryDemands: postStorage.QueryDemands(&ShotCode) failed!")
+		u.OutputJsonLog(w, 14, "Query ShotDemands failed!", nil, "postAction.QueryDemands: postStorage.QueryDemands(&ShotCode) failed!")
 		return
 	}
 

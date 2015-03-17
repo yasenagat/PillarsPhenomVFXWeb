@@ -1,10 +1,9 @@
 package postStorage
 
 import (
-	"CGWorldlineWeb/pillarsLog"
 	"PillarsPhenomVFXWeb/mysqlUtility"
+	"PillarsPhenomVFXWeb/pillarsLog"
 	"PillarsPhenomVFXWeb/utility"
-	"fmt"
 )
 
 func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot) ([]utility.Shot, error) {
@@ -47,14 +46,14 @@ func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot
 func InsertMultipleShot(userCode string, projectCode string, shots []utility.Shot) error {
 	tx, _ := mysqlUtility.DBConn.Begin()
 	for i := 0; i < len(shots); i++ {
-		stmt, err := tx.Prepare("INSERT INTO `shot`(shot_code, project_code, material_code, library_code, picture, shot_num, start_time, end_time, from_clip_name, soure_file, shot_type, shot_name, shot_fps, width, height, edl_code, edl_name, shot_flag, user_code, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
+		stmt, err := tx.Prepare("INSERT INTO `shot`(shot_code, project_code, material_code, library_code, picture, shot_num, start_time, end_time, from_clip_name, soure_file, shot_type, shot_name, shot_fps, width, height, shot_detail, shot_status, edl_code, edl_name, shot_flag, user_code, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
 		if err != nil {
 			tx.Rollback()
 			return err
 		}
 		defer stmt.Close()
 		s := shots[i]
-		_, err = stmt.Exec(s.ShotCode, projectCode, s.MaterialCode, s.LibraryCode, s.Picture, s.ShotNum, s.StartTime, s.EndTime, s.FromClipName, s.SourceFile, s.ShotType, s.ShotName, s.ShotFps, s.Width, s.Height, s.EdlCode, s.EdlName, s.ShotFlag, userCode, s.Status)
+		_, err = stmt.Exec(s.ShotCode, projectCode, s.MaterialCode, s.LibraryCode, s.Picture, s.ShotNum, s.StartTime, s.EndTime, s.FromClipName, s.SourceFile, s.ShotType, s.ShotName, s.ShotFps, s.Width, s.Height, s.ShotDetail, s.ShotStatus, s.EdlCode, s.EdlName, s.ShotFlag, userCode, s.Status)
 		if err != nil {
 			tx.Rollback()
 			return err
@@ -65,8 +64,19 @@ func InsertMultipleShot(userCode string, projectCode string, shots []utility.Sho
 	return nil
 }
 
-func QueryShots(projectCode *string) (*[]map[string]interface{}, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT a.shot_code, a.shot_name, a.shot_status, a.picture, IF(IFNULL(b.library_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS source_path, IF(IFNULL(b.dpx_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS dpx_path, IF(IFNULL(b.jpg_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS jpg_path, IF(IFNULL(b.mov_path, 'Y') LIKE ('' OR 'Y'), 'N', 'Y') AS mov_path FROM shot a LEFT JOIN library b ON a.library_code = b.library_code AND a.status = 0 AND b.status = 0 WHERE a.project_code = ?")
+type shotOut struct {
+	ShotCode   string
+	ShotName   string
+	ShotStatus string
+	Picture    string
+	SourcePath string
+	DpxPath    string
+	JpgPath    string
+	MovPath    string
+}
+
+func QueryShots(projectCode *string) (*[]shotOut, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT a.shot_code, a.shot_name, a.shot_status, a.picture, IF(b.library_path LIKE '', 'N', 'Y') AS source_path, IF(b.dpx_path LIKE '', 'N', 'Y') AS dpx_path, IF(b.jpg_path LIKE '', 'N', 'Y') AS jpg_path, IF(b.mov_path LIKE '', 'N', 'Y') AS mov_path FROM shot a LEFT JOIN library b ON a.library_code = b.library_code AND a.status = 0 AND b.status = 0 WHERE a.project_code = ?")
 	if err != nil {
 		return nil, err
 	}
@@ -76,23 +86,14 @@ func QueryShots(projectCode *string) (*[]map[string]interface{}, error) {
 		return nil, err
 	}
 	defer result.Close()
-	var shots []map[string]interface{}
+	var shots []shotOut
 	for result.Next() {
-		var arr [8]interface{}
-		err = result.Scan(&arr[0], &arr[1], &arr[2], &arr[3], &arr[4], &arr[5], &arr[6], &arr[7])
+		var so shotOut
+		err = result.Scan(&so.ShotCode, &so.ShotName, &so.ShotStatus, &so.Picture, &so.SourcePath, &so.DpxPath, &so.JpgPath, &so.MovPath)
 		if err != nil {
 			return nil, err
 		}
-		s := make(map[string]interface{})
-		s["ShotCode"] = arr[0]
-		s["ShotName"] = arr[1]
-		s["ShotStatus"] = arr[2]
-		s["Picture"] = arr[3]
-		s["SourcePath"] = arr[4]
-		s["DpxPath"] = arr[5]
-		s["JpgPath"] = arr[6]
-		s["MovPath"] = arr[7]
-		shots = append(shots, s)
+		shots = append(shots, so)
 	}
 	return &shots, err
 }
@@ -232,29 +233,4 @@ func DeleteSingleShot(code *string) error {
 		return err
 	}
 	return nil
-}
-func QueryShotByProjectCode(code *string) ([]utility.Shot, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code,material_code,shot_num,start_time,end_time,clip_name,soure_file,shot_type,shot_name,shot_fps,width,height,status,insert_datetime,update_datetime FROM `shot` WHERE project_code= ? AND status=0")
-	defer stmt.Close()
-	var shots []utility.Shot
-	if err != nil {
-		return shots, err
-	}
-	result, err := stmt.Query(code)
-	defer result.Close()
-	if err != nil {
-		return shots, err
-	}
-
-	if result.Next() {
-		var shot utility.Shot
-		err := result.Scan(&shot.ShotCode, &shot.MaterialCode, &shot.ShotNum, &shot.StartTime, &shot.EndTime, &shot.FromClipName, &shot.SourceFile,
-			&shot.ShotType, &shot.ShotName, &shot.ShotFps, &shot.Width, &shot.Height, &shot.Status, &shot.InsertDatetime, &shot.UpdateDatetime)
-		if err != nil {
-			fmt.Println("the shot result scan appere one error")
-			return shots, err
-		}
-		shots = append(shots, shot)
-	}
-	return shots, nil
 }

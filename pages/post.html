@@ -26,7 +26,7 @@
     	<div class="leftdiv">
                 <div class="loadedl">
                     Load EDL
-                    <form id="edl-form" class="f1">
+                    <form id="edl-form" class="f11">
                         <input id="edlfile" type="file" name="file" class="updedl" accept=".edl" onchange="uploadEdl(this)">
                     </form>
                 </div>
@@ -36,13 +36,27 @@
 
         	<div class="groupdiv">
             	<div class="grouptit">
-                	<span class="tit1">Library</span>
-                    <span class="addbtn" id="addsou">+</span>
+                	<span class="tit1">Vendor</span>
+                    <span class="addbtn" id="addven">+</span>
                 </div>
-                <div class="groupcont">
-                	<ul>
-                    	<li class="li1"><a href="#">20150101</a></li>
-                        <li class="li1">extra</li>
+                <div class="groupcont vendiv">
+                	<ul class="venul">
+                    	<li class="li1" name="1">
+                            <a href="javascript:void(0);">外包商a</a>
+                            <span class="addvgr">
+                            	+
+                                <div>
+	                                <ul>
+                                    	<li class="addlens">添加镜头</li>
+                                        <li class="factory">指定外包商</li>
+                                        <li class="with">描述</li>
+                                        <li class="power">设置权限</li>
+                                        <li class="delfactory">删除</li>
+                                    </ul>
+                                </div>
+                            </span>
+                        </li>
+
                     </ul>
                 </div>
             </div>
@@ -71,52 +85,6 @@
                 缩略图形式：
                 </div>
                 <div class="videodiv">
-                    <span class="videoimg">
-                    	<div class="view">
-                        </div>
-                    	<input type="hidden" id="code" value="1">
-                    	<input class="check" name="checks" type="checkbox" value="1">
-                        <div class="state"></div>
-						<input class="play" type="button" value="回放">
-                        <h2 class="names">素材名</h2>
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<img src="">
-                        </div>
-                    </span>
-                    <span class="videoimg">
-                    	<div class="view">
-                        </div>
-                    	<input type="hidden" id="code" value="2">
-                    	<input class="check" name="checks" type="checkbox" value="1">
-                        <div class="state"></div>
-						<input class="play" type="button" value="回放">
-                        <h2 class="names">素材名</h2>
-                        <div class="downdiv">
-                            <input class="downl" type="button" value="下载">
-                            <span class="disnone">
-                                <ul>
-                                    <li>Source</li>
-                                    <li>DPX</li>
-                                    <li>JPG</li>
-                                    <li>Mov</li>
-                                </ul>
-                            </span>
-                        </div>
-                        <div class="files">
-                        	<img src="">
-                        </div>
-                    </span>
 
                 </div>
             </div>
@@ -263,6 +231,7 @@
                 </div>
                 <div class="sendout">
                     <img id="imgs" src="#">
+					<input type="file" class="fileimg" id="fileimg">
                     <textarea class="textarea" placeholder="输入框"></textarea>
                     <input class="but" type="button" value="发送">
                 </div>
@@ -282,11 +251,17 @@
     <table width="100%" border="0" cellspacing="0" cellpadding="10">
       <tr>
         <td width="30%" align="right">镜头名</td>
-        <td width="70%"><input type="text"></td>
+        <td width="70%"><input type="text" class="name" name="names"></td>
       </tr>
       <tr>
         <td align="right">尺寸</td>
-        <td><input type="text"></td>
+        <td>
+        <select class="size" name="" onChange="selectChange(this.value)">
+        	<option value="1*2">1*2</option>
+            <option value="2*4">2*4</option>
+            <option value="自定义">自定义</option>
+        </select>
+        </td>
       </tr>
       <tr>
         <td align="right">&nbsp;</td>
@@ -294,19 +269,25 @@
       </tr>
       <tr>
         <td align="right">帧速率</td>
-        <td><input type="text"></td>
+        <td><input type="text" class="speed"></td>
       </tr>
       <tr>
         <td align="right">类型</td>
-        <td><input type="text"></td>
+        <td>
+        <select class="types" name="">
+        	<option value="1">类型1</option>
+            <option value="2">类型2</option>
+            <option value="3">类型3</option>
+        </select>
+        </td>
       </tr>
       <tr>
         <td align="right">描述</td>
-        <td><input type="text"></td>
+        <td><input type="text" class="description"></td>
       </tr>
       <tr>
         <td colspan="2" align="center">
-        <input type="button" value="确定" class="subut">
+	    <input type="button" value="确定" class="subut">
         </td>
       </tr>
     </table>
@@ -331,6 +312,133 @@
         <td colspan="2" align="center">
         <input type="button" class="again" value="重置">
         <input type="button" class="submit" value="确定">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+<div class="formdiv3">
+	<form id="f3">
+    <h2>添加外包列表</h2>
+    <table width="100%" border="0" cellspacing="10" cellpadding="0">
+      <tr>
+        <td width="30%" align="right">列表名</td>
+        <td width="70%">
+        <input type="text" id="packinginp">
+        </td>
+      </tr>
+      <tr>
+        <td align="right">描述</td>
+        <td><textarea id="descrinp"></textarea></td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+        	<input type="button" value="确定" class="addvenbut">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+<div class="formdiv4">
+	<form id="f4">
+    <h2>指定外包商</h2>
+    <input type="hidden" class="code" value="">
+    <table width="100%" border="0" cellspacing="10" cellpadding="0">
+      <tr>
+        <td width="30%" align="right">外包商</td>
+        <td width="70%">
+        <select id="factorysel">
+        	<option value="外包商acoda">外包商a</option>
+            <option value="外包商bcodb">外包商b</option>
+            <option value="外包商ccodc">外包商c</option>
+            <option value="外包商dcodd">外包商d</option>
+        </select>
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+        	<input type="button" value="确定" class="addoutsidebut">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+<div class="formdiv5">
+	<form id="f5">
+    <h2>描述信息</h2>
+    <input type="hidden" class="code" value="">
+    <table width="100%" border="0" cellspacing="10" cellpadding="0">
+      <tr height="40">
+        <td width="30%" align="right">描述</td>
+        <td width="60%" class="descrtr">
+
+        </td>
+        <td width="10%">
+        <input class="modify" type="button" value="编辑">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="3" align="center">
+        	<input type="button" value="确定" class="upddescbut">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+<div class="formdiv6">
+	<form id="f6">
+    <h2>外包权限设置</h2>
+    <input type="hidden" class="code" value="">
+    <table width="100%" border="0" cellspacing="10" cellpadding="0">
+      <tr>
+        <td width="30%" align="right"><input name="droit" type="checkbox" value="1"></td>
+        <td width="70%">可查看信息</td>
+      </tr>
+      <tr>
+        <td align="right"><input name="droit" type="checkbox" value="2"></td>
+        <td>可查看小样</td>
+      </tr>
+      <tr>
+        <td align="right"><input name="droit" type="checkbox" value="3"></td>
+        <td>可下载素材</td>
+      </tr>
+      <tr>
+        <td align="right"><input name="droit" type="checkbox" value="4"></td>
+        <td>可上传小样</td>
+      </tr>
+      <tr>
+        <td align="right"><input name="droit" type="checkbox" value="5"></td>
+        <td>可上传成品</td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+        	<input type="button" value="确认" class="yesbut">
+        </td>
+      </tr>
+    </table>
+    </form>
+</div>
+<div class="formdiv7">
+	<form id="f7" name="f7" method="post" enctype="multipart/form-data" action="javascript:upfileSubmit();">
+    <h2>上传参考素材</h2>
+    <input type="hidden" class="code" value="">
+    <table width="100%" border="0" cellspacing="10" cellpadding="0">
+      <tr>
+        <td colspan="2" width="100%" align="center">
+			<input type="file" name="file" id="updata" onchange="upfile(this)">
+        </td>
+      </tr>
+      <tr>
+        <td width="30%" align="right">
+			描述
+        </td>
+        <td width="70%" align="left">
+			<input type="text" class="explain">
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" align="center">
+        	<input type="button" value="确认" class="upfile">
         </td>
       </tr>
     </table>
