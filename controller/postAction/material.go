@@ -5,45 +5,59 @@ import (
 	"PillarsPhenomVFXWeb/storage/postStorage"
 	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
-func AddDemand(w http.ResponseWriter, r *http.Request) {
-	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+func AddShotMaterial(w http.ResponseWriter, r *http.Request) {
+	flag, _ := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 1, "session error!", nil)
 		return
 	}
 
-	data, err := ioutil.ReadAll(r.Body)
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
-		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.AddDemand: ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 12, "parse upload error!", nil, "postAction.AddShotMaterial: r.ParseMultipartForm(32 << 20) failed!")
 		return
 	}
-	var demand u.ShotDemand
-	err = json.Unmarshal(data, &demand)
-	if err != nil {
-		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.AddDemand: json.Unmarshal(data, &demand) failed!")
+	formData := r.MultipartForm
+	projectCode := formData.Value["ProjectCode"][0]
+	if len(projectCode) == 0 {
+		u.OutputJsonLog(w, 13, "Parameter Checked failed!", nil, "postAction.AddShotMaterial: Parameter Checked failed!")
 		return
 	}
-	if len(demand.ProjectCode) == 0 || len(demand.ShotCode) == 0 || (len(demand.DemandDetail) == 0 && len(demand.Picture) == 0) {
-		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.AddDemand: Parameters Checked failed!")
+	files := formData.File["files"]
+	if len(files) > 0 {
+		file, err := files[0].Open()
+		defer file.Close()
+		if err != nil {
+			u.OutputJsonLog(w, 14, "Open upload file failed!", nil, "postAction.AddShotMaterial: Open upload file failed!")
+			return
+		}
+		var path = "./upload/material/" + projectCode + "/" + files[0].Filename
+		out, err := os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0777)
+		if err != nil {
+			u.OutputJsonLog(w, 15, "Create file failed!", nil, "postAction.AddShotMaterial: Create file failed!")
+			return
+		}
+		_, err = io.Copy(out, file)
+		if err != nil {
+			u.OutputJsonLog(w, 16, "Copy file failed!", nil, "postAction.AddShotMaterial: Copy file failed!")
+			return
+		}
+		fmt.Println("--------->")
 		return
 	}
-	demand.DemandCode = *u.GenerateCode(&userCode)
-	demand.UserCode = userCode
 
-	err = postStorage.AddDemand(&demand)
-	if err != nil {
-		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.AddDemand: postStorage.AddDemand(&demand) failed!")
-		return
-	}
-	demand.Picture = "" //图片不需要传回前台,减少返回的数据量
-	u.OutputJson(w, 0, "Add success.", demand)
+	//请求没有文件,返回错误信息
+	u.OutputJson(w, 204, "not find upload file!", nil)
 }
 
-func DeleteDemand(w http.ResponseWriter, r *http.Request) {
+func DeleteShotMaterial(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
@@ -76,7 +90,7 @@ func DeleteDemand(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 0, "Delete success.", nil)
 }
 
-func UpdateDemand(w http.ResponseWriter, r *http.Request) {
+func UpdateShotMaterial(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
@@ -109,7 +123,7 @@ func UpdateDemand(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 0, "Update success.", nil)
 }
 
-func QueryDemands(w http.ResponseWriter, r *http.Request) {
+func QueryShotMaterials(w http.ResponseWriter, r *http.Request) {
 	flag, _ := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
 		http.Redirect(w, r, "/404.html", http.StatusFound)

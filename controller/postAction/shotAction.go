@@ -5,7 +5,6 @@ import (
 	"PillarsPhenomVFXWeb/storage/postStorage"
 	u "PillarsPhenomVFXWeb/utility"
 	"encoding/json"
-	"fmt"
 	"os"
 
 	"io"
@@ -47,7 +46,6 @@ func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
 		}
 		_, err = io.Copy(out, file)
 		if err != nil {
-			fmt.Println("io failed")
 			u.OutputJson(w, 14, "io copy edl file failed!", nil)
 		}
 		// 解析edl文件得到镜头的信息
@@ -84,6 +82,12 @@ func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryShots(w http.ResponseWriter, r *http.Request) {
+	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		u.OutputJson(w, 20, "Session failed!", nil)
+		return
+	}
+
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.QueryShots: ioutil.ReadAll(r.Body) failed!")
@@ -150,16 +154,20 @@ func UpdateShot(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.UpdateShot: json.Unmarshal(data, &shot) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	// TODO 检查传入字段的有效性(需求未能确定非空字段)
+	if len(shot.ShotCode) == 0 || len(shot.ShotName) == 0 {
+		u.OutputJsonLog(w, 13, "Parameter Checked failed!", nil, "postAction.QueryShotByShotCode: Parameter Checked failed!")
+		return
+	}
 	shot.UserCode = userCode
 
 	err = postStorage.UpdateShot(&shot)
 	if err != nil {
-		u.OutputJsonLog(w, 13, err.Error(), nil, "postAction.UpdateShot: postStorage.UpdateShot(&shot) failed!")
+		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.UpdateShot: postStorage.UpdateShot(&shot) failed!")
 		return
 	}
 
-	u.OutputJson(w, 0, "addshot success.", shot)
+	u.OutputJson(w, 0, "Update success.", shot)
 }
 
 func AddShot(w http.ResponseWriter, r *http.Request) {
@@ -180,18 +188,21 @@ func AddShot(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.AddShot: json.Unmarshal(data, &shot) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(shot.ProjectCode) == 0 || len(shot.ShotName) == 0 || len(shot.ShotDetail) == 0 {
+		u.OutputJsonLog(w, 13, "Parameter Checked failed!", nil, "postAction.AddShot: Parameter Checked failed!")
+		return
+	}
 	shot.ShotCode = *u.GenerateCode(&userCode)
 	shot.ShotFlag = "1" // 手动插入镜头的标识
 	shot.UserCode = userCode
 
 	err = postStorage.AddSingleShot(&shot)
 	if err != nil {
-		u.OutputJsonLog(w, 13, err.Error(), nil, "postAction.AddShot: postStorage.AddSingleShot(&shot) failed!")
+		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.AddShot: postStorage.AddSingleShot(&shot) failed!")
 		return
 	}
 
-	u.OutputJson(w, 0, "addshot success.", shot)
+	u.OutputJson(w, 0, "Add success.", shot)
 }
 
 func ModifyShotName(w http.ResponseWriter, r *http.Request) {
@@ -227,23 +238,35 @@ func ModifyShotName(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 0, "ModifyShotName success.", shot)
 }
 
-// ---------------------------------------------------------------------
-
-//shotCode
 func DeleteShot(w http.ResponseWriter, r *http.Request) {
+	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		http.Redirect(w, r, "/404.html", http.StatusFound)
+		return
+	}
+
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		u.OutputJson(w, 1, "Read body failed!", nil)
-		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.DeleteShot: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
-	var i interim
-	err = json.Unmarshal(data, &i)
-	err = postStorage.DeleteSingleShot(&i.ProjectCode)
+	var shot u.Shot
+	err = json.Unmarshal(data, &shot)
 	if err != nil {
-		u.OutputJson(w, 2, "Read body failed!", nil)
-		//pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.DeleteShot: json.Unmarshal(data, &shot) failed!")
 		return
 	}
-	u.OutputJson(w, 0, "Deleteshot success.", nil)
+	if len(shot.ShotCode) == 0 {
+		u.OutputJson(w, 13, "Parameter Checked failed!", nil)
+		return
+	}
+	shot.UserCode = userCode
+
+	err = postStorage.DeleteSingleShot(&shot)
+	if err != nil {
+		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.DeleteShot: postStorage.DeleteSingleShot(&shot) failed!")
+		return
+	}
+
+	u.OutputJson(w, 0, "Delete success.", shot)
 }

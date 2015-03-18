@@ -149,6 +149,22 @@ type ShotDemand struct {
 	UpdateDatetime string
 }
 
+// 镜头参考素材(来源于用户上传)
+type ShotMaterial struct {
+	MaterialCode   string
+	ShotCode       string
+	ProjectCode    string
+	Picture        string
+	MaterialName   string
+	MaterialType   string
+	MaterialDetail string
+	MaterialPath   string
+	UserCode       string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
 // 镜头Note
 type ShotNote struct {
 	NoteCode       string

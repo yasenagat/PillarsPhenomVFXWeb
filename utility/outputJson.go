@@ -21,7 +21,7 @@ func OutputJsonLog(w http.ResponseWriter, ret int, reason string, i interface{},
 	}
 	fmt.Fprintf(w, string(b))
 
-	if ret != 0 {
+	if ret != 0 && logInfo != "" {
 		pillarsLog.PillarsLogger.Print(logInfo)
 	}
 }

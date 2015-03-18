@@ -46,21 +46,27 @@ func RouterBinding() {
 	http.HandleFunc("/editoral_folder_countfiles", editoralAction.CountFolderFiles)
 	http.HandleFunc("/editoral_download_file", downloadAction.DownloadFile)
 
+	//上传edl文件
 	http.HandleFunc("/post_upload_edl", postAction.LoadEdlFile)
-
-	http.HandleFunc("/post_shot_demand_que", postAction.QueryDemands)
+	// 镜头信息的增删改查
+	http.HandleFunc("/post_shot_add", postAction.AddShot)
+	http.HandleFunc("/post_shot_del", postAction.DeleteShot)
+	http.HandleFunc("/post_shot_upd", postAction.UpdateShot)
 	http.HandleFunc("/post_shot_updshotname", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_list", postAction.QueryShots)
 	http.HandleFunc("/post_shot_que", postAction.QueryShotByShotCode)
-
-	// ---------------------------- 尚未测试 ------------------------------
-	http.HandleFunc("/post_shot_upd", postAction.UpdateShot)
-	http.HandleFunc("/post_shot_add", postAction.AddShot)
+	// 镜头制作需求增删改查
 	http.HandleFunc("/post_shot_demand_add", postAction.AddDemand)
 	http.HandleFunc("/post_shot_demand_del", postAction.DeleteDemand)
 	http.HandleFunc("/post_shot_demand_upd", postAction.UpdateDemand)
+	http.HandleFunc("/post_shot_demand_que", postAction.QueryDemands)
+
+	// ---------------------------- 尚未测试 ------------------------------
+
+	// 镜头NOTE增查
 	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
 	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
+	//镜头版本查
 
 	http.HandleFunc("/post_shot_folder", postAction.GetShotList)
 	http.HandleFunc("/post_shot_folder_shots", postAction.QueryFolderShots)
@@ -73,11 +79,13 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_folder_countfiles", postAction.CountFolderFiles)
 
 	// ---------------------------- 待实现 ------------------------------
-	http.HandleFunc("/post_shot_del", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_material_que", postAction.ModifyShotName)
+	// 镜头参考素材增删改查
 	http.HandleFunc("/post_shot_material_add", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_material_upd", postAction.ModifyShotName)
 	http.HandleFunc("/post_shot_material_del", postAction.ModifyShotName)
+	http.HandleFunc("/post_shot_material_upd", postAction.ModifyShotName)
+	http.HandleFunc("/post_shot_material_que", postAction.ModifyShotName)
+
+	//
 	http.HandleFunc("/post_shot_version_que", postAction.ModifyShotName)
 
 	//

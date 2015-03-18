@@ -666,5 +666,6 @@
 	width: 200px;
 	height: 85px;
 }
-
+.size input[type="text"]{
+	width:70px;
 }

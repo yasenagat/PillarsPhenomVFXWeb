@@ -19,7 +19,7 @@ func AddDemand(d *utility.ShotDemand) error {
 }
 
 func DeleteDemand(d *utility.ShotDemand) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot_demand` SET status = 1, user_code = ?, update_datetime = NOW() WHERE demand_code = ?")
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_demand SET status = 1, user_code = ?, update_datetime = NOW() WHERE demand_code = ?")
 	defer stmt.Close()
 	if err != nil {
 		return err
@@ -32,12 +32,15 @@ func DeleteDemand(d *utility.ShotDemand) error {
 }
 
 func UpdateDemand(d *utility.ShotDemand) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_demand SET picture = ?, demand_detail = ?, demand_level = ?, user_code = ?, update_datetime = NOW() WHERE demand_code = ?")
+	// 图片暂时不作为更新内容
+	//stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_demand SET picture = ?, demand_detail = ?, demand_level = ?, user_code = ?, update_datetime = NOW() WHERE demand_code = ?")
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_demand SET demand_detail = ?, demand_level = ?, user_code = ?, update_datetime = NOW() WHERE demand_code = ?")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(d.Picture, d.DemandDetail, d.DemandLevel, d.UserCode, d.DemandCode)
+	//_, err = stmt.Exec(d.Picture, d.DemandDetail, d.DemandLevel, d.UserCode, d.DemandCode)
+	_, err = stmt.Exec(d.DemandDetail, d.DemandLevel, d.UserCode, d.DemandCode)
 	if err != nil {
 		return err
 	}

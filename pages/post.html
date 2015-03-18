@@ -142,13 +142,14 @@
                     </td>
                   </tr>
                   <tr>
-                    <td width="30%" align="right">素材名</td>
+                    <td width="30%" align="right">镜头名</td>
                     <td width="70%" class="names"></td>
                   </tr>
                   <tr>
                     <td align="right">尺寸</td>
-                    <td class="size"></td>
-                  </tr>
+                    <td class="size">
+						<span class="sizeW"></span> X <span class="sizeH"></span>
+					</td>
                   <tr>
                     <td align="right">帧速率</td>
                     <td class="speed"></td>
@@ -275,9 +276,8 @@
         <td align="right">类型</td>
         <td>
         <select class="types" name="">
-        	<option value="1">类型1</option>
-            <option value="2">类型2</option>
-            <option value="3">类型3</option>
+        	<option value="R3D">R3D</option>
+            <option value="ARRIRAW">ARRIRAW</option>
         </select>
         </td>
       </tr>
@@ -425,7 +425,7 @@
     <table width="100%" border="0" cellspacing="10" cellpadding="0">
       <tr>
         <td colspan="2" width="100%" align="center">
-			<input type="file" name="file" id="updata" onchange="upfile(this)">
+			<input type="file" name="file" disabled="disabled" id="updata" onclick="isok()" onchange="upfile(this)">
         </td>
       </tr>
       <tr>
@@ -434,11 +434,6 @@
         </td>
         <td width="70%" align="left">
 			<input type="text" class="explain">
-        </td>
-      </tr>
-      <tr>
-        <td colspan="2" align="center">
-        	<input type="button" value="确认" class="upfile">
         </td>
       </tr>
     </table>

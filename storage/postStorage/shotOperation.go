@@ -4,6 +4,7 @@ import (
 	"PillarsPhenomVFXWeb/mysqlUtility"
 	"PillarsPhenomVFXWeb/pillarsLog"
 	"PillarsPhenomVFXWeb/utility"
+	"errors"
 )
 
 func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot) ([]utility.Shot, error) {
@@ -46,7 +47,7 @@ func EdlShotsToShots(edlName string, projectCode string, edls []*utility.EdlShot
 func InsertMultipleShot(userCode string, projectCode string, shots []utility.Shot) error {
 	tx, _ := mysqlUtility.DBConn.Begin()
 	for i := 0; i < len(shots); i++ {
-		stmt, err := tx.Prepare("INSERT INTO `shot`(shot_code, project_code, material_code, library_code, picture, shot_num, start_time, end_time, from_clip_name, soure_file, shot_type, shot_name, shot_fps, width, height, shot_detail, shot_status, edl_code, edl_name, shot_flag, user_code, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
+		stmt, err := tx.Prepare("INSERT INTO `shot`(shot_code, project_code, material_code, library_code, picture, shot_num, start_time, end_time, from_clip_name, source_file, shot_type, shot_name, shot_fps, width, height, shot_detail, shot_status, edl_code, edl_name, shot_flag, user_code, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
 		if err != nil {
 			tx.Rollback()
 			return err
@@ -69,6 +70,7 @@ type shotOut struct {
 	ShotName   string
 	ShotStatus string
 	Picture    string
+	ShotFlag   string
 	SourcePath string
 	DpxPath    string
 	JpgPath    string
@@ -76,7 +78,7 @@ type shotOut struct {
 }
 
 func QueryShots(projectCode *string) (*[]shotOut, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT a.shot_code, a.shot_name, a.shot_status, a.picture, IF(b.library_path LIKE '', 'N', 'Y') AS source_path, IF(b.dpx_path LIKE '', 'N', 'Y') AS dpx_path, IF(b.jpg_path LIKE '', 'N', 'Y') AS jpg_path, IF(b.mov_path LIKE '', 'N', 'Y') AS mov_path FROM shot a LEFT JOIN library b ON a.library_code = b.library_code AND a.status = 0 AND b.status = 0 WHERE a.project_code = ?")
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT a.shot_code, a.shot_name, a.shot_status, a.picture, a.shot_flag, IF(b.library_path LIKE '', 'N', 'Y') AS source_path, IF(b.dpx_path LIKE '', 'N', 'Y') AS dpx_path, IF(b.jpg_path LIKE '', 'N', 'Y') AS jpg_path, IF(b.mov_path LIKE '', 'N', 'Y') AS mov_path FROM shot a LEFT JOIN library b ON a.library_code = b.library_code AND a.status = b.status WHERE a.status = 0 AND a.project_code = ?")
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +91,7 @@ func QueryShots(projectCode *string) (*[]shotOut, error) {
 	var shots []shotOut
 	for result.Next() {
 		var so shotOut
-		err = result.Scan(&so.ShotCode, &so.ShotName, &so.ShotStatus, &so.Picture, &so.SourcePath, &so.DpxPath, &so.JpgPath, &so.MovPath)
+		err = result.Scan(&so.ShotCode, &so.ShotName, &so.ShotStatus, &so.Picture, &so.ShotFlag, &so.SourcePath, &so.DpxPath, &so.JpgPath, &so.MovPath)
 		if err != nil {
 			return nil, err
 		}
@@ -99,7 +101,7 @@ func QueryShots(projectCode *string) (*[]shotOut, error) {
 }
 
 func QueryShotByShotCode(shotCode *string) (*utility.Shot, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code, shot_name, width, height, shot_fps, start_time, end_time, shot_status, shot_detail, soure_file, shot_type, shot_flag FROM `shot` WHERE status = 0 AND shot_code = ?")
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code, shot_name, width, height, shot_fps, start_time, end_time, shot_status, shot_detail, source_file, shot_type, shot_flag FROM `shot` WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return nil, err
 	}
@@ -114,7 +116,7 @@ func QueryShotByShotCode(shotCode *string) (*utility.Shot, error) {
 }
 
 func UpdateShot(s *utility.Shot) error {
-	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE shot SET shot_name = ?, width = ?, height = ?, shot_fps = ?, start_time = ?, end_time = ?, shot_detail = ?, user_code = ?, update_datetime = now() WHERE status = 0 AND shot_code = ?`)
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot SET shot_name = ?, width = ?, height = ?, shot_fps = ?, start_time = ?, end_time = ?, shot_detail = ?, user_code = ?, update_datetime = NOW() WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return err
 	}
@@ -128,12 +130,12 @@ func UpdateShot(s *utility.Shot) error {
 }
 
 func AddSingleShot(s *utility.Shot) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("INSERT INTO `shot`(shot_code, project_code, shot_type, shot_name, shot_fps, width, height, shot_detail, shot_flag, user_code, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
+	stmt, err := mysqlUtility.DBConn.Prepare("INSERT INTO `shot`(shot_code, project_code, shot_type, shot_name, shot_fps, width, height, shot_detail, shot_flag, user_code, status, insert_datetime, update_datetime, material_code, library_code, picture, shot_num, start_time, end_time, from_clip_name, source_file, shot_status, edl_code, edl_name) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(s.ShotCode, s.ProjectCode, s.ShotType, s.ShotName, s.ShotFps, s.Width, s.Height, s.ShotDetail, s.ShotFlag, s.UserCode, s.Status)
+	_, err = stmt.Exec(s.ShotCode, s.ProjectCode, s.ShotType, s.ShotName, s.ShotFps, s.Width, s.Height, s.ShotDetail, s.ShotFlag, s.UserCode, s.Status, s.MaterialCode, s.LibraryCode, s.Picture, s.ShotNum, s.StartTime, s.EndTime, s.FromClipName, s.SourceFile, s.ShotStatus, s.EdlCode, s.EdlName)
 	if err != nil {
 		return err
 	}
@@ -141,7 +143,7 @@ func AddSingleShot(s *utility.Shot) error {
 }
 
 func ModifyShotName(s *utility.Shot) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot` SET shot_name = ?, user_code = ?, update_datetime = now() WHERE status = 0 AND shot_code = ?")
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot` SET shot_name = ?, user_code = ?, update_datetime = NOW() WHERE status = 0 AND shot_code = ?")
 	if err != nil {
 		return err
 	}
@@ -178,6 +180,23 @@ func FindFolderShots(code string, id string) (*[]utility.MaterialsOut, error) {
 	return &materials, err
 }
 
+func DeleteSingleShot(s *utility.Shot) error {
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot SET status = 1, user_code = ?, update_datetime = NOW() WHERE status = 0 AND shot_flag = '1' AND shot_code = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	rs, err := stmt.Exec(s.UserCode, s.ShotCode)
+	if err != nil {
+		return err
+	}
+	r, err := rs.RowsAffected()
+	if r == 0 || err != nil {
+		return errors.New("No data delete!")
+	}
+	return nil
+}
+
 // --------------------------------------------------------------
 
 //cover old shot   start a transaction   code is ProjectCode
@@ -205,7 +224,7 @@ func FindFolderShots(code string, id string) (*[]utility.MaterialsOut, error) {
 //	stmt2.Close()
 
 //	for i := length - 1; i >= 0; i-- {
-//		stmt, err := tx.Prepare("INSERT INTO  `shot`(shot_code,project_code,material_code,shot_num,start_time,end_time,clip_name,soure_file,shot_type,shot_name,shot_fps,width,height,status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
+//		stmt, err := tx.Prepare("INSERT INTO  `shot`(shot_code,project_code,material_code,shot_num,start_time,end_time,clip_name,source_file,shot_type,shot_name,shot_fps,width,height,status) VALUE(?,?,?,?,?,?,?,?,?,?,?,?,?,?)")
 //		if err != nil {
 //			tx.Rollback()
 //			return err
@@ -222,15 +241,3 @@ func FindFolderShots(code string, id string) (*[]utility.MaterialsOut, error) {
 //	tx.Commit()
 //	return nil
 //}
-func DeleteSingleShot(code *string) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE `shot` SET status=1 WHERE shot_code=?")
-	if err != nil {
-		return err
-	}
-	_, err = stmt.Exec(*code)
-	if err != nil {
-		stmt.Close()
-		return err
-	}
-	return nil
-}
