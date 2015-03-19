@@ -3,6 +3,7 @@
 	2. 添加镜头"帧速率","宽","高"必须录入数字格式
    --------------------------- END -------------------------*/
 
+// ----------------------- modify by chengxz -----------------------start
 //得到url地址中code参数
 var projectCode = "";
 //url参数获取
@@ -11,10 +12,7 @@ var getUrlParam = function(name){
 	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
 	if (r!=null) return unescape(r[2]); return null; //返回参数值
 }
-function isok(){
-	alert("sa");
-	return false;
-}
+
 //上传edl文件
 function uploadEdl(selectFile) {
 	var filename = selectFile.value;
@@ -199,12 +197,14 @@ var createShotPage = function(rs){
 	}
 	$(".videodiv").html(html);
 }
-//上传素材
+
+//上传镜头参考素材
 function uploadMaterial(selectFile) {
+	var code = $(".float").find(".sourceid").val();
+	var detail = $(".explain").val();// 描述
 	var filename = selectFile.value;
-	var mime = filename.substr(filename.lastIndexOf(".")+1);//文件格式
-    var form = document.getElementById("edl-form");
-	var edlfile = document.getElementById("edlfile");
+	var type = filename.substr(filename.lastIndexOf(".")+1);//文件格式
+	var edlfile = document.getElementById("materialfile");
 	var files = edlfile.files;
 	var formData = new FormData();
 	for(var i=0; i<files.length; i++){
@@ -212,19 +212,22 @@ function uploadMaterial(selectFile) {
 		formData.append("files", file, file.name);
 	}
 	formData.append("ProjectCode", projectCode);
+	formData.append("ShotCode", code);
+	formData.append("MaterialType", type);
+	formData.append("MaterialDetail", detail);
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "post_upload_edl", true);
+	xhr.open("POST", "post_shot_material_add", true);
 	xhr.onload = function(){
 		if(xhr.status === 200){
 			var rs = JSON.parse(xhr.responseText);
 			if(rs.FeedbackCode == 0) {
-				var shotList = JSON.parse(rs.Data);
-				if (shotList == null || shotList.length == 0){
-					alert("EDL文件未能获取镜头数据!");
-					return;
-				}
-				createShotPage(shotList);
-			}else{
+				$("#materialfile").attr("disabled", "true");
+				$(".outer").click();
+				$("#f7").find("input").val("");
+				material("");
+			}else if (rs.FeedbackCode == 202) {
+				alert("要上传的文件服务器已经存在!");
+			}else {
 				alert(rs.FeedbackText);
 			}
 		}else{
@@ -233,6 +236,124 @@ function uploadMaterial(selectFile) {
 	}
 	xhr.send(formData);
 }
+//镜头参考素材删除
+var shot_materialdel_ajax = function(mc, callback){
+	$.post("/post_shot_material_del",
+		JSON.stringify({MaterialCode: mc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+//镜头参考素材列表查询
+var shot_materialque_ajax = function(sc, callback){
+	$.post("/post_shot_material_que",
+		JSON.stringify({ShotCode: sc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+
+//镜头NOTE新增
+var shot_noteadd_ajax = function(pc, sc, nd, p, callback){
+	$.post("/post_shot_note_add",
+		JSON.stringify({ProjectCode: pc, ShotCode: sc, NoteDetail: nd, Picture: p}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+//镜头NOTE列表查询
+var shot_noteque_ajax = function(sc, callback){
+	$.post("/post_shot_note_que",
+		JSON.stringify({ShotCode: sc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+
+//左侧树形列表点击
+var folders_click_ajax = function(pc, fi, callback){
+	$.post("/editoral_folder_materials",
+		{ProjectCode: pc, FolderId: fi},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+//列表数据创建
+var fileList_create = function(rs){
+	if (rs == null || rs.length == 0) {
+		return;
+	}
+
+	for(var i=0;i<rs.length;i++){
+		var liInfo = "";
+		if(rs[i]["DpxPath"] == "Y") {
+			liInfo += "<li>DPX</li>";
+		}
+		if(rs[i]["JpgPath"] == "Y") {
+			liInfo += "<li>JPG</li>";
+		}
+		if(rs[i]["MovPath"] == "Y") {
+			liInfo += "<li>Mov</li>";
+		}
+		var html = '<span class="videostr" id="span'+rs[i]["MaterialCode"]+'">';
+		html += '<input type="hidden" class="sourceid" value="'+rs[i]["MaterialCode"]+'">';
+		html += '<input class="check" name="" type="checkbox" value="'+rs[i]["MaterialCode"]+'">';
+		html += '<input class="play" type="button" value="回放">';
+		html += '<div class="downdiv">';
+		html += '<input class="downl" type="button" value="下载">';
+		html += '<span class="disnone">';
+		html += '<ul class="'+rs[i]["MaterialCode"]+'">';
+		html += '<li>Source</li>'+liInfo+'</ul></span>';
+		html += '</div><div class="files">';
+		html += '<span class="name">'+rs[i]["MaterialName"]+'</span>';
+		html += '<span class="format">'+rs[i]["MaterialType"]+'</span>';
+		html += '<span class="long">'+rs[i]["Length"]+'</span></div></span>';
+		$(".strdiv .videodiv").append(html);
+	}
+}
+
+// 自定义分组点击事件
+var li = function(string) {
+	//点击行
+	$("#treeflag").val("1");
+	$(".dtree").find(".dTreeNode").css("background","none");
+	$(".dtree").children("div.dTreeNode").css("background","#E3E3E3");
+	$(".dtree").find("."+string).parent().css("background","#979797");
+	// 查找该分组string的素材,返回素材列表
+	folders_click_ajax(projectCode, string, function(data){
+		if(data.FeedbackCode == 0){
+			var rs = JSON.parse(data.Data);
+			var flag = true;//是否包含素材,包含素材
+			if(rs == null || rs.length == 0){//若列表length为0,flag=false
+				$(".strdiv .videodiv").html("");
+				flag = false;
+			}
+			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
+				$(".strdiv .videodiv").html("");
+				fileList_create(rs);
+			}else if( flag && $("#dd"+string).css("display")=="block"){
+				$("#dd"+string).css("display","none");
+			}else if(!flag && $("#dd"+string).css("display")=="none"){
+				$("#dd"+string).css("display","block");
+			}else if(!flag && $("#dd"+string).css("display")=="block") {
+				$("#dd"+string).css("display","none");
+			}
+		}
+	});
+}
+// ----------------------- modify by chengxz -----------------------start
+
+
 
 // JavaScript Document
 $(function(){
@@ -407,7 +528,8 @@ $(function(){
 			}
 		});
 	}
-	var need = function(code){//制作需求
+	var need = function(code){
+		//制作需求
 		$(".needinfo .make").html("");
 		// 根据镜头id查询制作需求list,并遍历
 		shot_demandlist_ajax(code, function(data){
@@ -429,18 +551,31 @@ $(function(){
 			}
 		});
 	}
+
+	// 镜头参考素材列表加载
 	var material = function(code){
-		//TODO 根据该镜头code查询该镜头的参考素材列表
-		var html = "<tr><td width='25%'>素材名</td><td width='25%'>素材格式</td><td colspan='2'>描述</td></tr>";
-		for(i=0;i<2;i++){
-			var code = i+1;//素材code
-			var names = "素材名"+i;//素材名
-			var layout = "素材格式"+i;//素材格式
-			var depict = "描述"+i;//描述
-			html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
-		}
-		$(".edittable").html(html);
+		$(".edittable").html("");
+		code = $(".float").find(".sourceid").val();
+		// 根据该镜头code查询该镜头的参考素材列表
+		shot_materialque_ajax(code, function(data){
+			if (data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				if (rs == null || rs.length == 0){
+					return;
+				}
+				var html = "<tr><td width='25%'>素材名</td><td width='25%'>素材格式</td><td colspan='2'>描述</td></tr>";
+				for(i=0; i<rs.length; i++){
+					var code = rs[i]["MaterialCode"];//素材code
+					var names = rs[i]["MaterialName"];//素材名
+					var layout = rs[i]["MaterialType"];//素材格式
+					var depict = rs[i]["MaterialDetail"];//描述
+					html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
+				}
+				$(".edittable").html(html);
+			}
+		});
 	}
+
 	//编辑详细信息
 	$("#submits").click(function(){
 		//获得该按钮上的文字 判断该编辑还是直接保存
@@ -572,30 +707,49 @@ $(function(){
 	$(".edittable").on("click",".download",function(){
 		//获取当前参考素材的code
 		var code = $(this).parent().attr("name");
-		//TODO 数据库根据该code获取相应的下载地址
-
+		// 数据库根据该code获取相应的下载地址
+		window.open("/post_shot_material_dow?MaterialCode=" + code);
 	});
 	//参考素材的删除
 	$(".edittable").on("click",".delete",function(){
 		//获取当前参考素材的code
 		var code = $(this).parent().attr("name");
-		//TODO 数据库删除该code
-
-		//删除该页面对应的数据
-		$(this).parents("tr").remove();
+		var temp = $(this);
+		// 数据库删除该code
+		shot_materialdel_ajax(code, function(data){
+			if (data.FeedbackCode == 0) {
+				//删除该页面对应的数据
+				temp.parents("tr").remove();
+			}else{
+				alert("删除失败,请稍后重试!(ErrorCode:" + data.FeedbackCode + ")");
+			}
+		});
 	});
 	//note消息读取
 	var node = function(code){
-		//TODO 根据该镜头code 获得该code的消息列表
-		var html = "";
-		for(i=0;i<10;i++){
-			var content =""+i;
-			html += "<div class='newinfo'>"+content+"</div>";
-		}
-		$(".noteinfo").find(".chat").html(html);
-		var input = document.getElementById("fileimg");
-		input.addEventListener('change', readImg, false);
-		$(".noteinfo").find(".chat").html(html);
+		// 根据该镜头code 获得该code的消息列表
+		shot_noteque_ajax(code, function(data){
+			if (data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				if (rs == null || rs.length == 0){
+					return;
+				}
+				var html = "";
+				for(i=0; i<rs.length; i++){
+					var pic = rs[i]["Picture"];
+					if (pic == "#") {
+						pic = ""
+					}else{
+						pic = "<img src='" + pic + "'><br/>"
+					}
+					html += "<div class='newinfo'>" + pic + rs[i]["NoteDetail"] + "</div>";
+				}
+				$(".noteinfo").find(".chat").html(html);
+				var input = document.getElementById("fileimg");
+				input.addEventListener('change', readImg, false);
+				$(".noteinfo").find(".chat").html(html);
+			}
+		});
 	}
 	//发送消息
 	$(".but").click(function(){
@@ -609,18 +763,20 @@ $(function(){
 			alert("请输入消息内容或图片");
 			return;
 		}
-		var srchtml = "<img src='"+imgsrc+"'>";
-		var html = '<div class="newinfo">'+srchtml+''+txt+'</div>';
-		//TODO 把消息对应该镜头code记录到数据库 消息为news
-		var news = srchtml+txt;
-
-		//添加到页面
-		$(".chat").append(html);
-		//初始化文本框
-		$(".textarea").val("");
-		$("#imgs").attr("src","#");
-		//初始化下拉
-		$(".chat").scrollTop(200000);
+		// 把消息对应该镜头code记录到数据库 消息为news
+		shot_noteadd_ajax(projectCode, code, txt, imgsrc, function(data){
+			if (data.FeedbackCode == 0){
+				var srchtml = "<img src='"+imgsrc+"'><br/>";
+				var html = '<div class="newinfo">'+srchtml+''+txt+'</div>';
+				//添加到页面
+				$(".chat").append(html);
+				//初始化文本框
+				$(".textarea").val("");
+				$("#imgs").attr("src","#");
+				//初始化下拉
+				$(".chat").scrollTop(200000);
+			}
+		});
 	});
 	//根据镜头code 查询版本列表信息
 	var edition = function(code){
@@ -969,30 +1125,15 @@ $(function(){
 		$(".outer").show(500);
 		$(".formdiv7").show(500);
 	});
+	//参考素材描述框焦点
 	$(".explain").blur(function(){
 		if($(this).val()!=""){
-			$("#updata").removeAttr('disabled');
+			$("#materialfile").removeAttr('disabled');
 		}else{
-			$("#updata").attr("disabled","true");
+			$("#materialfile").attr("disabled", "true");
 		}
 	});
-	/*$(".upfile").click(function(){
-		//得到描述内容
-		var explain = $(".explain").val();
-		$("#f7").submit();
-		$(".outer").click();
 
-		//TODO 根据该镜头code查询该镜头的参考素材列表
-		var html = "<tr><td width='25%'>素材名</td><td width='25%'>素材格式</td><td colspan='2'>描述</td></tr>";
-		for(i=0;i<2;i++){
-			var code = i+1;//素材code
-			var names = "素材名"+i;//素材名
-			var layout = "素材格式"+i;//素材格式
-			var depict = "描述"+i;//描述
-			html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
-		}
-		$(".edittable").html(html);
-	});*/
 	//下载
 	$(".videodiv").on("click",".disnone ul li",function(){
 		var source = $(this).html().trim();

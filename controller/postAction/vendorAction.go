@@ -9,26 +9,26 @@ import (
 )
 
 func AddVendor(w http.ResponseWriter, r *http.Request) {
-	data, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		utility.OutputJson(w, 1, "Read body failed!", nil)
-		return
-	}
-	var vender utility.Vendor
-	json.Unmarshal(data, &vender)
-	name := "nVendor"
-	vender.VendorCode = *utility.GenerateCode(&name)
-	err = postStorage.AddVendor(&vender)
-	if err != nil {
-		utility.OutputJson(w, 1, err.Error(), nil)
-		return
-	}
-	result, err := postStorage.QuerySingleNote(&vender.VendorCode)
-	if err != nil {
-		utility.OutputJson(w, 1, err.Error(), nil)
-		return
-	}
-	utility.OutputJson(w, 0, "addAction success.", result)
+	//data, err := ioutil.ReadAll(r.Body)
+	//if err != nil {
+	//	utility.OutputJson(w, 1, "Read body failed!", nil)
+	//	return
+	//}
+	//var vender utility.Vendor
+	//json.Unmarshal(data, &vender)
+	//name := "nVendor"
+	//vender.VendorCode = *utility.GenerateCode(&name)
+	//err = postStorage.AddVendor(&vender)
+	//if err != nil {
+	//	utility.OutputJson(w, 1, err.Error(), nil)
+	//	return
+	//}
+	//result, err := postStorage.QuerySingleNote(&vender.VendorCode)
+	//if err != nil {
+	//	utility.OutputJson(w, 1, err.Error(), nil)
+	//	return
+	//}
+	//utility.OutputJson(w, 0, "addAction success.", result)
 }
 
 /////////////////还要删除关联的镜头！！！！！！！！！！！

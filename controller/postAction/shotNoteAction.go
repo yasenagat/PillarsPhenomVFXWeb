@@ -12,7 +12,7 @@ import (
 func AddNote(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -27,23 +27,26 @@ func AddNote(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.AddNote: json.Unmarshal(data, &note) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(note.ShotCode) == 0 || len(note.ProjectCode) == 0 || (len(note.NoteDetail) == 0 && len(note.Picture) == 0) {
+		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.AddNote: Parameters Checked failed!")
+		return
+	}
 	note.NoteCode = *u.GenerateCode(&userCode)
 	note.UserCode = userCode
 
 	err = postStorage.AddNote(&note)
 	if err != nil {
-		u.OutputJsonLog(w, 13, err.Error(), nil, "postAction.AddNote: postStorage.AddNote(&note) failed!")
+		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.AddNote: postStorage.AddNote(&note) failed!")
 		return
 	}
 
-	u.OutputJson(w, 0, "Add Note success.", note)
+	u.OutputJson(w, 0, "Add success.", nil)
 }
 
 func QueryNotes(w http.ResponseWriter, r *http.Request) {
 	flag, _ := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -58,34 +61,16 @@ func QueryNotes(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.QueryNotes: json.Unmarshal(data, &ShotCode) failed!")
 		return
 	}
-	// TODO 检查传入字段的有效性
+	if len(i.ShotCode) == 0 {
+		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.AddNote: Parameters Checked failed!")
+		return
+	}
 
 	result, err := postStorage.QueryNotes(&i.ShotCode)
 	if result == nil || err != nil {
-		u.OutputJsonLog(w, 13, "Query Notes failed!", nil, "postAction.QueryNotes: postStorage.QueryNotes(&ShotCode) failed!")
+		u.OutputJsonLog(w, 14, "Query Notes failed!", nil, "postAction.QueryNotes: postStorage.QueryNotes(&ShotCode) failed!")
 		return
 	}
 
 	u.OutputJson(w, 0, "Query success.", result)
 }
-
-// ----------------------------------------------------------------
-
-// RECEVE: noteCode   RETURN: nil
-//func DeleteNote(w http.ResponseWriter, r *http.Request) {
-//	data, err := ioutil.ReadAll(r.Body)
-//	if err != nil {
-//		u.OutputJson(w, 1, "Read body failed!", nil)
-//		////pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
-//		return
-//	}
-//	var code string
-//	json.Unmarshal(data, &code)
-//	err = postStorage.DeleteNote(&code)
-//	if err != nil {
-//		u.OutputJson(w, 2, "Read body failed!", nil)
-//		////pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
-//		return
-//	}
-//	u.OutputJson(w, 0, "Delete success.", nil)
-//}

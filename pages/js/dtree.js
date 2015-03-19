@@ -354,6 +354,7 @@ if (!Array.prototype.pop) {
 	}
 };
 
+// ----------------------- modify by chengxz -----------------------start
 //创建素材组
 var folder_add_ajax = function(pc, fn, fc, fd, callback){
 	$.post("/editoral_folder_add",
@@ -429,6 +430,8 @@ var folder_countfiles_ajax = function(pc, fc, callback){
         "json"
     );
 }
+// ----------------------- modify by chengxz -----------------------end
+
 
 $(function(){
 	$(".tree").on("blur",".texinp",function(){

@@ -111,7 +111,7 @@ dTree.prototype.addNode = function(pNode) {
 // Creates the node icon, url and text
 dTree.prototype.node = function(node, nodeId) {
 	if (node.target == "0") { //底层节点
-		var str = '<div class="dTreeNode">' + this.indent(node, nodeId) + '<span class=\'' + node.id + '\'>+<div><ul><li class="addGroup">创建镜头组</li><li class="removeGroup">删除镜头组</li><li class="addMaterial">添加镜头</li><li class="removeMaterial">移除镜头</li><li class="updGroup">修改</li></ul></div></span>'; 
+		var str = '<div class="dTreeNode">' + this.indent(node, nodeId) + '<span class=\'' + node.id + '\'>+<div><ul><li class="addGroup">创建镜头组</li><li class="removeGroup">删除镜头组</li><li class="addMaterial">添加镜头</li><li class="removeMaterial">移除镜头</li><li class="updGroup">修改</li></ul></div></span>';
 	} else { //非底层节点
 		var str = '<div class="dTreeNode">' + this.indent(node, nodeId) + '<span class=\'' + node.id + '\'>+<div><ul><li class="addGroup">创建镜头组</li><li class="removeGroup">删除镜头组</li><li class="addMaterial">添加镜头</li><li class="removeMaterial">移除镜头</li><li class="updGroup">修改</li></ul></div></span>';
 	}
@@ -146,7 +146,7 @@ dTree.prototype.node = function(node, nodeId) {
 	}
 	str += node.name;
 
-	//	if (node.url || ((!this.config.folderLinks || !node.url) && node._hc)) 			
+	//	if (node.url || ((!this.config.folderLinks || !node.url) && node._hc))
 	str += '</a>';
 	str += '</div>';
 	//if (node._hc) {
@@ -173,7 +173,7 @@ dTree.prototype.indent = function(node, nodeId) {
 		} else {str += '<img src="' + ((this.config.useLines) ? ((node._ls) ? this.icon.joinBottom: this.icon.join) : this.icon.empty) + '" alt="" />';
 		}
 	}
-	
+
 	return str;
 };
 
@@ -354,7 +354,86 @@ if (!Array.prototype.pop) {
 	}
 };
 
-$(function() {
+// ----------------------- modify by chengxz -----------------------start
+//新增镜头组
+var folder_add_ajax = function(pc, fn, fc, fd, callback){
+	$.post("/editoral_folder_add",
+		{ProjectCode: pc, FolderName: fn, FatherCode: fc, FolderDetail: fd},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//删除镜头组
+var folder_del_ajax = function(pc, fc, callback){
+	$.post("/editoral_folder_del",
+		{ProjectCode: pc, FolderCode: fc},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//修改镜头组
+var folder_upd_ajax = function(fc, fn, fd, callback){
+	$.post("/editoral_folder_upd",
+		{FolderCode: fc, FolderName: fn, FolderDetail: fd},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//查询镜头组
+var folder_que_ajax = function(fc, callback){
+	$.post("/editoral_folder_que", {FolderCode: fc},
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//镜头组添加素材
+var folder_addfiles_ajax = function(pc, fc, mc, callback){
+	$.post("/editoral_folder_addfiles",
+		JSON.stringify({ProjectCode: pc, FolderCode: fc, MaterialCodes: mc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//镜头组删除素材
+var folder_delfiles_ajax = function(pc, fc, mc, callback){
+	$.post("/editoral_folder_delfiles",
+		JSON.stringify({ProjectCode: pc, FolderCode: fc, MaterialCodes: mc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//镜头组查询是否添加素材
+var folder_countfiles_ajax = function(pc, fc, callback){
+	$.post("/editoral_folder_countfiles",
+		JSON.stringify({ProjectCode: pc, FolderCode: fc,}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+// ----------------------- modify by chengxz -----------------------end
+
+
+$(function(){
 	$(".tree").on("blur",".texinp",function(){
 		var inputstr = $(this).val();//获得文本框内容
 		var inputid = $(this).attr("id");//获得文本框id
@@ -371,169 +450,219 @@ $(function() {
 			$("#dd"+inputid).remove();
 		}
 	});
-	//添加镜头组
-	$(".tree").on("click", ".addGroup",
-	function() {
+	//添加素材组
+	$(".tree").on("click",".addGroup",function(){
 		var nodesize = "";
-		$(".dtree").find(".dTreeNode").each(function() {
-			if (nodesize = "") {
+		$(".tree").find(".dTreeNode").each(function() {
+            if (nodesize = "") {
 				nodesize = $(this).children("span").attr("class");
 			} else {
-				if (nodesize * 1 < $(this).children("span").attr("class") * 1) {
+				if(nodesize*1<$(this).children("span").attr("class")*1){
 					nodesize = $(this).children("span").attr("class");
 				}
-
 			}
-		});
+        });
 		nodesize++;
 		var thisclass = $(this).parents("span").attr("class");
 		//同等级的img 的数量
-		imglength = $(this).parents("span").siblings("img").length + $(this).parents("span").siblings("a").children("img").length;
+		imglength = $(this).parents("span").siblings("img").length +
+					$(this).parents("span").siblings("a").children("img").length;
 		//$(".texinp").focus();
+
 		var height = $(window).height();
 		var width = $(window).width();
-		$(".outer").css({
-			"height": height + "px",
-			"width": width + "px"
-		});
-		$(".formdiv2").css({
-			"left": (width / 2) - 200 + "px",
-			"top": (height / 2) - 100 + "px"
-		});
+		$(".outer").css({"height":height+"px","width":width+"px"});
+		$(".formdiv2").css({"left":(width/2)-200+"px","top":(height/2)-100+"px"});
 		$(".formdiv2").find(".id").val(nodesize);
 		$(".formdiv2").find(".pid").val(thisclass);
 		$(".formdiv2").find(".imgsize").val(imglength);
 		$(".outer").show(500);
 		$(".formdiv2").show(500);
 	});
-	//点击添加镜头组弹窗的确定按钮之后
-	$(".formdiv2").find(".submit").click(function() {
-		var thisclass = $(".formdiv2").find(".pid").val(); //父ID
-		var names = $(".formdiv2").find(".names").val(); //镜头组的名称
-		var depict = $(".formdiv2").find(".depict").val(); //镜头的描述
+	//重置添加素材组表单input
+	$(".formdiv2").find(".again").click(function(){
+		$(".formdiv2").find(":text").val("");
+	})
+	//点击添加素材组弹窗的确定按钮之后
+	$(".formdiv2").find(".submit").click(function(){
+		var thisclass = $(".formdiv2").find(".pid").val();//父ID
+		var names = $(".formdiv2").find(".names").val();//素材组的名称
+		var depict = $(".formdiv2").find(".depict").val();//素材的描述
 		//根据是否有父id判断是添加还是修改,若父ID不等于空则为添加，若父ID等于空则为修改
-		if (thisclass != "") { //添加
-			var imglength = $(".formdiv2").find(".imgsize").val(); //层级关系，界面需要
-			//往后台添加数据,thisclass是父id，names是镜头组的名称，depict是镜头组的描述，添加完成后
-			var nodesize = $(".formdiv2").find(".id").val(); //后台传过来的添加完之后的id
-			var imgstr = "";
-			for (i = 0; i < imglength * 1 + 1; i++) {
-				imgstr += "<img src='img/empty.gif'>";
-			}
-			$("#dd" + thisclass).css("display", "block");
-			$("#dd" + thisclass).append("<div class='dTreeNode'>" + imgstr + "<span class=\'" + nodesize + "\' style='display:;'>+<div><ul><li class='addGroup'>创建镜头组</li><li class='removeGroup'>删除镜头组</li><li class='addMaterial'>添加镜头</li><li class='removeMaterial'>移除镜头</li><li class='updGroup'>修改</li></ul></div></span><a href='javascript:li(" + nodesize + ");' class='node'>" + names + "</a></div><div id=\'dd" + nodesize + "\' class='clip' style='display:block;'></div>");
-		} else { //修改
-			//往后台传数据，thisclass是当前镜头组id，names是当前镜头组名称，depice是镜头的描述
-			//修改完之后，修改该镜头组在树目录中的显示文字
-			var code = $(".formdiv2").find(".id").val();
-			$(".dtree").find("." + code).siblings(".node").html(names);
+		if(thisclass != ""){//添加
+			var imglength = $(".formdiv2").find(".imgsize").val();//层级关系，界面需要
+			// 往后台添加数据,thisclass是父id，names是素材组的名称，depict是素材组的描述，添加完成后
+			folder_add_ajax(projectCode, names, thisclass, depict, function(data){
+				if(data.FeedbackCode == 0){
+					var rs = JSON.parse(data.Data);
+					var nodesize = rs["FolderCode"];//后台传过来的添加完之后的id
+					//rs["FolderName"]
+					var imgstr = "";
+					for (i=0; i<imglength*1+1; i++) {
+						imgstr += "<img src='img/empty.gif'>";
+					}
+					$("#dd"+thisclass).css("display","block");
+					$("#dd"+thisclass).append("<div class='dTreeNode'>"+imgstr+"<span class=\'"+nodesize+"\' style='display:;'>+<div><ul><li class='addGroup'>创建素材组</li><li class='removeGroup'>删除素材组</li><li class='addMaterial'>添加素材</li><li class='removeMaterial'>移除素材</li><li class='updGroup'>修改</li></ul></div></span><a href='javascript:li("+nodesize+");' class='node'>"+rs["FolderName"]+"</a></div><div id=\'dd"+nodesize+"\' class='clip' style='display:block;'></div>");
+				}
+			});
+		}else{//修改
+			// 往后台传数据，thisclass是当前素材组要修改的id，names是当前素材组名称，depice是素材的描述
+			var fid = $(".formdiv2").find(".id").val();
+			folder_upd_ajax(fid, names, depict, function(data){
+				if(data.FeedbackCode == 0){
+					var rs = JSON.parse(data.Data);
+					$(".tree").find("."+rs["FolderCode"]).siblings(".node").html(rs["FolderName"]);
+				}
+			});
 		}
 		$(".outer").hide(500);
 		$(".formdiv2").find(":text").val("");
 		$(".formdiv2").hide(500);
 	});
+
 	//点击右侧加号
-	$(".tree").on("click", "span",
-	function() {
-		if ($(this).children("div").css("display") == "block") {
-			$(this).children("div").css("display", "none");
+	$(".tree").on("click","span",function(){
+		//判断当前菜单是否显示
+		if($(this).children("div").css("display")=="block"){
+			$(this).children("div").css("display","none");
 			return;
 		}
 		//初始化所有span
-		$(".dTreeNode span div").css("display", "none");
-		//得到当前镜头组的id，根据该id，判断该id是否有镜头
-		var code = $(this).attr("class"); //得到当前镜头组的id
-		//根据该id，判断该id是否有镜头
-		var flag = false; //有镜头
-		if (flag) { //如果有镜头，不能添加镜头组
-			$(this).find(".addGroup").css("display", "none");
-		} else {
-			$(this).find(".addGroup").css("display", "block");
-		}
-		//判断该镜头组下拉菜单是否显示
-		if ($(this).children("div").css("display") == 'none') {
-			$(this).children("div").css("display", "inline-block");
-		} else {
-			$(this).children("div").css("display", "none");
-		}
-	});
-	//添加镜头
-	$(".tree").on("click", ".addMaterial",
-	function() {
-		var thiscode = $(this).parents("span").attr("class"); //当前镜头组id
-		//获得当前选中复选框的id
-		var str = "";
-		$('input[class="check"]:checked').each(function() {
-			str += $(this).val() + ",";
+		$(".dTreeNode span div").css("display","none");
+		var code = $(this).attr("class");//得到当前素材组的id
+		//得到当前素材组的id，根据该id，判断该id是否有素材
+
+		var thisDom = $(this);
+		// 根据该id code，求该素材组id是否有素材 有为true
+		//求该素材组id是否有下级目录
+		folder_countfiles_ajax(projectCode, code, function(data){
+			if(data.FeedbackCode == 0){
+				var rs = JSON.parse(data.Data);
+				//rs["IsHaveMaterial"],rs["IsHaveLeaf"],rs["FatherCode"]
+				//alert(rs["IsHaveMaterial"]);
+				// 根据当前组id code 查询该id 的父id是否是-1,赋值给thispid
+				if (rs["FatherCode"]=="-1") {
+					thisDom.find(".removeGroup").css("display","none");
+					thisDom.find(".updGroup").css("display","none");
+				}else{
+					thisDom.find(".removeGroup").css("display","block");
+					thisDom.find(".updGroup").css("display","block");
+				}
+				//rs["IsHaveMaterial"]//该分组包含素材,true是有素材
+				//rs["IsHaveLeaf"]//该分组是否有子目录,true是有
+				if(rs["IsHaveMaterial"])//若该分组包含素材 不能添加素材组 可以添加素材
+				{
+					thisDom.find(".addGroup").css("display","none");
+					thisDom.find(".addMaterial").css("display","block");
+					thisDom.find(".removeMaterial").css("display","block");
+				}
+				//若无素材 没子目录 添加素材 添加组
+				else if(!rs["IsHaveMaterial"]&&!rs["IsHaveLeaf"]){
+					thisDom.find(".addGroup").css("display","block");
+					thisDom.find(".addMaterial").css("display","block");
+					thisDom.find(".removeMaterial").css("display","none");
+				}
+				else if(!rs["IsHaveMaterial"]&&rs["IsHaveLeaf"])//若该分组不包含素材 有子目录 能添加素材组 不可以添加素材
+				{
+					thisDom.find(".addGroup").css("display","block");
+					thisDom.find(".addMaterial").css("display","none");
+					thisDom.find(".removeMaterial").css("display","none");
+				}
+				/*if(rs["IsHaveMaterial"]){//如果有素材，不能添加素材组
+					thisDom.find(".addGroup").css("display","none");
+					thisDom.find(".addMaterial").css("display","none");
+				}else{
+					thisDom.find(".addGroup").css("display","block");
+					if(rs["IsHaveLeaf"]){//如果有下级目录,为true
+						thisDom.find(".addMaterial").css("display","block");
+					}else{
+						thisDom.find(".addMaterial").css("display","none");
+					}
+				}*/
+				//判断该素材组下拉菜单是否显示
+				if(thisDom.children("div").css("display")=='none'){
+					thisDom.children("div").css("display","inline-block");
+				}else{
+					thisDom.children("div").css("display","none");
+				}
+				if($("#treeflag").val()=="0"){
+					thisDom.find(".removeMaterial").css("display","none");
+				}
+			}
 		});
-		if (str == "") {
-			alert("请选中右侧镜头复选框再添加镜头");
+	});
+	//添加素材
+	$(".tree").on("click",".addMaterial",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		//获得当前选中复选框的id
+		var strs = new Array();
+		$('input[class="check"]:checked').each(function(){
+			strs.push($(this).val());
+		});
+		if(strs.length == 0){
+			alert("请选中右侧素材复选框再添加素材");
 			return;
 		}
-		//添加镜头id到该镜头组id，镜头组id是str，镜头id是thiscode
-		alert("镜头组id：" + thiscode + "镜头id：" + str);
-	});
-	//移除镜头
-	$(".tree").on("click", ".removeMaterial",
-	function() {
-		var thiscode = $(this).parents("span").attr("class"); //当前镜头组id
-		//获得当前选中复选框的id
-		var str = "";
-		$('input[class="check"]:checked').each(function() {
-			str += $(this).val() + ",";
+		// 添加素材id到该素材组id,素材组id是thiscode,选中的素材id是strs
+		folder_addfiles_ajax(projectCode, thiscode, strs, function(data){
+			if(data.FeedbackCode == 0){
+				alert("素材添加成功!");
+			}
 		});
-		//从镜头组id中删除选中镜头镜头的id，材组id是str，镜头id是thiscode
-		alert("镜头组id：" + thiscode + "镜头id：" + str);
 	});
-	//删除镜头组
-	$(".tree").on("click", ".removeGroup",
-	function() {
-		var thiscode = $(this).parents("span").attr("class"); //当前镜头组id
-		if (thiscode == "0") {
-			alert("顶级目录不允许删除");
+	//移除素材
+	$(".tree").on("click",".removeMaterial",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		//获得当前选中复选框的id
+		var strs = new Array();
+		$('input[class="check"]:checked').each(function(){
+    		strs.push($(this).val());
+		});
+		if(strs.length==0){
+			alert("请选中素材再删除");
 			return;
 		}
-		if (window.confirm('你确定要删除该分组吗？')) {
-			$(this).parents("span").parent().next("div").remove();
-			$(this).parents("span").parent().remove();
+		// 从素材组id中删除选中素材素材的id:strs
+		folder_delfiles_ajax(projectCode, thiscode, strs, function(data){
+			if(data.FeedbackCode == 0){
+				$('input[class="check"]:checked').each(function(){
+					$("#span"+$(this).val()).remove();
+				});
+			}
+		});
+	});
+	//删除素材组
+	$(".tree").on("click",".removeGroup",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		var del = $(this).parents("span").parent();
+		if(window.confirm('你确定要删除该分组吗？')){
+			// 删除该素材组id thiscode
+			folder_del_ajax(projectCode, thiscode, function(data){
+				if(data.FeedbackCode == 0){
+					del.next("div").remove();
+					del.remove();
+				}
+			});
 		}
-		alert("删除的镜头组id" + thiscode + "，属于该父id的镜头组也要删除");
 	});
 	//修改信息
-	$(".tree").on("click", ".updGroup",
-	function() {
-		var thiscode = $(this).parents("span").attr("class"); //当前镜头组id
-		//根据该镜头组id，查询数据库该镜头组的描述信息，显示到界面
-		var names = "当前镜头组名称";
-		var depict = "当前镜头组描述";
-
-		var height = $(window).height();
-		var width = $(window).width();
-		$(".outer").css({
-			"height": height + "px",
-			"width": width + "px"
+	$(".tree").on("click",".updGroup",function(){
+		var thiscode = $(this).parents("span").attr("class");//当前素材组id
+		// 根据该素材组id，查询数据库该素材组的名称和描述信息，显示到界面文本框
+		folder_que_ajax(thiscode, function(data){
+			if(data.FeedbackCode == 0){
+				var rs = JSON.parse(data.Data);
+				var height = $(window).height();
+				var width = $(window).width();
+				$(".outer").css({"height":height+"px","width":width+"px"});
+				$(".formdiv2").css({"left":(width/2)-200+"px","top":(height/2)-100+"px"});
+				$(".formdiv2").find(".id").val(thiscode);
+				$(".formdiv2").find(".pid").val("");
+				$(".formdiv2").find(".names").val(rs["FolderName"]);
+				$(".formdiv2").find(".depict").val(rs["FolderDetail"]);
+				$(".outer").show(500);
+				$(".formdiv2").show(500);
+			}
 		});
-		$(".formdiv2").css({
-			"left": (width / 2) - 200 + "px",
-			"top": (height / 2) - 100 + "px"
-		});
-		$(".formdiv2").find(".id").val(thiscode);
-		$(".formdiv2").find(".pid").val("");
-		$(".formdiv2").find(".names").val(names);
-		$(".formdiv2").find(".depict").val(depict);
-		$(".outer").show(500);
-		$(".formdiv2").show(500);
 	});
 });
-function li(string) {
-	//判断该镜头组id string是否包含镜头，若包含镜头，下一层不显示，若不包含镜头，下一层显示
-	var flag = false; //是否包含镜头,包含镜头
-	if (flag && $("#dd" + string).css("display") == "none") { //如果包含镜头,且当前目录为隐藏
-	} else if (flag && $("#dd" + string).css("display") == "block") {
-		$("#dd" + string).css("display", "none");
-	} else if (!flag && $("#dd" + string).css("display") == "none") {
-		$("#dd" + string).css("display", "block");
-	} else if (!flag && $("#dd" + string).css("display") == "block") {
-		$("#dd" + string).css("display", "none");
-	}
-}

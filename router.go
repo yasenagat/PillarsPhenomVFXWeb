@@ -60,12 +60,18 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_demand_del", postAction.DeleteDemand)
 	http.HandleFunc("/post_shot_demand_upd", postAction.UpdateDemand)
 	http.HandleFunc("/post_shot_demand_que", postAction.QueryDemands)
-
-	// ---------------------------- 尚未测试 ------------------------------
-
+	// 镜头参考素材增删改查
+	http.HandleFunc("/post_shot_material_add", postAction.AddShotMaterial)
+	http.HandleFunc("/post_shot_material_del", postAction.DeleteShotMaterial)
+	//http.HandleFunc("/post_shot_material_upd", postAction.UpdateShotMaterial) --No USE
+	http.HandleFunc("/post_shot_material_que", postAction.QueryShotMaterials)
+	http.HandleFunc("/post_shot_material_dow", postAction.DownloadShotMaterials)
 	// 镜头NOTE增查
 	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
 	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
+
+	// ---------------------------- 尚未测试 ------------------------------
+
 	//镜头版本查
 
 	http.HandleFunc("/post_shot_folder", postAction.GetShotList)
@@ -79,11 +85,6 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_folder_countfiles", postAction.CountFolderFiles)
 
 	// ---------------------------- 待实现 ------------------------------
-	// 镜头参考素材增删改查
-	http.HandleFunc("/post_shot_material_add", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_material_del", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_material_upd", postAction.ModifyShotName)
-	http.HandleFunc("/post_shot_material_que", postAction.ModifyShotName)
 
 	//
 	http.HandleFunc("/post_shot_version_que", postAction.ModifyShotName)
