@@ -1,7 +1,6 @@
 package postAction
 
 import (
-	"CGWorldlineWeb/pillarsLog"
 	s "PillarsPhenomVFXWeb/session"
 	ps "PillarsPhenomVFXWeb/storage/postStorage"
 	u "PillarsPhenomVFXWeb/utility"
@@ -13,7 +12,7 @@ import (
 func GetShotList(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -45,7 +44,7 @@ func GetShotList(w http.ResponseWriter, r *http.Request) {
 
 func QueryFolderShots(w http.ResponseWriter, r *http.Request) {
 	if !s.CheckAuthority(w, r, "制片") {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 	r.ParseForm()
@@ -88,7 +87,7 @@ func chectString(w http.ResponseWriter, r *http.Request, num int, args []string)
 func AddFolder(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -122,7 +121,7 @@ func AddFolder(w http.ResponseWriter, r *http.Request) {
 
 func DeleteFolder(w http.ResponseWriter, r *http.Request) {
 	if !s.CheckAuthority(w, r, "制片") {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -154,7 +153,7 @@ func DeleteFolder(w http.ResponseWriter, r *http.Request) {
 
 func QueryFolder(w http.ResponseWriter, r *http.Request) {
 	if !s.CheckAuthority(w, r, "制片") {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -182,7 +181,7 @@ func QueryFolder(w http.ResponseWriter, r *http.Request) {
 func UpdateFolder(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -222,28 +221,24 @@ type addFiles struct {
 func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		u.OutputJson(w, 1, "Read body failed!", nil)
-		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.AddFolderFiles: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
 
 	folderFiles := addFiles{}
 	err = json.Unmarshal(data, &folderFiles)
 	if err != nil {
-		u.OutputJson(w, 12, "Pramaters failed!", nil)
-		pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &folderFiles) failed!")
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.AddFolderFiles: json.Unmarshal(data, &interim) failed!")
 		return
 	}
-
 	if len(folderFiles.ProjectCode) == 0 || len(folderFiles.FolderCode) == 0 || len(folderFiles.ShotCodes) == 0 {
-		u.OutputJson(w, 13, "Pramaters failed!", nil)
-		pillarsLog.PillarsLogger.Print("Pramaters failed!")
+		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.AddNote: Parameters Checked failed!")
 		return
 	}
 	temp := "insert"
@@ -269,28 +264,25 @@ func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 func DeleteFolderFiles(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		u.OutputJson(w, 1, "Read body failed!", nil)
-		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.DeleteFolderFiles: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
 
 	af := addFiles{}
 	err = json.Unmarshal(data, &af)
 	if err != nil {
-		u.OutputJson(w, 12, "Pramaters failed!", nil)
-		pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &af) failed!")
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.DeleteFolderFiles: json.Unmarshal(data, &interim) failed!")
 		return
 	}
 
 	if len(af.ProjectCode) == 0 || len(af.FolderCode) == 0 || len(af.ShotCodes) == 0 {
-		u.OutputJson(w, 13, "Pramaters failed!", nil)
-		pillarsLog.PillarsLogger.Print("Pramaters failed!")
+		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.AddNote: Parameters Checked failed!")
 		return
 	}
 	var temp string
@@ -309,28 +301,25 @@ func DeleteFolderFiles(w http.ResponseWriter, r *http.Request) {
 func CountFolderFiles(w http.ResponseWriter, r *http.Request) {
 	flag, _ := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		u.OutputJson(w, 1, "Read body failed!", nil)
-		pillarsLog.PillarsLogger.Print("ioutil.ReadAll(r.Body) failed!")
+		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.CountFolderFiles: ioutil.ReadAll(r.Body) failed!")
 		return
 	}
 
 	af := addFiles{}
 	err = json.Unmarshal(data, &af)
 	if err != nil {
-		u.OutputJson(w, 12, "Pramaters failed!", nil)
-		pillarsLog.PillarsLogger.Print("json.Unmarshal(data, &af) failed!")
+		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.CountFolderFiles: json.Unmarshal(data, &interim) failed!")
 		return
 	}
 
 	if len(af.ProjectCode) == 0 || len(af.FolderCode) == 0 {
-		u.OutputJson(w, 13, "Pramaters failed!", nil)
-		pillarsLog.PillarsLogger.Print("Pramaters failed!")
+		u.OutputJsonLog(w, 13, "Parameters Checked failed!", nil, "postAction.CountFolderFiles: Parameters Checked failed!")
 		return
 	}
 

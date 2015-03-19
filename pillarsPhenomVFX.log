@@ -1,0 +1,2 @@
+2015/03/19 19:49:06 /home/chengxz/Go/src/PillarsPhenomVFXWeb/storage/postStorage/shotFolderOperation.go:56: Error 1146: Table 'PillarsPhenomVFX.shot_folder' doesn't exist
+2015/03/19 19:49:06 /home/chengxz/Go/src/PillarsPhenomVFXWeb/utility/outputJson.go:25: postAction.QueryShots: QueryShots(&i.ProjectCode) failed!
