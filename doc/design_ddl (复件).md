@@ -234,42 +234,6 @@ CREATE TABLE `thumbnail` (
 	INDEX(`shot_code`),
 	INDEX(`thumbnail_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-存储shot（镜头）的左侧列表层级关系表
-CREATE TABLE `relation` (
-    `relation_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `relation_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-    `parent_code` CHAR(32) NOT NULL,#上一层级的code
-	`child_code` CHAR(32) NOT NULL,#　当前的项目code
-    `list_name` VARCHAR(32) NOT NULL,#　当前层级的名字
-    `isShot` BOOLEAN DEFAULT false, # 辅助区分是镜头还是分组的标题
-    `content` VARCHAR(100),#描述
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`relation_id`),
-	INDEX(`parent_code`),
-	INDEX(`relation_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-接下来讲需求发给若干个接包方
-CREATE TABLE `vendor` (
-    `vendor_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-    `vendor_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-    `project_code` CHAR(32) NOT NULL,
-    `vendorName` CHAR(32) NOT NULL,#接包方用户名
-	`open_detail` BOOLEAN DEFAULT false,
-	`open_demo` BOOLEAN DEFAULT false,
-	`down_material` BOOLEAN DEFAULT false,
-	`up_demo` BOOLEAN DEFAULT false,
-	`up_product` BOOLEAN DEFAULT false,
-    `content` VARCHAR(2047) NOT NULL,#对于制作的具体说明
-    `status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
-    `insert_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    `update_datetime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-	PRIMARY KEY (`vendor_id`),
-	INDEX(`shot_code`),
-	INDEX(`vendor_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 接包方处理完之后上传到文件夹并在Daily里面进行记录
 

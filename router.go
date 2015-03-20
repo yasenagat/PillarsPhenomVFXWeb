@@ -69,11 +69,7 @@ func RouterBinding() {
 	// 镜头NOTE增查
 	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
 	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
-
-	// ---------------------------- 尚未测试 ------------------------------
-
-	//镜头版本查
-
+	//镜头自定义分组增删改查,添加删除镜头
 	http.HandleFunc("/post_shot_folder", postAction.GetShotList)
 	http.HandleFunc("/post_shot_folder_shots", postAction.QueryFolderShots)
 	http.HandleFunc("/post_shot_folder_add", postAction.AddFolder)
@@ -83,6 +79,16 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_folder_addfiles", postAction.AddFolderFiles)
 	http.HandleFunc("/post_shot_folder_delfiles", postAction.DeleteFolderFiles)
 	http.HandleFunc("/post_shot_folder_countfiles", postAction.CountFolderFiles)
+
+	// ---------------------------- 尚未测试 ------------------------------
+	//镜头外包商列表增删改查
+	http.HandleFunc("/post_shot_vendor_add", postAction.AddShotVendor)
+	http.HandleFunc("/post_shot_vendor_del", postAction.DeleteShotVendor)
+	http.HandleFunc("/post_shot_vendor_specify", postAction.SpecifyShotVendorUser)
+	http.HandleFunc("/post_shot_vendor_auth", postAction.ModifyShotVendorAuth)
+	http.HandleFunc("/post_shot_vendor_list", postAction.QueryShotVendorList)
+	http.HandleFunc("/user_vendor_list", userAction.GetVendorList)
+	//镜头版本查
 
 	// ---------------------------- 待实现 ------------------------------
 

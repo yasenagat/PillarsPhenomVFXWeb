@@ -24,7 +24,7 @@ func checkFileIsExist(filename string) bool {
 func AddShotMaterial(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		u.OutputJson(w, 1, "session error!", nil)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 
@@ -97,7 +97,7 @@ func AddShotMaterial(w http.ResponseWriter, r *http.Request) {
 func DeleteShotMaterial(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		u.OutputJson(w, 202, "session error!", nil)
+		u.OutputJson(w, 404, "session error!", nil)
 		return
 	}
 

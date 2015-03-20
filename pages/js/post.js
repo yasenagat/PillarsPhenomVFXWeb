@@ -173,8 +173,11 @@ var shot_demandupd_ajax = function(dc, dd, p, callback){
 }
 //创建页面镜头视图列表
 var createShotPage = function(rs){
+	if (rs == null || rs.length == 0) {
+		return;
+	}
 	var html = "";
-	for(i=0;i<rs.length;i++){
+	for(i=0; i<rs.length; i++){
 		var code = rs[i]["ShotCode"];//镜头id
 		var names = rs[i]["ShotName"];//镜头名
 		var pic = rs[i]["Picture"];//图片
@@ -193,7 +196,7 @@ var createShotPage = function(rs){
 		if(rs[i]["MovPath"] == "Y") {
 			liInfo += "<li>Mov</li>";
 		}
-		html += "<span class='videoimg'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div></span>";
+		html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div></span>";
 	}
 	$(".videodiv").html(html);
 }
@@ -230,7 +233,16 @@ function uploadMaterial(selectFile) {
 			}else {
 				alert(rs.FeedbackText);
 			}
-		}else{
+		}else{//查询"Load EDL"的镜头
+var shots_ajax = function(pc, callback){
+	$.post("/post_shot_list",
+		JSON.stringify({ProjectCode: pc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
 			alert("upload error");
 		}
 	}
@@ -280,7 +292,7 @@ var shot_noteque_ajax = function(sc, callback){
 
 //左侧树形列表点击
 var folders_click_ajax = function(pc, fi, callback){
-	$.post("/editoral_folder_materials",
+	$.post("/post_shot_folder_shots",
 		{ProjectCode: pc, FolderId: fi},
         function(data) {
 			callback(data);
@@ -288,41 +300,8 @@ var folders_click_ajax = function(pc, fi, callback){
         "json"
     );
 }
-//列表数据创建
-var fileList_create = function(rs){
-	if (rs == null || rs.length == 0) {
-		return;
-	}
 
-	for(var i=0;i<rs.length;i++){
-		var liInfo = "";
-		if(rs[i]["DpxPath"] == "Y") {
-			liInfo += "<li>DPX</li>";
-		}
-		if(rs[i]["JpgPath"] == "Y") {
-			liInfo += "<li>JPG</li>";
-		}
-		if(rs[i]["MovPath"] == "Y") {
-			liInfo += "<li>Mov</li>";
-		}
-		var html = '<span class="videostr" id="span'+rs[i]["MaterialCode"]+'">';
-		html += '<input type="hidden" class="sourceid" value="'+rs[i]["MaterialCode"]+'">';
-		html += '<input class="check" name="" type="checkbox" value="'+rs[i]["MaterialCode"]+'">';
-		html += '<input class="play" type="button" value="回放">';
-		html += '<div class="downdiv">';
-		html += '<input class="downl" type="button" value="下载">';
-		html += '<span class="disnone">';
-		html += '<ul class="'+rs[i]["MaterialCode"]+'">';
-		html += '<li>Source</li>'+liInfo+'</ul></span>';
-		html += '</div><div class="files">';
-		html += '<span class="name">'+rs[i]["MaterialName"]+'</span>';
-		html += '<span class="format">'+rs[i]["MaterialType"]+'</span>';
-		html += '<span class="long">'+rs[i]["Length"]+'</span></div></span>';
-		$(".strdiv .videodiv").append(html);
-	}
-}
-
-// 自定义分组点击事件
+//自定义分组点击事件
 var li = function(string) {
 	//点击行
 	$("#treeflag").val("1");
@@ -335,12 +314,12 @@ var li = function(string) {
 			var rs = JSON.parse(data.Data);
 			var flag = true;//是否包含素材,包含素材
 			if(rs == null || rs.length == 0){//若列表length为0,flag=false
-				$(".strdiv .videodiv").html("");
+				$(".videodiv").html("");
 				flag = false;
 			}
 			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
 				$(".strdiv .videodiv").html("");
-				fileList_create(rs);
+				createShotPage(rs);
 			}else if( flag && $("#dd"+string).css("display")=="block"){
 				$("#dd"+string).css("display","none");
 			}else if(!flag && $("#dd"+string).css("display")=="none"){
@@ -351,12 +330,85 @@ var li = function(string) {
 		}
 	});
 }
+
+//镜头外包商列表添加
+var vendor_add_ajax = function(pc, vn, vd, callback){
+	$.post("/post_shot_vendor_add",
+		JSON.stringify({ProjectCode: pc, VendorName: vn, VendorDetail: vd}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表删除
+var vendor_del_ajax = function(vc, callback){
+	$.post("/post_shot_vendor_del",
+		JSON.stringify({VendorCode: vc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表指定外包商
+var vendor_specify_ajax = function(vc, vu, callback){
+	$.post("/post_shot_vendor_specify",
+		JSON.stringify({VendorCode: vc, VendorUser: vu}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表设置权限
+var vendor_auth_ajax = function(vc, odl, od, dm, ud, up, callback){
+	$.post("/post_shot_vendor_auth",
+		JSON.stringify({VendorCode: vc, OpenDetail: odl, OpenDemo: od, DownMaterial: dm, UpDemo: ud, UpProduct: up}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表加载
+var vendor_list_ajax = function(pc, callback){
+	$.post("/post_shot_vendor_list",
+		JSON.stringify({ProjectCode: pc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+
+//查询分包商列表
+var user_vendor_ajax = function(callback){
+	$.post("/user_vendor_list","",
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+
 // ----------------------- modify by chengxz -----------------------start
 
 
 
 // JavaScript Document
 $(function(){
+
+	user_vendor_ajax(function(data){
+		if (data.FeedbackCode == 0){
+			var rs = JSON.parse(data.Data);
+			var html = "<option value=''>-- 请选择 --</option>";
+			for(var i = 0; i<rs.length; i++){
+				html += "<option value="+rs[i]["VendorUser"]+">"+rs[i]["UserName"]+"</option>";
+			}
+			$("#factorysel").html(html);
+		}
+	});
 	projectCode = getUrlParam("code");
 	if (projectCode !== ""){
 		$(".editoralpage").attr("href","editoral.html?code=" + projectCode);
@@ -364,6 +416,16 @@ $(function(){
 	}else{
 		return;
 	}
+	vendor_list_ajax(projectCode, function(data){
+		if (data.FeedbackCode == 0) {
+			var rs = JSON.parse(data.Data);
+			var html = "";
+			for(var i = 0; i<rs.length; i++){
+				html +='<li class="li1 li'+rs[i]["VendorCode"]+'" name="'+rs[i]["VendorCode"]+'"><a href="javascript:void(0);">'+rs[i]["VendorName"]+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory" id="'+rs[i]["VendorUser"]+'">指定外包商</li><li class="with">描述<input type="hidden" value="'+rs[i]["VendorDetail"]+'"></li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
+			}
+			$(".vendiv").find(".venul").html(html);
+		}
+	});
 
 	shots_ajax(projectCode, function(data){
 		if(data.FeedbackCode == 0) {
@@ -375,12 +437,22 @@ $(function(){
 			}
 			// 有数据,"Load EDL"禁止点击,创建页面镜头视图列表
 			$(".updedl").css("display","none");
+			$(".loadedl").html("Shot List");
 			createShotPage(rs);
 		}
 	});
 
 	$(".dtree").children("div.dTreeNode").css("background","#e3e3e3");
-
+	$(".loadedl").click(function(){
+		if($(this).html().trim()=="Shot List"){
+			shots_ajax(projectCode, function(data){
+				if(data.FeedbackCode == 0) {
+					var rs = JSON.parse(data.Data);
+					createShotPage(rs);
+				}
+			});
+		}
+	});
 	//初始化右侧窗口 隐藏
 	$(".metadata").children(".basicinfo").css("display","block");
 	$(".videodiv").on("click",".view",function(){
@@ -429,17 +501,7 @@ $(function(){
 			});
 		}
 	});
-	/*var displays = function(){
-		//循环显示镜头
-		var html = "";
-		for(i=0;i<20;i++){
-			var code = i;//镜头id
-			var names = i;//镜头名
-			html += "<span class='videoimg'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+1+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul>                                    <li>Source</li><li>DPX</li><li>JPG</li><li>Mov</li></ul></span></div><div class='files'><img src=''></div></span>";
-		}
-		$(".videodiv").append(html);
-	};
-	displays();*/
+
 	$(".dels").click(function(){
 		//获得当前选中复选框的id
 		var str = "";
@@ -873,12 +935,16 @@ $(function(){
 			return;
 		}
 		//TODO 添加外包商 names 跟描述 descrinp 到数据库 并返回刚添加外包商之后的id
-
-		var code = "5";
-
-		var html = '<li class="li1" name="'+code+'"><a href="javascript:void(0);">'+names+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory">指定外包商</li><li class="with">描述</li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
-		$(".venul").append(html);
-		$(".outer").click();
+		vendor_add_ajax(projectCode, names, descrinp, function(data){
+			if (data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				var code = rs["VendorCode"];
+				// TODO 增加2隐藏字段存储1分包商2描述
+				var html = '<li class="li1 li'+rs[i]["VendorCode"]+'" name="'+code+'"><a href="javascript:void(0);">'+names+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory">指定外包商</li><li class="with">描述</li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
+				$(".venul").append(html);
+				$(".outer").click();
+			}
+		});
 	});
 	$(".venul").on("click",".addlens",function(){
 		var code = $(this).parents(".li1").attr("name");//获得当前组的code
@@ -899,6 +965,11 @@ $(function(){
 		var code = $(this).parents(".li1").attr("name");
 		//code赋给隐藏文本框
 		$(".formdiv4").find(".code").val(code);
+		//获得当前分组绑定的外包商code
+		var vencode = $(this).attr("id");
+		//赋值给隐藏文本框
+		$(".formdiv4").find(".vencode").val(vencode);
+		$("#factorysel").val(vencode);
 		//显示窗口
 		var height = $(window).height();
 		var width = $(window).width();
@@ -918,17 +989,24 @@ $(function(){
 		var listcode = $(".formdiv4").find(".code").val();
 		//获得当前选中外包公司code
 		var company = $(".formdiv4").find("#factorysel").val();
-
+		if(company=="")
+		{
+			alert("请选择外包商");
+			return;
+		}
 		//TODO 设置列表code 外包公司code
-		alert("列表code为"+listcode+"外包公司code为"+company);
-
-		$(".outer").click();
+		vendor_specify_ajax(listcode, company, function(data){
+			if (data.FeedbackCode == 0) {
+				$(".li"+listcode).find(".factory").attr("id",company);
+				$(".outer").click();
+			}
+		});
 	});
 	$(".venul").on("click",".with",function(){
 		//获得列表code
 		var listcode = $(this).parents(".li1").attr("name");
 		//TODO 根据列表code 获得描述信息
-		var description = "这是描述内容";
+		var description = $(this).find("input").val();//"这是描述内容";
 		//赋值列表code给描述页面
 		$(".formdiv5").find(".code").val(listcode);
 		//赋值描述信息给描述页面
@@ -978,6 +1056,7 @@ $(function(){
 		var code = $(this).parents(".li1").attr("name");
 		$(".formdiv6").find(".code").val(code);
 		//TODO 根据该列表id 获取该id权限标识
+
 		var flog = '1,0,1,0,1';
 		var result = flog.split(",");
 		for(var i = 0;i<result.length;i++){
@@ -1007,23 +1086,24 @@ $(function(){
 		//获取当前列表code
 		var code = $(".formdiv6").find(".code").val();
 		//获得当前选中权限的标识
-		var str = "";
+		var str = new Array();
+
 		$('input[name="droit"]').each(function() {
 			if($(this).prop("checked")){
-				str += "1,";
+				str.push(1);
 			}else{
-				str += "0,";
+				str.push(0);
 			}
 		});
-		/*var length = $(".formdiv6").find("input[type='checkbox']").length;
-		alert(length);
-		for(var i = 0;i < length;i++){
-			alert($(".formdiv6").find("input[type='checkbox']").eq(i).attr("checked"));
-		}*/
-		//TODO 当前列表code 和 当前列表权限的标识 str 存到数据库
-		alert("当前列表code为"+code+",当前权限列表的标识为"+str);
-		$(".outer").click();
+		vendor_auth_ajax(code, str[0], str[1], str[2], str[3], str[4], function(data){
+			if (data.FeedbackCode == 0) {
+				$(".outer").click();
+			}
+		});
+
 	});
+
+	//
 	$(".venul").on("click",".delfactory",function(){
 		//获得当前列表code，
 		var code = $(this).parents(".li1").attr("name");
@@ -1033,6 +1113,7 @@ $(function(){
 		//从页面中删除
 		$(this).parents(".li1").remove();
 	});
+	//
 	$(".venul").on("click",".li1 a",function(){
 		//获得当前code
 		var code = $(this).parent().attr("name");
@@ -1041,7 +1122,7 @@ $(function(){
 		for(i=0;i<10;i++){
 			var code = i+"";//镜头code
 			var names = i+"";//镜头名称
-			html += "<span class='videoimg'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+1+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul>                                    <li>Source</li><li>DPX</li><li>JPG</li><li>Mov</li></ul></span></div><div class='files'><img src=''></div></span>";
+			html += "<span class='videoimg' span='"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+1+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul>                                    <li>Source</li><li>DPX</li><li>JPG</li><li>Mov</li></ul></span></div><div class='files'><img src=''></div></span>";
 		}
 		$(".bgimgdiv .videodiv").html(html);
 	});

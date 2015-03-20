@@ -26,8 +26,7 @@ func InsertIntoUser(user *utility.User) (bool, error) {
 }
 
 func DeleteUserByEmail(email *string) (bool, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE user SET status = 1
-		WHERE email = ?`)
+	stmt, err := mysqlUtility.DBConn.Prepare(`UPDATE user SET status = 1 WHERE email = ?`)
 	if err != nil {
 		pillarsLog.PillarsLogger.Print(err.Error())
 		return false, err
@@ -66,7 +65,6 @@ func QueryUserList() (*[]utility.User, error) {
 		i++
 	}
 	return &userList, err
-
 }
 
 func CheckEmailAndPassword(email *string, password *string) (*utility.User, error) {
@@ -204,4 +202,29 @@ func QueryUserCode(email *string) (*string, error) {
 		}
 	}
 	return &user_code, err
+}
+
+//查询外包商列表
+type vendor struct {
+	VendorUser string
+	UserName   string
+}
+
+func QueryVendorUserList() (*[]vendor, error) {
+	result, err := mysqlUtility.DBConn.Query(`SELECT user_code, display_name FROM user WHERE status = 0 AND user_authority = '分包商'`)
+	if err != nil {
+		return nil, err
+	}
+	defer result.Close()
+	var vendorList []vendor
+	for result.Next() {
+		var v vendor
+		err = result.Scan(&(v.VendorUser), &(v.UserName))
+		if err != nil {
+			return nil, err
+		}
+		vendorList = append(vendorList, v)
+	}
+
+	return &vendorList, nil
 }

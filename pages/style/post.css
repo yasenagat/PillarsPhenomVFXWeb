@@ -430,6 +430,7 @@
 	font-size:25px;
 	text-align:center;
 	position:relative;
+	cursor:pointer;
 }
 .outer{
 	background: none repeat scroll 0 0 rgb(0, 0, 0);

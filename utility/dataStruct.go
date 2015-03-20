@@ -25,6 +25,7 @@ type Project struct {
 	StartDatetime  string
 	EndDatetime    string
 	ProjectDetail  string
+	UserCode       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -38,8 +39,8 @@ type Library struct {
 	DpxPath        string
 	JpgPath        string
 	MovPath        string
-	UserCode       string
 	ProjectCode    string
+	UserCode       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -64,8 +65,8 @@ type Material struct {
 	EndEdgeTimecode       string
 	MetaData              string
 	Picture               string
-	UserCode              string
 	ProjectCode           string
+	UserCode              string
 	Status                int
 	InsertDatetime        string
 	UpdateDatetime        string
@@ -78,8 +79,8 @@ type MaterialFolder struct {
 	FatherCode     string
 	LeafFlag       string
 	FolderDetail   string
-	UserCode       string
 	ProjectCode    string
+	UserCode       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -90,8 +91,8 @@ type MaterialFolderData struct {
 	DataCode       string
 	FolderCode     string
 	MaterialCode   string
-	UserCode       string
 	ProjectCode    string
+	UserCode       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -187,8 +188,8 @@ type ShotFolder struct {
 	FatherCode     string
 	LeafFlag       string
 	FolderDetail   string
-	UserCode       string
 	ProjectCode    string
+	UserCode       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -199,8 +200,26 @@ type ShotFolderData struct {
 	DataCode       string
 	FolderCode     string
 	ShotCode       string
-	UserCode       string
 	ProjectCode    string
+	UserCode       string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 镜头分配外包商列表
+type ShotVendor struct {
+	VendorCode     string
+	ProjectCode    string
+	VendorUser     string
+	VendorName     string
+	VendorDetail   string
+	OpenDetail     int
+	OpenDemo       int
+	DownMaterial   int
+	UpDemo         int
+	UpProduct      int
+	UserCode       string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
@@ -238,22 +257,6 @@ type Version struct {
 	Image          string /*缩略图*/
 	Demo           string
 	Product        string
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-// 需求发给若干个接包方
-type Vendor struct {
-	VendorCode     string
-	ProjectCode    string
-	VendorName     string
-	OpenDetail     bool
-	OpenDemo       bool
-	DownMaterial   bool
-	UpDemo         bool
-	UpProduct      bool
-	Content        string
-	Status         int
 	InsertDatetime string
 	UpdateDatetime string
 }

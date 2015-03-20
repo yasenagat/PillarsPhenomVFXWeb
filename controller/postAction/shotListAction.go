@@ -53,12 +53,10 @@ func QueryFolderShots(w http.ResponseWriter, r *http.Request) {
 		u.OutputJson(w, 1, "Error parameter format", nil)
 		return
 	}
-
 	if len(r.Form["ProjectCode"][0]) == 0 {
 		u.OutputJson(w, 12, "Error parameter ProjectCode", nil)
 		return
 	}
-
 	if len(r.Form["FolderId"][0]) == 0 {
 		u.OutputJson(w, 13, "Error parameter FolderId", nil)
 		return
@@ -66,7 +64,7 @@ func QueryFolderShots(w http.ResponseWriter, r *http.Request) {
 
 	materials, err := ps.FindFolderShots(r.Form["ProjectCode"][0], r.Form["FolderId"][0])
 	if err != nil {
-		u.OutputJson(w, 13, "Find Shots failed!", nil)
+		u.OutputJson(w, 14, "Find Shots failed!", nil)
 		return
 	}
 

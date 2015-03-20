@@ -252,3 +252,25 @@ CREATE TABLE `shot_folder_data`(
 	INDEX(`data_code`),
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+### 4.4 视效镜头管理(Post)--外包列表,分配镜头给外包商
+CREATE TABLE `shot_vendor` (
+	`vendor_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`vendor_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`project_code` CHAR(32) NOT NULL,#项目代码
+	`vendor_user` CHAR(32) NOT NULL,#指定的外包商
+	`vendor_name` VARCHAR(100) NOT NULL,#外包列表名
+	`vendor_detail` VARCHAR(1000) NOT NULL,#描述
+	`open_detail` TINYINT(1) DEFAULT 0,#可查看信息0否1是
+	`open_demo` TINYINT(1) DEFAULT 0,#可查看小样
+	`down_material` TINYINT(1) DEFAULT 0,#可下载素材
+	`up_demo` TINYINT(1) DEFAULT 0,#可上传小样
+	`up_product` TINYINT(1) DEFAULT 0,#可上传成品
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`status` TINYINT UNSIGNED NOT NULL,#0代表正常，只做逻辑删除，即标记status为1
+	`insert_datetime` TIMESTAMP NOT NULL,
+	`update_datetime` TIMESTAMP NOT NULL,
+	PRIMARY KEY (`vendor_id`),
+	INDEX(`vendor_code`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -198,3 +198,20 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 
 	UserList(w, r)
 }
+
+//查询外包商列表
+func GetVendorList(w http.ResponseWriter, r *http.Request) {
+	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	if !flag {
+		u.OutputJsonLog(w, 404, "session error!", nil, "")
+		return
+	}
+
+	result, err := us.QueryVendorUserList()
+	if err != nil || result == nil {
+		u.OutputJsonLog(w, 1, "Query failed!", nil, "userAction.GetVendorList: userStorage.GetVendorList() failed!")
+		return
+	}
+
+	u.OutputJsonLog(w, 0, "Query success.", result, "")
+}
