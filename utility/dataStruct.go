@@ -225,6 +225,36 @@ type ShotVendor struct {
 	UpdateDatetime string
 }
 
+// 分配给外包商的镜头列表
+type ShotVendorData struct {
+	DataCode       string
+	VendorCode     string
+	VendorUser     string
+	ShotCode       string
+	ProjectCode    string
+	UserCode       string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
+// 上传小样和成品(生成版本)
+type ShotVersion struct {
+	VersionCode    string
+	ShotCode       string
+	VendorUser     string
+	VersionNum     int
+	Picture        string
+	Demo           string
+	DemoDetail     string
+	Product        string
+	ProductDetail  string
+	ProjectCode    string
+	Status         int
+	InsertDatetime string
+	UpdateDatetime string
+}
+
 //---------------------- 华丽分割线以下内容尚未使用 -------------------------
 
 // 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
@@ -244,19 +274,6 @@ type Relation struct {
 	IsShot         bool
 	Content        string //miaoasdf
 	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-/*version*/
-type Version struct {
-	VersionCode    string
-	ShotCode       string
-	VendorCode     string
-	Status         int
-	Image          string /*缩略图*/
-	Demo           string
-	Product        string
 	InsertDatetime string
 	UpdateDatetime string
 }

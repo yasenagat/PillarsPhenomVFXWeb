@@ -1,2 +1,0 @@
-2015/03/21 14:06:48 /home/pillars/Go/src/PillarsPhenomVFXWeb/utility/outputJson.go:25: postAction.AddShotMaterial: File Exist!
-2015/03/21 14:23:06 /home/pillars/Go/src/PillarsPhenomVFXWeb/utility/outputJson.go:25: postAction.QueryShotByShotCode: QueryShotByShotCode(&i.ShotCode) failed!

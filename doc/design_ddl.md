@@ -294,44 +294,23 @@ CREATE TABLE `shot_vendor_data`(
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-### 5 外包商--上传小样和成品
-CREATE TABLE `shot_material` (
-	`material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-	`shot_code` CHAR(32) NOT NULL,#对应的镜头
-	`project_code` CHAR(32) NOT NULL,#项目code
+### 5 外包商--上传小样和成品(生成版本)
+CREATE TABLE `shot_version`(
+	`version_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`version_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`shot_code` CHAR(32) NOT NULL,#镜头代码
+	`vendor_user` CHAR(32) NOT NULL,#外包商代码
+	`version_num` TINYINT NOT NULL,#版本序号
 	`picture` MEDIUMTEXT NOT NULL,#Base64编码图片
-	`material_name` VARCHAR(100) NOT NULL,#参考素材名称
-	`material_type` VARCHAR(20) NOT NULL,#参考素材格式
-	`material_detail` VARCHAR(500) NOT NULL,#参考素材的内容描述
-	`material_path` VARCHAR(500) NOT NULL,#参考素材的保存路径
-	`user_code` CHAR(32) NOT NULL,#用户代码
-	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`demo` VARCHAR(1024) NOT NULL,＃小样存储路径
+	`demo_detail` VARCHAR(1000) NOT NULL,#小样的内容描述
+	`product` VARCHAR(1024) NOT NULL, #成品存储路径
+	`product_detail` VARCHAR(1000) NOT NULL,#成品的内容描述
+	`status` TINYINT UNSIGNED NOT NULL,#数据有效性(0代表正常，删除标记为1)
 	`insert_datetime` TIMESTAMP NOT NULL,
 	`update_datetime` TIMESTAMP NOT NULL,
-	PRIMARY KEY (`material_id`),
-	INDEX(`material_code`),
+	PRIMARY KEY (`version_id`),
+	INDEX(`version_code`),
 	INDEX(`shot_code`),
-	INDEX(`project_code`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-### 5 外包商--版本生成
-CREATE TABLE `shot_material` (
-	`material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-	`material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
-	`shot_code` CHAR(32) NOT NULL,#对应的镜头
-	`project_code` CHAR(32) NOT NULL,#项目code
-	`picture` MEDIUMTEXT NOT NULL,#Base64编码图片
-	`material_name` VARCHAR(100) NOT NULL,#参考素材名称
-	`material_type` VARCHAR(20) NOT NULL,#参考素材格式
-	`material_detail` VARCHAR(500) NOT NULL,#参考素材的内容描述
-	`material_path` VARCHAR(500) NOT NULL,#参考素材的保存路径
-	`user_code` CHAR(32) NOT NULL,#用户代码
-	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
-	`insert_datetime` TIMESTAMP NOT NULL,
-	`update_datetime` TIMESTAMP NOT NULL,
-	PRIMARY KEY (`material_id`),
-	INDEX(`material_code`),
-	INDEX(`shot_code`),
-	INDEX(`project_code`)
+	INDEX(`version_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
