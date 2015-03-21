@@ -253,7 +253,7 @@ CREATE TABLE `shot_folder_data`(
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-### 4.4 视效镜头管理(Post)--外包列表,分配镜头给外包商
+### 4.4 视效镜头管理(Post)--镜头外包列表,分配镜头给外包商
 CREATE TABLE `shot_vendor` (
 	`vendor_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
 	`vendor_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
@@ -272,5 +272,66 @@ CREATE TABLE `shot_vendor` (
 	`update_datetime` TIMESTAMP NOT NULL,
 	PRIMARY KEY (`vendor_id`),
 	INDEX(`vendor_code`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+### 4.4 视效镜头管理(Post)--分配给外包商的镜头列表
+CREATE TABLE `shot_vendor_data`(
+	`data_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`data_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`vendor_code` CHAR(32) NOT NULL,#镜头外包列表code
+	`vendor_user` CHAR(32) NOT NULL,#指定的外包商
+	`shot_code` CHAR(32) NOT NULL,#镜头的代码
+	`project_code` CHAR(32) NOT NULL,#项目代码
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP NOT NULL,
+	`update_datetime` TIMESTAMP NOT NULL,
+	PRIMARY KEY (`data_id`),
+	INDEX(`data_code`),
+	INDEX(`vendor_code`),
+	INDEX(`vendor_user`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+### 5 外包商--上传小样和成品
+CREATE TABLE `shot_material` (
+	`material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`shot_code` CHAR(32) NOT NULL,#对应的镜头
+	`project_code` CHAR(32) NOT NULL,#项目code
+	`picture` MEDIUMTEXT NOT NULL,#Base64编码图片
+	`material_name` VARCHAR(100) NOT NULL,#参考素材名称
+	`material_type` VARCHAR(20) NOT NULL,#参考素材格式
+	`material_detail` VARCHAR(500) NOT NULL,#参考素材的内容描述
+	`material_path` VARCHAR(500) NOT NULL,#参考素材的保存路径
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP NOT NULL,
+	`update_datetime` TIMESTAMP NOT NULL,
+	PRIMARY KEY (`material_id`),
+	INDEX(`material_code`),
+	INDEX(`shot_code`),
+	INDEX(`project_code`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+### 5 外包商--版本生成
+CREATE TABLE `shot_material` (
+	`material_id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+	`material_code` CHAR(32) NOT NULL UNIQUE,#计算生成的唯一识别符
+	`shot_code` CHAR(32) NOT NULL,#对应的镜头
+	`project_code` CHAR(32) NOT NULL,#项目code
+	`picture` MEDIUMTEXT NOT NULL,#Base64编码图片
+	`material_name` VARCHAR(100) NOT NULL,#参考素材名称
+	`material_type` VARCHAR(20) NOT NULL,#参考素材格式
+	`material_detail` VARCHAR(500) NOT NULL,#参考素材的内容描述
+	`material_path` VARCHAR(500) NOT NULL,#参考素材的保存路径
+	`user_code` CHAR(32) NOT NULL,#用户代码
+	`status` TINYINT UNSIGNED NOT NULL,#状态0代表正常，1代表已注销
+	`insert_datetime` TIMESTAMP NOT NULL,
+	`update_datetime` TIMESTAMP NOT NULL,
+	PRIMARY KEY (`material_id`),
+	INDEX(`material_code`),
+	INDEX(`shot_code`),
 	INDEX(`project_code`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

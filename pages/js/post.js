@@ -361,6 +361,16 @@ var vendor_specify_ajax = function(vc, vu, callback){
         "json"
     );
 }
+//镜头外包商列表描述修改
+var vendor_detail_ajax = function(vc, vd, callback){
+	$.post("/post_shot_vendor_detail",
+		JSON.stringify({VendorCode: vc, VendorDetail: vd}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
 //镜头外包商列表设置权限
 var vendor_auth_ajax = function(vc, odl, od, dm, ud, up, callback){
 	$.post("/post_shot_vendor_auth",
@@ -375,6 +385,16 @@ var vendor_auth_ajax = function(vc, odl, od, dm, ud, up, callback){
 var vendor_list_ajax = function(pc, callback){
 	$.post("/post_shot_vendor_list",
 		JSON.stringify({ProjectCode: pc}),
+        function(data) {
+			callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表单条信息查询
+var vendor_que_ajax = function(vc, callback){
+	$.post("/post_shot_vendor_que",
+		JSON.stringify({VendorCode: vc}),
         function(data) {
 			callback(data);
         },
@@ -1036,10 +1056,15 @@ $(function(){
 			//获得该列表值的code
 			var listcode = $(".formdiv5").find(".code").val();
 			var value = $(".descrtr").find("input").val();
-			//TODO 保存列表值code和描述
+			// 保存列表值code和描述
+			vendor_detail_ajax(listcode, value, function(data){
+				if (data.FeedbackCode == 0) {
+					$(".descrtr").html(value);
+					$(".modify").val("编辑");
+					$(".li"+listcode).find(".with").find("input").val(value);
+				}
+			});
 
-			$(".descrtr").html(value);
-			$(this).val("编辑");
 		}
 	});
 	$(".upddescbut").click(function(){
@@ -1055,32 +1080,34 @@ $(function(){
 		//取该列表id设置到页面
 		var code = $(this).parents(".li1").attr("name");
 		$(".formdiv6").find(".code").val(code);
-		//TODO 根据该列表id 获取该id权限标识
-
-		var flog = '1,0,1,0,1';
-		var result = flog.split(",");
-		for(var i = 0;i<result.length;i++){
-			if(result[i]=="0"){
-				$(".formdiv6").find("input[type='checkbox']").eq(i).attr("checked",false);
-			}else{
-				$(".formdiv6").find("input[type='checkbox']").eq(i).attr("checked",true);
+		// 根据该列表id 获取该id权限标识
+		vendor_que_ajax(code, function(data){
+			if (data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				var flog = rs["UserCode"];
+				var result = flog.split(",");
+				for(var i = 0; i<result.length; i++){
+					if(result[i] == "0"){
+						$(".formdiv6").find("input[type='checkbox']").eq(i).attr("checked",false);
+					}else{
+						$(".formdiv6").find("input[type='checkbox']").eq(i).attr("checked",true);
+					}
+				}
+				//显示窗口
+				var height = $(window).height();
+				var width = $(window).width();
+				$(".outer").css({
+					"height": height + "px",
+					"width": width + "px"
+				});
+				$(".formdiv6").css({
+					"left": (width / 2) - 200 + "px",
+					"top": (height / 2) - 100 + "px"
+				});
+				$(".outer").show(500);
+				$(".formdiv6").show(500);
 			}
-		}
-
-
-		//显示窗口
-		var height = $(window).height();
-		var width = $(window).width();
-		$(".outer").css({
-			"height": height + "px",
-			"width": width + "px"
 		});
-		$(".formdiv6").css({
-			"left": (width / 2) - 200 + "px",
-			"top": (height / 2) - 100 + "px"
-		});
-		$(".outer").show(500);
-		$(".formdiv6").show(500);
 	});
 	$(".yesbut").click(function(){
 		//获取当前列表code

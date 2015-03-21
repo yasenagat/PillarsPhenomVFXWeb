@@ -85,7 +85,9 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_vendor_add", postAction.AddShotVendor)
 	http.HandleFunc("/post_shot_vendor_del", postAction.DeleteShotVendor)
 	http.HandleFunc("/post_shot_vendor_specify", postAction.SpecifyShotVendorUser)
+	http.HandleFunc("/post_shot_vendor_detail", postAction.ModifyVendorDetail)
 	http.HandleFunc("/post_shot_vendor_auth", postAction.ModifyShotVendorAuth)
+	http.HandleFunc("/post_shot_vendor_que", postAction.QueryShotVendor)
 	http.HandleFunc("/post_shot_vendor_list", postAction.QueryShotVendorList)
 	http.HandleFunc("/user_vendor_list", userAction.GetVendorList)
 	//镜头版本查

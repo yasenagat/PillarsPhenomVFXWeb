@@ -49,6 +49,20 @@ func SpecifyShotVendorUser(sv *utility.ShotVendor) error {
 	return nil
 }
 
+/* 更新外包列表描述 */
+func ModifyVendorDetail(sv *utility.ShotVendor) error {
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_vendor SET vendor_detail = ?, user_code = ?, update_datetime = NOW() WHERE status = 0 AND vendor_code = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(sv.VendorDetail, sv.UserCode, sv.VendorCode)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 /* 单条外包列表的权限 */
 func ModifyShotVendorAuth(sv *utility.ShotVendor) error {
 	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_vendor SET open_detail = ?, open_demo = ?, down_material = ?, up_demo = ?, up_product = ?, user_code = ?, update_datetime = NOW() WHERE status = 0 AND vendor_code = ?")
@@ -85,4 +99,20 @@ func QueryShotVendorList(projectCode *string) (*[]utility.ShotVendor, error) {
 		vendors = append(vendors, v)
 	}
 	return &vendors, nil
+}
+
+/* 查询单条外包商列表信息 */
+func QueryShotVendor(vendorCode *string) (*utility.ShotVendor, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT vendor_code, vendor_name, vendor_user, vendor_detail, open_detail, open_demo, down_material, up_demo, up_product FROM shot_vendor WHERE status = 0 AND vendor_code = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	var v utility.ShotVendor
+	result := stmt.QueryRow(vendorCode)
+	err = result.Scan(&v.VendorCode, &v.VendorName, &v.VendorUser, &v.VendorDetail, &v.OpenDetail, &v.OpenDemo, &v.DownMaterial, &v.UpDemo, &v.UpProduct)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
 }
