@@ -7,6 +7,7 @@ import (
 	"PillarsPhenomVFXWeb/controller/postAction"
 	"PillarsPhenomVFXWeb/controller/projectAction"
 	"PillarsPhenomVFXWeb/controller/userAction"
+	"PillarsPhenomVFXWeb/controller/vendorAction"
 	"net/http"
 )
 
@@ -99,7 +100,8 @@ func RouterBinding() {
 
 	// ---------------------------- 待实现 ------------------------------
 
-	//
+	//外包商项目列表
+	http.HandleFunc("/vendor_project_list", vendorAction.GetVendorProjectList)
 
 	//
 	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)

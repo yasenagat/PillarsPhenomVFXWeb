@@ -54,7 +54,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	} else if user.UserAuthority == "制片助理" {
 		u.OutputJson(w, 0, "project_list", nil)
 	} else if user.UserAuthority == "分包商" {
-		u.OutputJson(w, 0, "company.html", nil)
+		u.OutputJson(w, 0, "vendor.html", nil)
 	}
 
 }
