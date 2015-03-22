@@ -10,15 +10,7 @@
 </head>
 <body>
 <input type="hidden" id="cameraCode" value="">
-<div class="menu">
-    <ul>
-		<li><a href="#">project</a></li>
-        <li><a href="#">editoral</a></li>
-        <li><a href="#">post</a></li>
-        <li><a href="#">on-set</a></li>
-        <li><a href="#">playback</a></li>
-    </ul>
-</div>
+
 <div class="all">
     <div class="cont">
     	<div class="leftdiv">
@@ -173,6 +165,28 @@
 		</div>
         
     </div>
+</div>
+<div class="outer"></div>
+<div class="formdiv1">
+	<form id="f1">
+    <h2>添加小样</h2>
+    <table width="100%" border="0" cellspacing="0" cellpadding="10">
+	  <tr>
+        <td align="right" width="30%">描述
+        	<input type="hidden" class="code">
+        </td>
+        <td width="70%">
+        	<textarea class="description"></textarea>
+        </td>
+      </tr>
+      <tr>
+        <td align="center" colspan="2">
+        	<input type="file" class="filesample" onchange="upsample(this)">
+        </td>
+      </tr>
+      
+    </table>
+    </form>
 </div>
 </body>
 </html>

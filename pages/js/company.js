@@ -46,9 +46,9 @@ $(function(){
 					needhtml += need.substring(0,15)+"...";
 				else
 					needhtml += need;
-				needhtml +="<br>";
+					needhtml +="<br>";
 			}
-			html += '<div class="post"><input type="hidden" class="code" value="'+code+'"><div class="screenshot"><img src="'+imgsrc+'"></div><div class="summary"><table width="100%" height="150" border="0" cellspacing="0" cellpadding="0"><tr height="37"><td>'+names+'</td></tr><tr height="37"><td>'+size+'</td></tr><tr height="37"><td>'+speed+'</td></tr><tr height="37"><td></td></tr></table></div><div class="tag"><h2>制作需求</h2><div class="stage">'+needhtml+'</div></div><div class="view"></div><span href="javascript:void(0);" class="spanfile"><input type="button" value="发布"><input type="file" class="updfile" onchange="updatafile(this)"></span></div>';
+			html += '<div class="post"><input type="hidden" class="code" value="'+code+'"><div class="screenshot"><img src="'+imgsrc+'"></div><div class="summary"><table width="100%" height="150" border="0" cellspacing="0" cellpadding="0"><tr height="37"><td>'+names+'</td></tr><tr height="37"><td>'+size+'</td></tr><tr height="37"><td>'+speed+'</td></tr><tr height="37"><td></td></tr></table></div><div class="tag"><h2>制作需求</h2><div class="stage">'+needhtml+'</div></div><div class="view"></div><span href="javascript:void(0);" class="spanfile"><input type="button" class="sample" value="小样"><input type="button" class="product" value="成品"><input type="file" class="updfile" onchange="updatafile(this)"></span></div>';
 		}
 		$(".cont").find(".rightdiv").html(html);
 	}
@@ -80,6 +80,7 @@ $(function(){
 		//初始化页面标签
 		$(".withtit").find("li").css("background","#FFF");
 		$(".withtit").find(".basic").css("background","#CCC");
+		$(".metadata").children("div").hide();
 		//赋值给弹出div
 		$(".float").children(".sourceid").val(code);
 		$(".metadata").children(".basicinfo").css("display","block");
@@ -162,9 +163,15 @@ $(function(){
 	var note = function(thiscode){
 		//TODO 根据该镜头code 获得该code的消息列表
 		var html = "";
-		for(i=0;i<10;i++){
+		for(i=0;i<5;i++){
+			var name = "";
 			var content =""+i;
-			html += "<div class='newinfo'>"+content+"</div>";	
+			var lor = "";
+			if("1" != "1")
+				lor = "l";
+			else
+				lor = "r";
+			html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>"+content+"</div></div>";
 		}
 		var input = document.getElementById("fileimg");
 		input.addEventListener('change', readImg, false);
@@ -189,8 +196,17 @@ $(function(){
 			alert("请输入消息内容或图片");
 			return;
 		}
-		var srchtml = "<img src='"+imgsrc+"'>";
-		var html = '<div class="newinfo">'+srchtml+''+txt+'</div>';
+		var html = "";
+		if(imgsrc=="#"&&txt!=""){
+			html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+txt+"</div></div>";
+		}else if(imgsrc!="#"&&txt!=""){
+			var srchtml = "<img src='"+imgsrc+"'>";
+			html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+srchtml+""+txt+"</div></div>";
+		}else if(imgsrc!="#"&&txt==""){
+			var srchtml = "<img src='"+imgsrc+"'>";
+			html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+srchtml+"</div></div>";
+		}
+		
 		//TODO 把消息对应该镜头code记录到数据库 图片src为imgsrc 文字消息为txt
 		
 		//添加到页面
@@ -203,6 +219,38 @@ $(function(){
 	});
 	$(".rightdiv").on("click",".updfile",function(){
 		$("#cameraCode").val($(this).parent().siblings(".code").val());
+	});
+	//上传小样窗口显示
+	$(".rightdiv").on("click",".sample",function(){
+		//得到当前镜头code
+		var code = $(this).parent().siblings(".code").val();
+		//显示弹出div
+		var height = $(window).height();
+		var width = $(window).width();
+		$(".outer").css({
+			"height": height + "px",
+			"width": width + "px"
+		});
+		$(".formdiv1").css({
+			"left": (width / 2) - 200 + "px",
+			"top": (height / 2) - 100 + "px"
+		});
+		$(".outer").show(500);
+		$(".formdiv1").show(500);
+		$(".formdiv1").find(".filesample").attr("disabled","disabled");
+		$(".formdiv1").find(".code").val(code);
+		$(".formdiv1").find(".description").val("");
+		$(".formdiv1").find(".filesample").val("");
+	});
+	$(".description").blur(function(){
+		if($(".formdiv1").find(".description").val()!="")
+			$(".formdiv1").find(".filesample").removeAttr("disabled");
+		else
+			$(".formdiv1").find(".filesample").attr("disabled","disabled");
+	});
+	$(".outer").click(function(){
+		$(".outer").hide();
+		$(".formdiv1").hide();
 	});
 });
 function readImg() {
@@ -222,4 +270,11 @@ function updatafile(file){
 	var code = $("#cameraCode").val();
 	//TODO 当前镜头code
 	alert(code);
+}
+function upsample(file){
+	var code = $(".formdiv1").find(".code").val();
+	var description = $(".formdiv1").find(".description").val();
+	//TODO 当前镜头code
+	alert(code);
+	$(".outer").click();
 }

@@ -34,3 +34,28 @@ func DeleteShotVendorData(userCode string, projectCode string, vendorCode string
 
 	return true, err
 }
+
+func QueryShotVendorShots(projectCode string, vendorCode string) (*[]shotOut, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT a.shot_code, a.shot_name, a.shot_status, a.picture, a.shot_flag, IF(b.library_path LIKE '', 'N', 'Y') AS source_path, IF(b.dpx_path LIKE '', 'N', 'Y') AS dpx_path, IF(b.jpg_path LIKE '', 'N', 'Y') AS jpg_path, IF(b.mov_path LIKE '', 'N', 'Y') AS mov_path FROM shot a LEFT JOIN library b ON a.library_code = b.library_code AND a.status = b.status WHERE a.status = 0 AND a.shot_code IN (SELECT shot_code from shot_vendor_data where status = 0 AND project_code = ? AND vendor_code = ?)")
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(projectCode, vendorCode)
+	if err != nil {
+		pillarsLog.PillarsLogger.Print(err.Error())
+		return nil, err
+	}
+	defer result.Close()
+	var shots []shotOut
+	for result.Next() {
+		var so shotOut
+		err = result.Scan(&(so.ShotCode), &so.ShotName, &so.ShotStatus, &so.Picture, &so.ShotFlag, &so.SourcePath, &so.DpxPath, &so.JpgPath, &so.MovPath)
+		if err != nil {
+			return nil, err
+		}
+		shots = append(shots, so)
+	}
+	return &shots, err
+}

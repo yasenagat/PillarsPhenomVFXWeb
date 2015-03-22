@@ -42,7 +42,7 @@ function uploadEdl(selectFile) {
 					alert("EDL文件未能获取镜头数据!");
 					return;
 				}
-				createShotPage(shotList);
+				createShotPage(shotList,"");
 			}else{
 				alert(rs.FeedbackText);
 			}
@@ -172,35 +172,35 @@ var shot_demandupd_ajax = function(dc, dd, p, callback){
     );
 }
 //创建页面镜头视图列表
-var createShotPage = function(rs){
-	if (rs == null || rs.length == 0) {
-		return;
-	}
+var createShotPage = function(rs,flags){
 	var html = "";
-	for(i=0; i<rs.length; i++){
-		var code = rs[i]["ShotCode"];//镜头id
-		var names = rs[i]["ShotName"];//镜头名
-		var pic = rs[i]["Picture"];//图片
-		var liInfo = "";
-		var shotflag = "";
-		if(rs[i]["SourcePath"] == "Y") {
-			liInfo += "<li>Source</li>";
+	if (rs != null && rs.length > 0) {
+		for(i=0; i<rs.length; i++){
+			var code = rs[i]["ShotCode"];//镜头id
+			var names = rs[i]["ShotName"];//镜头名
+			var pic = rs[i]["Picture"];//图片
+			var liInfo = "";
+			var shotflag = "";
+			if(rs[i]["SourcePath"] == "Y") {
+				liInfo += "<li>Source</li>";
+			}
+			if(rs[i]["DpxPath"] == "Y") {
+				liInfo += "<li>DPX</li>";
+			}
+			if(rs[i]["JpgPath"] == "Y") {
+				liInfo += "<li>JPG</li>";
+			}
+			if(rs[i]["MovPath"] == "Y") {
+				liInfo += "<li>Mov</li>";
+			}
+			if(flags=="1"){
+				if(rs[i]["ShotFlag"] == "1"){
+					shotflag = "<div class='dels'>X</div>";
+				}
+			}
+			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
 		}
-		if(rs[i]["DpxPath"] == "Y") {
-			liInfo += "<li>DPX</li>";
-		}
-		if(rs[i]["JpgPath"] == "Y") {
-			liInfo += "<li>JPG</li>";
-		}
-		if(rs[i]["MovPath"] == "Y") {
-			liInfo += "<li>Mov</li>";
-		}
-		if(rs[i]["ShotFlag"] == "1"){
-			shotflag = "<div class='dels'>X</div>";
-		}
-		html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
-
-	}
+	}		
 	$(".videodiv").html(html);
 }
 
@@ -332,7 +332,7 @@ var li = function(string) {
 			}
 			if(flag && $("#dd"+string).css("display")=="none"){//如果包含素材,且当前目录为隐藏
 				$(".strdiv .videodiv").html("");
-				createShotPage(rs);
+				createShotPage(rs,"");
 			}else if( flag && $("#dd"+string).css("display")=="block"){
 				$("#dd"+string).css("display","none");
 			}else if(!flag && $("#dd"+string).css("display")=="none"){
@@ -378,6 +378,16 @@ var shot_vendor_addshots_ajax = function(pc, vc, scs, callback){
 var shot_vendor_delshots_ajax = function(pc, vc, scs, callback){
 	$.post("/post_shot_vendor_delShots",
 		JSON.stringify({ProjectCode: pc, VendorCode: vc, ShotCodes: scs}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表查询镜头
+var shot_vendor_queshots_ajax = function(pc, vc, callback){
+	$.post("/post_shot_vendor_queShots",
+		JSON.stringify({ProjectCode: pc, VendorCode: vc}),
         function(data) {
             callback(data);
         },
@@ -496,7 +506,7 @@ $(function(){
 			// 有数据,"Load EDL"禁止点击,创建页面镜头视图列表
 			$(".updedl").css("display","none");
 			$(".loadedl").html("Shot List");
-			createShotPage(rs);
+			createShotPage(rs,"1");
 		}
 	});
 
@@ -506,7 +516,7 @@ $(function(){
 			shots_ajax(projectCode, function(data){
 				if(data.FeedbackCode == 0) {
 					var rs = JSON.parse(data.Data);
-					createShotPage(rs);
+					createShotPage(rs,"1");
 				}
 			});
 		}
@@ -1027,9 +1037,8 @@ $(function(){
 		// 添加镜头
 		shot_vendor_addshots_ajax(projectCode, code, str, function(data){
 			if (data.FeedbackCode == 0) {
-				alert("1111");
+				alert("添加成功！");
 			}
-			alert("--->"+data.FeedbackCode);
 		});
 	});
 	//指定外包商窗口
@@ -1197,14 +1206,13 @@ $(function(){
 	$(".venul").on("click",".li1 a",function(){
 		//获得当前code
 		var code = $(this).parent().attr("name");
-		//TODO 根据该code 从后台取 并便利到页面
-		var html = "";//用于拼接字符串
-		for(i=0;i<10;i++){
-			var code = i+"";//镜头code
-			var names = i+"";//镜头名称
-			html += "<span class='videoimg' span='"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+1+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul>                                    <li>Source</li><li>DPX</li><li>JPG</li><li>Mov</li></ul></span></div><div class='files'><img src=''></div></span>";
-		}
-		$(".bgimgdiv .videodiv").html(html);
+		// 根据该code 从后台取 并便利到页面
+		shot_vendor_queshots_ajax(projectCode, code, function(data){
+			if (data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				createShotPage(rs,"");
+			}
+		});				
 	});
 
 	//添加镜头
@@ -1302,9 +1310,14 @@ $(function(){
 	});
 	//删除
 	$(".videodiv").on("click",".dels",function(){
-		//得到当前镜头ｃｏｄｅ
-		var code = $(this).parents(".videoimg").attr("id");
-		alert(code);
+		//得到当前镜头code
+		var code = $(this).siblings("#code").val();
+		var temp = $(this);
+		shot_del_ajax(code, function(data){
+			if (data.FeedbackCode == 0){
+				temp.parents(".videoimg").remove();
+			}
+		});
 	});
 });
 function selectChange(val){
