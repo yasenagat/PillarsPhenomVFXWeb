@@ -292,6 +292,16 @@ var shot_noteque_ajax = function(sc, callback){
         "json"
     );
 }
+//镜头版本列表查询
+var shot_demo_version_ajax = function(sc, callback){
+	$.post("/post_shot_demo_version",
+		JSON.stringify({ShotCode: sc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
 
 //左侧树形列表点击
 var folders_click_ajax = function(pc, fi, callback){
@@ -350,6 +360,26 @@ var vendor_del_ajax = function(vc, callback){
 		JSON.stringify({VendorCode: vc}),
         function(data) {
 			callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表添加镜头
+var shot_vendor_addshots_ajax = function(pc, vc, scs, callback){
+	$.post("/post_shot_vendor_addShots",
+		JSON.stringify({ProjectCode: pc, VendorCode: vc, ShotCodes: scs}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+//镜头外包商列表删除镜头
+var shot_vendor_delshots_ajax = function(pc, vc, scs, callback){
+	$.post("/post_shot_vendor_delShots",
+		JSON.stringify({ProjectCode: pc, VendorCode: vc, ShotCodes: scs}),
+        function(data) {
+            callback(data);
         },
         "json"
     );
@@ -426,9 +456,12 @@ $(function(){
 		if (data.FeedbackCode == 0){
 			var rs = JSON.parse(data.Data);
 			var html = "<option value=''>-- 请选择 --</option>";
-			for(var i = 0; i<rs.length; i++){
-				html += "<option value="+rs[i]["VendorUser"]+">"+rs[i]["UserName"]+"</option>";
+			if(rs != null && rs.length > 0){
+				for(var i = 0; i<rs.length; i++){
+					html += "<option value="+rs[i]["VendorUser"]+">"+rs[i]["UserName"]+"</option>";
+				}
 			}
+				
 			$("#factorysel").html(html);
 		}
 	});
@@ -443,9 +476,11 @@ $(function(){
 		if (data.FeedbackCode == 0) {
 			var rs = JSON.parse(data.Data);
 			var html = "";
-			for(var i = 0; i<rs.length; i++){
-				html +='<li class="li1 li'+rs[i]["VendorCode"]+'" name="'+rs[i]["VendorCode"]+'"><a href="javascript:void(0);">'+rs[i]["VendorName"]+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory" id="'+rs[i]["VendorUser"]+'">指定外包商</li><li class="with">描述<input type="hidden" value="'+rs[i]["VendorDetail"]+'"></li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
-			}
+			if(rs != null && rs.length > 0){
+				for(var i = 0; i<rs.length; i++){
+					html += '<li class="li1 li'+rs[i]["VendorCode"]+'" name="'+rs[i]["VendorCode"]+'"><a href="javascript:void(0);">'+rs[i]["VendorName"]+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory" id="'+rs[i]["VendorUser"]+'">指定外包商</li><li class="with">描述<input type="hidden" value="'+rs[i]["VendorDetail"]+'"></li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
+				}
+			}				
 			$(".vendiv").find(".venul").html(html);
 		}
 	});
@@ -619,7 +654,7 @@ $(function(){
 		// 根据镜头id查询制作需求list,并遍历
 		shot_demandlist_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
-				 var rs = JSON.parse(data.Data);
+				var rs = JSON.parse(data.Data);
 				if(rs == null || rs.length == 0){
 					return;
 				}
@@ -866,14 +901,22 @@ $(function(){
 	//根据镜头code 查询版本列表信息
 	var edition = function(code){
 		//TODO 根据code 获得版本信息
-		var html = "";
-		for(i=0;i<3;i++){
-			var code = i;//当前版本code
-			var num = "版本号";//版本号
-			var img = "缩略图";//缩略图url
-			html += '<div class="tag" name="'+code+'"><div class="num">'+num+'</div><div class="frame"><div class="imgs"><img src="'+img+'" alt="缩略图"></div><div class="menu_tab">+<div class="bolpoabs"><ul><li class="viewhue">查看小样</li><li class="down">下载成品</li></ul></div></div></div></div>';
-		}
-		$(".editioninfo").html(html);
+		shot_demo_version_ajax(code, function(data){
+			if (data.FeedbackCode == 0) {
+				var rs = JSON.parse(data.Data);
+				var html = "";
+				if(rs != null && rs.length > 0){
+					for(var i=0; i<rs.length; i++){
+						var code = rs[i]["VersionCode"];//当前版本code
+						var num = "V " + rs[i]["VersionNum"];//版本号
+						var img = rs[i]["Picture"];//缩略图url
+						var detail = rs[i]["DemoDetail"];//描述
+						html += '<div class="tag" name="'+code+'"><div class="num">'+num+'</div><div class="frame"><div class="imgs"><img src="'+img+'" alt="缩略图"><br/>'+detail+'</div><div class="menu_tab">+<div class="bolpoabs"><ul><li class="viewhue">查看小样</li><li class="down">下载成品</li></ul></div></div></div></div>';
+					}
+				}			
+				$(".editioninfo").html(html);
+			}
+		});		
 	}
 	//查看版本小样
 	$(".editioninfo").on("click",".viewhue",function(){
@@ -969,18 +1012,25 @@ $(function(){
 			}
 		});
 	});
+	//分包商列表添加镜头
 	$(".venul").on("click",".addlens",function(){
 		var code = $(this).parents(".li1").attr("name");//获得当前组的code
 		//获得当前选中镜头的id
-		var str = "";
+		var str = new Array();
 		$('input[class="check"]:checked').each(function() {
-			str += $(this).val() + ",";
+			str.push($(this).val());
 		});
-		if(str==""){
+		if(str.length == 0){
 			alert("请选中镜头后再添加");
 			return;
 		}
-		alert("分组id为"+code+"镜头id为"+str);
+		// 添加镜头
+		shot_vendor_addshots_ajax(projectCode, code, str, function(data){
+			if (data.FeedbackCode == 0) {
+				alert("1111");
+			}
+			alert("--->"+data.FeedbackCode);
+		});
 	});
 	//指定外包商窗口
 	$(".venul").on("click",".factory",function(){

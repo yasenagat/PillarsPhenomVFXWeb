@@ -209,13 +209,6 @@ func UpdateFolder(w http.ResponseWriter, r *http.Request) {
 	u.OutputJson(w, 0, "Update material_folder succeed!", mf)
 }
 
-// 请求传入JSON格式数据，使用结构体解析
-type addFiles struct {
-	ProjectCode string
-	FolderCode  string
-	ShotCodes   []string
-}
-
 func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
@@ -229,7 +222,7 @@ func AddFolderFiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	folderFiles := addFiles{}
+	folderFiles := addShots{}
 	err = json.Unmarshal(data, &folderFiles)
 	if err != nil {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.AddFolderFiles: json.Unmarshal(data, &interim) failed!")
@@ -272,7 +265,7 @@ func DeleteFolderFiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	af := addFiles{}
+	af := addShots{}
 	err = json.Unmarshal(data, &af)
 	if err != nil {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.DeleteFolderFiles: json.Unmarshal(data, &interim) failed!")
@@ -309,7 +302,7 @@ func CountFolderFiles(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	af := addFiles{}
+	af := addShots{}
 	err = json.Unmarshal(data, &af)
 	if err != nil {
 		u.OutputJsonLog(w, 12, err.Error(), nil, "postAction.CountFolderFiles: json.Unmarshal(data, &interim) failed!")

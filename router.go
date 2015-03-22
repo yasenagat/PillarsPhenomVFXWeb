@@ -90,7 +90,11 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_vendor_que", postAction.QueryShotVendor)
 	http.HandleFunc("/post_shot_vendor_list", postAction.QueryShotVendorList)
 	http.HandleFunc("/user_vendor_list", userAction.GetVendorList)
+	//镜头外包商列表增删镜头
+	http.HandleFunc("/post_shot_vendor_addShots", postAction.AddShotVendorshots)
+	http.HandleFunc("/post_shot_vendor_delShots", postAction.DeleteShotVendorShots)
 	//镜头版本查
+	http.HandleFunc("/post_shot_demo_version", postAction.QueryShotVersion)
 
 	// ---------------------------- 待实现 ------------------------------
 
