@@ -74,6 +74,7 @@
 	background:#FFF;
 	display:none;
 }
-.formtable{
-
+.formtable input[type='text']{
+	border:1px solid #ccc;
+	width:160px;
 }
