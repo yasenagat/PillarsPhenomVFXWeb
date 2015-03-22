@@ -181,9 +181,8 @@ var createShotPage = function(rs){
 		var code = rs[i]["ShotCode"];//镜头id
 		var names = rs[i]["ShotName"];//镜头名
 		var pic = rs[i]["Picture"];//图片
-		// TODO 镜头删除标识
-		var shotflag = rs[i]["ShotFlag"];//"1"手动添加的镜头,可以删除
 		var liInfo = "";
+		var shotflag = "";
 		if(rs[i]["SourcePath"] == "Y") {
 			liInfo += "<li>Source</li>";
 		}
@@ -196,7 +195,11 @@ var createShotPage = function(rs){
 		if(rs[i]["MovPath"] == "Y") {
 			liInfo += "<li>Mov</li>";
 		}
-		html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'>                            <input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div></span>";
+		if(rs[i]["ShotFlag"] == "1"){
+			shotflag = "<div class='dels'>X</div>";
+		}
+		html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
+
 	}
 	$(".videodiv").html(html);
 }
@@ -1296,6 +1299,12 @@ $(function(){
 	$(".videodiv").on("click",".disnone ul li",function(){
 		var source = $(this).html().trim();
 		var code = $(this).parent().attr("class");
+	});
+	//删除
+	$(".videodiv").on("click",".dels",function(){
+		//得到当前镜头ｃｏｄｅ
+		var code = $(this).parents(".videoimg").attr("id");
+		alert(code);
 	});
 });
 function selectChange(val){

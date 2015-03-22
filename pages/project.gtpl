@@ -4,7 +4,8 @@
 		<title>Project</title>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 		<link href="style/css.css" rel="stylesheet" type="text/css">
-		<link href="style/style.css" rel="stylesheet" type="text/css">
+		<link href="style/project.css" rel="stylesheet" type="text/css">
+		<script language="JavaScript" src="jslib/laydate/laydate.js"></script>
 	</head>
 
 	<body>
@@ -100,11 +101,11 @@
 					</tr>
 					<tr>
 						<td align="right">开始时间：</td>
-						<td><input type="text" name="StartDatetime" class="StartDatetime"></td>
+						<td><input type="text" name="StartDatetime" class="StartDatetime" onclick="laydate()"></td>
 					</tr>
 					<tr>
 						<td align="right">结束时间：</td>
-						<td><input type="text" name="EndDatetime" class="EndDatetime"></td>
+						<td><input type="text" name="EndDatetime" class="EndDatetime" onclick="laydate()"></td>
 					</tr>
 					<tr>
 						<td align="right">负责人：</td>

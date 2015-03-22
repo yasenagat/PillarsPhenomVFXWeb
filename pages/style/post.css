@@ -670,3 +670,14 @@
 .size input[type="text"]{
 	width:70px;
 }
+.dels{
+	position:absolute;
+	width:10px;
+	height:20px;
+	right:5px;
+	top:5px;
+	display:none;
+}
+.videodiv span:hover .dels{
+	display:block;
+}
