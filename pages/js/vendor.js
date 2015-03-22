@@ -8,8 +8,8 @@ if (r!=null) return unescape(r[2]); return null; //返回参数值
 }
 
 //项目列表加载
-var shot_demandlist_ajax = function(sc, callback){
-	$.post("/post_shot_demand_que", "",
+var project_list_ajax = function(sc, callback){
+	$.post("/vendor_project_list", "",
         function(data) {
             callback(data);
         },
@@ -20,22 +20,28 @@ var shot_demandlist_ajax = function(sc, callback){
 $(function(){
 	//获得地址栏该外包公司code
 	code = getUrlParam("code");
-	var startProject = function(){
-		//根据初始化左侧菜单项目列表
-		var html = "";//拼接字符串
-		for(var i = 0; i<5; i++){
-			var code = i;
-			html += "<li class='li2' name='"+code+"'><a href='javascript:void(0);'>项目"+i+"</li>";
+	// 加载项目列表
+	project_list_ajax("", function(data){
+		if (data.FeedbackCode == 0){
+			var rs = JSON.parse(data.Data);
+			var html = "";//拼接字符串
+			if(rs != null && rs.length > 0){
+				for(var i = 0; i<rs.length; i++){
+					html += "<li class='li2' name='"+rs[i]["VendorCode"]+"'><a href='javascript:void(0);'>项目"+rs[i]["VendorName"]+"</li>";
+				}
+			}
+				
+			$(".groupul").html(html);
 		}
-		$(".groupul").html(html);
-	}
-	startProject();
-	
+		alert(data.FeedbackCode+"");
+	});
+	// 项目列表
 	var viewList = function(code){
 		var length = 0;
 		if(code=="all"){
 			//TODO 取所有数据
 			length = 10;
+			
 		}else{
 			//TODO 取当前code数据
 			length = 5;
@@ -67,14 +73,15 @@ $(function(){
 		viewList("all");
 	}
 	startTask();
+	//列表点击
 	$(".leftcontent").on("click","a",function(){
 		//得到当前列表code
 		var code = $(this).parent().attr("name");
 		if(code=="all"){
-			//显示所有镜头
+			// 显示所有镜头
 			viewList("all");
 		}else{
-			//显示该列表镜头
+			// 显示该列表镜头
 			viewList(code);
 		}
 	});
