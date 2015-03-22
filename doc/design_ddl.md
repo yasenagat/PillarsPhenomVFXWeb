@@ -302,9 +302,9 @@ CREATE TABLE `shot_version`(
 	`vendor_user` CHAR(32) NOT NULL,#外包商代码
 	`version_num` TINYINT NOT NULL,#版本序号
 	`picture` MEDIUMTEXT NOT NULL,#Base64编码图片
-	`demo` VARCHAR(1024) NOT NULL,＃小样存储路径
+	`demo` VARCHAR(1024) NOT NULL,#小样存储路径
 	`demo_detail` VARCHAR(1000) NOT NULL,#小样的内容描述
-	`product` VARCHAR(1024) NOT NULL, #成品存储路径
+	`product` VARCHAR(1024) NOT NULL,#成品存储路径
 	`product_detail` VARCHAR(1000) NOT NULL,#成品的内容描述
 	`status` TINYINT UNSIGNED NOT NULL,#数据有效性(0代表正常，删除标记为1)
 	`insert_datetime` TIMESTAMP NOT NULL,
