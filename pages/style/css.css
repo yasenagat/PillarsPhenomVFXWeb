@@ -29,7 +29,6 @@ body *{
 	height:60px;
 	text-align:center;
 	background:#95d491;
-	overflow:hidden;
 	position: fixed;
 	width:100%;
 	top:0;
@@ -47,4 +46,45 @@ body *{
 }
 .distreenode div{
 	border:1px solid red;
+}
+.menuab{
+	width:50px;
+	position:absolute;
+	top:10px;
+	min-height:40px;
+	line-height:40px;
+	right:50px;
+	z-index:100
+}
+.menuab span{
+	min-height:40px;
+	line-height:40px;
+	width:50px;
+}
+.menuall{
+    margin: 0 auto;
+    width: 1200px;
+}
+.menuab:hover{
+	background:#FCC;
+}
+.menuab:hover .menu_tabs{
+	display:block;
+}
+.menu_tabs{
+	width:70px;
+	display:none;
+	float:right;
+	background:#FCC;
+}
+.menu_tabs ul{
+	padding:0;
+	margin:0;
+}
+.menu_tabs ul li{
+	padding:0;
+	margin:0;
+	height:30px;
+	display:block;
+	line-height:30px;
 }

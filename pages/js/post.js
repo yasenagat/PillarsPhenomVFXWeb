@@ -867,14 +867,19 @@ $(function(){
 				var html = "";
 				for(i=0; i<rs.length; i++){
 					var pic = rs[i]["Picture"];
+					var name = "a";
 					if (pic == "#") {
 						pic = ""
 					}else{
 						pic = "<img src='" + pic + "'><br/>"
 					}
-					html += "<div class='newinfo'>" + pic + rs[i]["NoteDetail"] + "</div>";
+					var lor = "";
+					if("1" != "1")
+						lor = "l";
+					else
+						lor = "r";
+					html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>" + pic + rs[i]["NoteDetail"] + "</div></div>";
 				}
-				$(".noteinfo").find(".chat").html(html);
 				var input = document.getElementById("fileimg");
 				input.addEventListener('change', readImg, false);
 				$(".noteinfo").find(".chat").html(html);
@@ -889,6 +894,7 @@ $(function(){
 		var txt = $(".textarea").val();
 		//获得镜头code
 		var code = $(".sourceid").val();
+		var name = "a";
 		if(imgsrc=="#"&&txt==""){
 			alert("请输入消息内容或图片");
 			return;
@@ -897,7 +903,16 @@ $(function(){
 		shot_noteadd_ajax(projectCode, code, txt, imgsrc, function(data){
 			if (data.FeedbackCode == 0){
 				var srchtml = "<img src='"+imgsrc+"'><br/>";
-				var html = '<div class="newinfo">'+srchtml+''+txt+'</div>';
+				var html = "";
+				if(imgsrc=="#"&&txt!=""){
+					html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+txt+"</div></div>";
+				}else if(imgsrc!="#"&&txt!=""){
+					var srchtml = "<img src='"+imgsrc+"'>";
+					html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+srchtml+""+txt+"</div></div>";
+				}else if(imgsrc!="#"&&txt==""){
+					var srchtml = "<img src='"+imgsrc+"'>";
+					html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+srchtml+"</div></div>";
+				}
 				//添加到页面
 				$(".chat").append(html);
 				//初始化文本框
