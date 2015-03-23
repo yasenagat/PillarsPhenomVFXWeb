@@ -50,21 +50,45 @@
 	border:1px solid #999;
 	background:#FFF;
 }
-.news{
-	margin:5px;
-	font-size:20px;
-	overflow: hidden;
-	line-height: 22px;
-	word-break: break-all;
-	work-wrap: break-word;
-	padding:10px;
-	background:#CCC;
-	border:2px solid #999;
+.newinfol,.newinfor {
+    font-size: 20px;
+    line-height: 22px;
+    margin: 5px;
+    overflow: hidden;
+    word-break: break-all;
 }
-.news img{
-	max-height:160px;
-	max-width:200px;
+.newinfol .username{
 	float:left;
+	width:50px;
+	height:50px;
+	overflow:hidden;
+}
+.newinfol .buddy{
+	float:left;
+	overflow:hidden;
+	margin-left:10px;
+	width:250px;
+	padding:10px;
+	background: none repeat scroll 0 0 #ccc;
+    border: 2px solid #999;
+}
+.newinfor .username{
+	float:right;
+	width:50px;
+	height:50px;
+	overflow:hidden;
+}
+.newinfor .buddy{
+	float:right;
+	overflow:hidden;
+	margin-right:10px;
+	width:250px;
+	padding:10px;
+	background: none repeat scroll 0 0 #ccc;
+    border: 2px solid #999;
+}
+.buddy img{
+	max-width:230px;
 }
 .sendout{
 	padding:5px;

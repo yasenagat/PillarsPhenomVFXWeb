@@ -1,4 +1,26 @@
 $(function(){
+	//初始化消息列表
+	var node = function(){
+		var html = "";
+		for(i=0; i<5; i++){
+			var pic = "#";
+			var name = "a";
+			var notedetail = "neirong";
+			if (pic == "#") {
+				pic = ""
+			}else{
+				pic = "<img src='" + pic + "'><br/>"
+			}
+			var lor = "";
+			if("1" != "1")
+				lor = "l";
+			else
+				lor = "r";
+			html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>" + pic + notedetail + "</div></div>";
+		}
+		$(".rightdiv").find(".chatdiv").html(html);
+	}
+	node();
 	$(".chatdiv").scrollTop(100000);
 	$(".yorn").click(function(){
 		var s = $(".rightdiv").css("display");
@@ -11,13 +33,16 @@ $(function(){
 	$(".but").click(function(){
 		var imgstr = $(".sendout img").attr("src");
 		var textstr = $(".textarea").val();
+		var name = "a";
+		var html = "";
 		if(imgstr.length==1){
 			if(textstr==""){
 				return;
 			}
-			var html = "<div class='news'>"+textstr+"</div>";
+			html += "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>" + textstr + "</div></div>";
 		}else{
-			var html = "<div class='news'><img src='"+imgstr+"'>"+textstr+"</div>";
+			imgstr = "<img src='"+imgstr+"'>";
+			html += "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>" + imgstr + textstr + "</div></div>";
 		}
 		$(".chatdiv").append(html);
 		$(".chatdiv").scrollTop(100000);

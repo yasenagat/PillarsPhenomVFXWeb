@@ -682,3 +682,44 @@
 .videodiv span:hover .dels{
 	display:block;
 }
+.newinfol,.newinfor {
+    font-size: 20px;
+    line-height: 22px;
+    margin: 5px;
+    overflow: hidden;
+    padding: 10px;
+    word-break: break-all;
+}
+.newinfol .username{
+	float:left;
+	width:50px;
+	height:50px;
+	overflow:hidden;
+}
+.newinfol .buddy{
+	float:left;
+	overflow:hidden;
+	margin-left:10px;
+	width:250px;
+	padding:10px;
+	background: none repeat scroll 0 0 #ccc;
+    border: 2px solid #999;
+}
+.newinfor .username{
+	float:right;
+	width:50px;
+	height:50px;
+	overflow:hidden;
+}
+.newinfor .buddy{
+	float:right;
+	overflow:hidden;
+	margin-right:10px;
+	width:240px;
+	padding:10px;
+	background: none repeat scroll 0 0 #ccc;
+    border: 2px solid #999;
+}
+.buddy img{
+	max-width:230px;
+}
