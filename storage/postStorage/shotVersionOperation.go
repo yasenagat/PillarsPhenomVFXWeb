@@ -11,7 +11,7 @@ func AddShotDemo(sv *utility.ShotVersion) error {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(sv.VersionCode, sv.ShotCode, sv.VendorUser, sv.VersionNum, sv.Picture, sv.Demo, sv.DemoDetail, sv.Product, sv.ProductDetail, sv.Status)
+	_, err = stmt.Exec(sv.VersionCode, sv.ShotCode, sv.VendorUser, sv.VersionNum, sv.Picture, sv.DemoName, sv.DemoDetail, sv.ProductName, sv.ProductDetail, sv.Status)
 	if err != nil {
 		return err
 	}

@@ -133,28 +133,27 @@ function updatafile(file){
 function upsample(selectFile) {
 	var code = $(".formdiv1").find(".code").val();
 	var pcode = $(".formdiv1").find(".pcode").val();
-	alert(pcode);
-	return;
 	var detail = $(".formdiv1").find(".description").val();// 描述
 
 	var filename = selectFile.value;
 	var type = filename.substr(filename.lastIndexOf(".")+1);//文件格式
-	var edlfile = document.getElementById("materialfile");
+	var edlfile = document.getElementById("demofile");
 	var files = edlfile.files;
 	var formData = new FormData();
 	for(var i=0; i<files.length; i++){
 		var file = files[i];
 		formData.append("files", file, file.name);
 	}
-	formData.append("ProjectCode", projectCode);
+	formData.append("ProjectCode", pcode);
 	formData.append("ShotCode", code);
-	formData.append("MaterialType", type);
-	formData.append("MaterialDetail", detail);
+	formData.append("DemoType", type);
+	formData.append("DemoDetail", detail);
 	var xhr = new XMLHttpRequest();
-	xhr.open("POST", "post_shot_material_add", true);
+	xhr.open("POST", "vendor_demo_upload", true);
 	xhr.onload = function(){
 		if(xhr.status === 200){
 			var rs = JSON.parse(xhr.responseText);
+			alert(rs.FeedbackCode+"");
 			if(rs.FeedbackCode == 0) {
 				$(".outer").click();
 			}else if (rs.FeedbackCode == 202) {
