@@ -59,3 +59,48 @@ func QueryShotVendorShots(projectCode string, vendorCode string) (*[]shotOut, er
 	}
 	return &shots, err
 }
+
+//外包商项目的镜头列表
+func QueryVendorProjectShots(vendorCode string, userCode string) (*[]utility.Shot, error) {
+	var code = vendorCode
+	var and = "vendor_code"
+	if vendorCode == "all" {
+		code = userCode
+		and = "vendor_user"
+	}
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT project_code, shot_code, shot_name, picture, width, height, shot_fps FROM shot WHERE status = 0 AND shot_code IN (SELECT shot_code FROM shot_vendor_data WHERE status = 0 AND " + and + " = ?)")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(code)
+	if err != nil {
+		return nil, err
+	}
+	defer result.Close()
+	var shots []utility.Shot
+	for result.Next() {
+		var s utility.Shot
+		err = result.Scan(&(s.ProjectCode), &(s.ShotCode), &s.ShotName, &s.Picture, &s.Width, &s.Height, &s.ShotFps)
+		if err != nil {
+			return nil, err
+		}
+		shots = append(shots, s)
+	}
+	return &shots, err
+}
+
+// 指定外包商后的同步更新
+func SpecifyShotVendorDataUser(sv *utility.ShotVendor) error {
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_vendor_data SET vendor_user = ?, user_code = ?, update_datetime = NOW() WHERE status = 0 AND vendor_code = ?")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(sv.VendorUser, sv.UserCode, sv.VendorCode)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

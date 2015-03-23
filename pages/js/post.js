@@ -200,7 +200,7 @@ var createShotPage = function(rs,flags){
 			}
 			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
 		}
-	}		
+	}
 	$(".videodiv").html(html);
 }
 
@@ -237,15 +237,6 @@ function uploadMaterial(selectFile) {
 				alert(rs.FeedbackText);
 			}
 		}else{//查询"Load EDL"的镜头
-var shots_ajax = function(pc, callback){
-	$.post("/post_shot_list",
-		JSON.stringify({ProjectCode: pc}),
-        function(data) {
-            callback(data);
-        },
-        "json"
-    );
-}
 			alert("upload error");
 		}
 	}
@@ -471,7 +462,7 @@ $(function(){
 					html += "<option value="+rs[i]["VendorUser"]+">"+rs[i]["UserName"]+"</option>";
 				}
 			}
-				
+
 			$("#factorysel").html(html);
 		}
 	});
@@ -490,7 +481,7 @@ $(function(){
 				for(var i = 0; i<rs.length; i++){
 					html += '<li class="li1 li'+rs[i]["VendorCode"]+'" name="'+rs[i]["VendorCode"]+'"><a href="javascript:void(0);">'+rs[i]["VendorName"]+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory" id="'+rs[i]["VendorUser"]+'">指定外包商</li><li class="with">描述<input type="hidden" value="'+rs[i]["VendorDetail"]+'"></li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
 				}
-			}				
+			}
 			$(".vendiv").find(".venul").html(html);
 		}
 	});
@@ -665,17 +656,15 @@ $(function(){
 		shot_demandlist_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				if(rs == null || rs.length == 0){
-					return;
-				}
-				// 数据存在创建页面信息
 				var html = "";//要拼接的html
-				for(i = 0; i < rs.length; i++){
-					var code = rs[i]["DemandCode"];
-					var imgurl = rs[i]["Picture"];
-					var mation = rs[i]["DemandDetail"];
-					var length = (i*1)+1;
-					html += '<div class="piece"><input type="hidden" class="makecode" value="'+code+'"><div class="number">'+length+'<div class="del">X</div></div><div class="news"><div class="imgradius"><img src="'+imgurl+'" width="60" height="60"></div><div class="stage">'+mation+'</div><input type="button" value="编辑" class="edit"></div>                        </div>';
+				if(rs != null && rs.length > 0){
+					for(i = 0; i < rs.length; i++){
+						var code = rs[i]["DemandCode"];
+						var imgurl = rs[i]["Picture"];
+						var mation = rs[i]["DemandDetail"];
+						var length = (i*1)+1;
+						html += '<div class="piece"><input type="hidden" class="makecode" value="'+code+'"><div class="number">'+length+'<div class="del">X</div></div><div class="news"><div class="imgradius"><img src="'+imgurl+'" width="60" height="60"></div><div class="stage">'+mation+'</div><input type="button" value="编辑" class="edit"></div>                        </div>';
+					}
 				}
 				$(".needinfo .make").html(html);
 			}
@@ -690,17 +679,17 @@ $(function(){
 		shot_materialque_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				if (rs == null || rs.length == 0){
-					return;
-				}
 				var html = "<tr><td width='25%'>素材名</td><td width='25%'>素材格式</td><td colspan='2'>描述</td></tr>";
-				for(i=0; i<rs.length; i++){
-					var code = rs[i]["MaterialCode"];//素材code
-					var names = rs[i]["MaterialName"];//素材名
-					var layout = rs[i]["MaterialType"];//素材格式
-					var depict = rs[i]["MaterialDetail"];//描述
-					html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
+				if (rs != null && rs.length > 0){
+					for(var i=0; i<rs.length; i++){
+						var code = rs[i]["MaterialCode"];//素材code
+						var names = rs[i]["MaterialName"];//素材名
+						var layout = rs[i]["MaterialType"];//素材格式
+						var depict = rs[i]["MaterialDetail"];//描述
+						html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
+					}
 				}
+
 				$(".edittable").html(html);
 			}
 		});
@@ -861,27 +850,27 @@ $(function(){
 		shot_noteque_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				if (rs == null || rs.length == 0){
-					return;
-				}
 				var html = "";
-				for(i=0; i<rs.length; i++){
-					var pic = rs[i]["Picture"];
-					var name = "a";
-					if (pic == "#") {
-						pic = ""
-					}else{
-						pic = "<img src='" + pic + "'><br/>"
+				if (rs != null && rs.length > 0) {
+					for(i=0; i<rs.length; i++){
+						var pic = rs[i]["Picture"];
+						var name = "a";
+						if (pic == "#") {
+							pic = ""
+						}else{
+							pic = "<img src='" + pic + "'><br/>"
+						}
+						var lor = "";
+						if("1" != "1")
+							lor = "l";
+						else
+							lor = "r";
+						html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>" + pic + rs[i]["NoteDetail"] + "</div></div>";
 					}
-					var lor = "";
-					if("1" != "1")
-						lor = "l";
-					else
-						lor = "r";
-					html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>" + pic + rs[i]["NoteDetail"] + "</div></div>";
+					var input = document.getElementById("fileimg");
+					input.addEventListener('change', readImg, false);
 				}
-				var input = document.getElementById("fileimg");
-				input.addEventListener('change', readImg, false);
+
 				$(".noteinfo").find(".chat").html(html);
 			}
 		});
@@ -938,10 +927,10 @@ $(function(){
 						var detail = rs[i]["DemoDetail"];//描述
 						html += '<div class="tag" name="'+code+'"><div class="num">'+num+'</div><div class="frame"><div class="imgs"><img src="'+img+'" alt="缩略图"><br/>'+detail+'</div><div class="menu_tab">+<div class="bolpoabs"><ul><li class="viewhue">查看小样</li><li class="down">下载成品</li></ul></div></div></div></div>';
 					}
-				}			
+				}
 				$(".editioninfo").html(html);
 			}
-		});		
+		});
 	}
 	//查看版本小样
 	$(".editioninfo").on("click",".viewhue",function(){
@@ -1227,7 +1216,7 @@ $(function(){
 				var rs = JSON.parse(data.Data);
 				createShotPage(rs,"");
 			}
-		});				
+		});
 	});
 
 	//添加镜头

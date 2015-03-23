@@ -69,3 +69,27 @@ func QueryDemands(shotCode *string) (*[]utility.ShotDemand, error) {
 	}
 	return &demands, nil
 }
+
+//外包商页面的需求查询,查询5条
+func QueryVendorDemands(shotCode *string) (*[]utility.ShotDemand, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT demand_code, demand_detail, demand_level FROM shot_demand WHERE status = 0 AND shot_code = ? ORDER BY insert_datetime DESC LIMIT 0, 5")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	result, err := stmt.Query(shotCode)
+	if err != nil {
+		return nil, err
+	}
+	defer result.Close()
+	var demands []utility.ShotDemand
+	for result.Next() {
+		var sd utility.ShotDemand
+		err = result.Scan(&sd.DemandCode, &sd.DemandDetail, &sd.DemandLevel)
+		if err != nil {
+			return nil, err
+		}
+		demands = append(demands, sd)
+	}
+	return &demands, nil
+}
