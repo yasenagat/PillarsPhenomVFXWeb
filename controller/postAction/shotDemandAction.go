@@ -110,7 +110,7 @@ func UpdateDemand(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryDemands(w http.ResponseWriter, r *http.Request) {
-	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	flag, _ := s.GetAuthorityCode(w, r, "") // 不需要权限
 	if !flag {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return

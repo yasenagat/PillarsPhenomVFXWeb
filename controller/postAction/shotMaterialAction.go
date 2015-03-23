@@ -11,9 +11,7 @@ import (
 	"os"
 )
 
-/**
- * 判断文件是否存在: 存在返回true,不存在返回false
- */
+// 判断文件是否存在: 存在返回true,不存在返回false
 func checkFileIsExist(filename string) bool {
 	var exist = true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -174,7 +172,7 @@ func UpdateShotMaterial(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryShotMaterials(w http.ResponseWriter, r *http.Request) {
-	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	flag, _ := s.GetAuthorityCode(w, r, "") // 不需要权限
 	if !flag {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return
@@ -206,7 +204,7 @@ func QueryShotMaterials(w http.ResponseWriter, r *http.Request) {
 }
 
 func DownloadShotMaterials(w http.ResponseWriter, r *http.Request) {
-	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	flag, _ := s.GetAuthorityCode(w, r, "") // 不需要权限
 	if !flag {
 		http.Redirect(w, r, "/404.html", http.StatusFound)
 		return

@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
 
 //查询外包商列表
@@ -80,4 +81,85 @@ func QueryVendorProjectShots(w http.ResponseWriter, r *http.Request) {
 	}
 
 	u.OutputJsonLog(w, 0, "Query success.", vss, "")
+}
+
+// 判断文件是否存在: 存在返回true,不存在返回false
+func checkFileIsExist(filename string) bool {
+	var exist = true
+	if _, err := os.Stat(filename); os.IsNotExist(err) {
+		exist = false
+	}
+	return exist
+}
+func UploadDemo(w http.ResponseWriter, r *http.Request) {
+	//flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	//if !flag {
+	//	u.OutputJson(w, 404, "session error!", nil)
+	//	return
+	//}
+
+	//err := r.ParseMultipartForm(32 << 20)
+	//if err != nil {
+	//	u.OutputJsonLog(w, 12, "parse upload error!", nil, "postAction.AddShotMaterial: r.ParseMultipartForm(32 << 20) failed!")
+	//	return
+	//}
+	//formData := r.MultipartForm
+	//var sm u.ShotMaterial
+
+	//sm.ShotCode = formData.Value["ShotCode"][0]
+	//sm.ProjectCode = formData.Value["ProjectCode"][0]
+	//sm.MaterialType = formData.Value["MaterialType"][0]
+	//sm.MaterialDetail = formData.Value["MaterialDetail"][0]
+	//if len(sm.ShotCode) == 0 || len(sm.ProjectCode) == 0 || len(sm.MaterialType) == 0 || len(sm.MaterialDetail) == 0 {
+	//	u.OutputJsonLog(w, 13, "Parameter Checked failed!", nil, "postAction.AddShotMaterial: Parameter Checked failed!")
+	//	return
+	//}
+	//files := formData.File["files"]
+	//if len(files) > 0 {
+	//	sm.MaterialName = files[0].Filename
+	//	file, err := files[0].Open()
+	//	defer file.Close()
+	//	if err != nil {
+	//		u.OutputJsonLog(w, 14, "Open upload file failed!", nil, "postAction.AddShotMaterial: Open upload file failed!")
+	//		return
+	//	}
+	//	var path = "/home/pillars/Upload/material/" + sm.ProjectCode
+	//	err = os.MkdirAll(path, 0777)
+	//	if err != nil {
+	//		u.OutputJsonLog(w, 15, "Create file path failed!", nil, "postAction.AddShotMaterial: Create file path failed!")
+	//		return
+	//	}
+	//	createFile := path + "/" + sm.MaterialName
+	//	if checkFileIsExist(createFile) { //如果文件存在
+	//		u.OutputJsonLog(w, 202, "File Exist!", nil, "postAction.AddShotMaterial: File Exist!")
+	//		return
+	//	}
+	//	out, err := os.OpenFile(createFile, os.O_CREATE|os.O_RDWR, 0777)
+	//	if err != nil {
+	//		u.OutputJsonLog(w, 16, "Create file failed!", nil, "postAction.AddShotMaterial: Create file failed!")
+	//		return
+	//	}
+	//	defer out.Close()
+	//	_, err = io.Copy(out, file)
+	//	if err != nil {
+	//		u.OutputJsonLog(w, 17, "Copy file failed!", nil, "postAction.AddShotMaterial: Copy file failed!")
+	//		return
+	//	}
+
+	//	// TODO 文件上传,保存成功,是否需要调用C++对素材抓图及其他信息
+	//	sm.MaterialCode = *u.GenerateCode(&userCode)
+	//	sm.MaterialPath = out.Name()
+	//	sm.UserCode = userCode
+	//	err = postStorage.AddShotMaterial(&sm)
+	//	if err != nil {
+	//		u.OutputJsonLog(w, 18, err.Error(), nil, "postAction.AddShotMaterial: postStorage.AddShotMaterial(&ShotMaterial) failed!")
+	//		return
+	//	}
+
+	//	u.OutputJsonLog(w, 0, "Upload success.", nil, "")
+	//	return
+	//}
+
+	//请求没有文件,返回错误信息
+	u.OutputJson(w, 204, "not find upload file!", nil)
 }

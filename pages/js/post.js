@@ -656,17 +656,15 @@ $(function(){
 		shot_demandlist_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				if(rs == null || rs.length == 0){
-					return;
-				}
-				// 数据存在创建页面信息
 				var html = "";//要拼接的html
-				for(i = 0; i < rs.length; i++){
-					var code = rs[i]["DemandCode"];
-					var imgurl = rs[i]["Picture"];
-					var mation = rs[i]["DemandDetail"];
-					var length = (i*1)+1;
-					html += '<div class="piece"><input type="hidden" class="makecode" value="'+code+'"><div class="number">'+length+'<div class="del">X</div></div><div class="news"><div class="imgradius"><img src="'+imgurl+'" width="60" height="60"></div><div class="stage">'+mation+'</div><input type="button" value="编辑" class="edit"></div>                        </div>';
+				if(rs != null && rs.length > 0){
+					for(i = 0; i < rs.length; i++){
+						var code = rs[i]["DemandCode"];
+						var imgurl = rs[i]["Picture"];
+						var mation = rs[i]["DemandDetail"];
+						var length = (i*1)+1;
+						html += '<div class="piece"><input type="hidden" class="makecode" value="'+code+'"><div class="number">'+length+'<div class="del">X</div></div><div class="news"><div class="imgradius"><img src="'+imgurl+'" width="60" height="60"></div><div class="stage">'+mation+'</div><input type="button" value="编辑" class="edit"></div>                        </div>';
+					}
 				}
 				$(".needinfo .make").html(html);
 			}
@@ -681,17 +679,17 @@ $(function(){
 		shot_materialque_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				if (rs == null || rs.length == 0){
-					return;
-				}
 				var html = "<tr><td width='25%'>素材名</td><td width='25%'>素材格式</td><td colspan='2'>描述</td></tr>";
-				for(i=0; i<rs.length; i++){
-					var code = rs[i]["MaterialCode"];//素材code
-					var names = rs[i]["MaterialName"];//素材名
-					var layout = rs[i]["MaterialType"];//素材格式
-					var depict = rs[i]["MaterialDetail"];//描述
-					html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
+				if (rs != null && rs.length > 0){
+					for(var i=0; i<rs.length; i++){
+						var code = rs[i]["MaterialCode"];//素材code
+						var names = rs[i]["MaterialName"];//素材名
+						var layout = rs[i]["MaterialType"];//素材格式
+						var depict = rs[i]["MaterialDetail"];//描述
+						html += "<tr><td>"+names+"</td><td>"+layout+"</td><td>"+depict+"</td><td class='symbol2'  width='5%'>+<div class='bolpoab2'><ul name='"+code+"'><li class='download'>下载</li><li class='delete'>删除</li></ul></div></td></tr>";
+					}
 				}
+
 				$(".edittable").html(html);
 			}
 		});
@@ -852,27 +850,27 @@ $(function(){
 		shot_noteque_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
-				if (rs == null || rs.length == 0){
-					return;
-				}
 				var html = "";
-				for(i=0; i<rs.length; i++){
-					var pic = rs[i]["Picture"];
-					var name = "a";
-					if (pic == "#") {
-						pic = ""
-					}else{
-						pic = "<img src='" + pic + "'><br/>"
+				if (rs != null && rs.length > 0) {
+					for(i=0; i<rs.length; i++){
+						var pic = rs[i]["Picture"];
+						var name = "a";
+						if (pic == "#") {
+							pic = ""
+						}else{
+							pic = "<img src='" + pic + "'><br/>"
+						}
+						var lor = "";
+						if("1" != "1")
+							lor = "l";
+						else
+							lor = "r";
+						html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>" + pic + rs[i]["NoteDetail"] + "</div></div>";
 					}
-					var lor = "";
-					if("1" != "1")
-						lor = "l";
-					else
-						lor = "r";
-					html += "<div class='newinfo"+lor+"'><div class='username'>"+name+"</div><div class='buddy'>" + pic + rs[i]["NoteDetail"] + "</div></div>";
+					var input = document.getElementById("fileimg");
+					input.addEventListener('change', readImg, false);
 				}
-				var input = document.getElementById("fileimg");
-				input.addEventListener('change', readImg, false);
+
 				$(".noteinfo").find(".chat").html(html);
 			}
 		});

@@ -79,7 +79,7 @@ func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
 func QueryShots(w http.ResponseWriter, r *http.Request) {
 	flag, _ := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		u.OutputJson(w, 20, "Session failed!", nil)
+		u.OutputJsonLog(w, 404, "Session failed!", nil, "")
 		return
 	}
 
@@ -108,6 +108,12 @@ func QueryShots(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryShotByShotCode(w http.ResponseWriter, r *http.Request) {
+	flag, _ := s.GetAuthorityCode(w, r, "") // 不需要权限
+	if !flag {
+		u.OutputJsonLog(w, 404, "Session failed!", nil, "")
+		return
+	}
+
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		u.OutputJsonLog(w, 1, "Read body failed!", nil, "postAction.QueryShotByShotCode: ioutil.ReadAll(r.Body) failed!")

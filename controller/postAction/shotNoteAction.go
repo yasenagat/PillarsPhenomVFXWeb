@@ -10,9 +10,9 @@ import (
 )
 
 func AddNote(w http.ResponseWriter, r *http.Request) {
-	flag, userCode := s.GetAuthorityCode(w, r, "制片")
+	flag, userCode := s.GetAuthorityCode(w, r, "") // 不需要权限
 	if !flag {
-		u.OutputJson(w, 404, "session error!", nil)
+		u.OutputJsonLog(w, 404, "session error!", nil, "")
 		return
 	}
 
@@ -44,9 +44,9 @@ func AddNote(w http.ResponseWriter, r *http.Request) {
 }
 
 func QueryNotes(w http.ResponseWriter, r *http.Request) {
-	flag, _ := s.GetAuthorityCode(w, r, "制片")
+	flag, _ := s.GetAuthorityCode(w, r, "") // 不需要权限
 	if !flag {
-		u.OutputJson(w, 404, "session error!", nil)
+		u.OutputJsonLog(w, 404, "session error!", nil, "")
 		return
 	}
 

@@ -68,7 +68,7 @@ func QueryVendorProjectShots(vendorCode string, userCode string) (*[]utility.Sho
 		code = userCode
 		and = "vendor_user"
 	}
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT shot_code, shot_name, picture, width, height, shot_fps FROM shot WHERE status = 0 AND shot_code IN (SELECT shot_code FROM shot_vendor_data WHERE status = 0 AND " + and + " = ?)")
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT project_code, shot_code, shot_name, picture, width, height, shot_fps FROM shot WHERE status = 0 AND shot_code IN (SELECT shot_code FROM shot_vendor_data WHERE status = 0 AND " + and + " = ?)")
 	if err != nil {
 		return nil, err
 	}
@@ -81,7 +81,7 @@ func QueryVendorProjectShots(vendorCode string, userCode string) (*[]utility.Sho
 	var shots []utility.Shot
 	for result.Next() {
 		var s utility.Shot
-		err = result.Scan(&(s.ShotCode), &s.ShotName, &s.Picture, &s.Width, &s.Height, &s.ShotFps)
+		err = result.Scan(&(s.ProjectCode), &(s.ShotCode), &s.ShotName, &s.Picture, &s.Width, &s.Height, &s.ShotFps)
 		if err != nil {
 			return nil, err
 		}
