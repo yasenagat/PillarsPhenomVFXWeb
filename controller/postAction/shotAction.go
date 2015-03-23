@@ -12,11 +12,6 @@ import (
 	"net/http"
 )
 
-type interim struct {
-	ProjectCode string
-	ShotCode    string
-}
-
 func LoadEdlFile(w http.ResponseWriter, r *http.Request) {
 	flag, userCode := s.GetAuthorityCode(w, r, "制片")
 	if !flag {

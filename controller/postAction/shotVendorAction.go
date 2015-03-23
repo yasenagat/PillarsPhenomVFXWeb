@@ -104,6 +104,12 @@ func SpecifyShotVendorUser(w http.ResponseWriter, r *http.Request) {
 		u.OutputJsonLog(w, 14, err.Error(), nil, "postAction.SpecifyShotVendorUser: postStorage.SpecifyShotVendorUser(&vendor) failed!")
 		return
 	}
+	// 指定外包商后更新data表
+	err = postStorage.SpecifyShotVendorDataUser(&vendor)
+	if err != nil {
+		u.OutputJsonLog(w, 15, err.Error(), nil, "postAction.SpecifyShotVendorUser: postStorage.SpecifyShotVendorUser(&vendor) failed!")
+		return
+	}
 
 	u.OutputJsonLog(w, 0, "Modify success.", nil, "")
 }

@@ -200,7 +200,7 @@ var createShotPage = function(rs,flags){
 			}
 			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
 		}
-	}		
+	}
 	$(".videodiv").html(html);
 }
 
@@ -237,15 +237,6 @@ function uploadMaterial(selectFile) {
 				alert(rs.FeedbackText);
 			}
 		}else{//查询"Load EDL"的镜头
-var shots_ajax = function(pc, callback){
-	$.post("/post_shot_list",
-		JSON.stringify({ProjectCode: pc}),
-        function(data) {
-            callback(data);
-        },
-        "json"
-    );
-}
 			alert("upload error");
 		}
 	}
@@ -471,7 +462,7 @@ $(function(){
 					html += "<option value="+rs[i]["VendorUser"]+">"+rs[i]["UserName"]+"</option>";
 				}
 			}
-				
+
 			$("#factorysel").html(html);
 		}
 	});
@@ -490,7 +481,7 @@ $(function(){
 				for(var i = 0; i<rs.length; i++){
 					html += '<li class="li1 li'+rs[i]["VendorCode"]+'" name="'+rs[i]["VendorCode"]+'"><a href="javascript:void(0);">'+rs[i]["VendorName"]+'</a><span class="addvgr">+<div><ul><li class="addlens">添加镜头</li><li class="factory" id="'+rs[i]["VendorUser"]+'">指定外包商</li><li class="with">描述<input type="hidden" value="'+rs[i]["VendorDetail"]+'"></li><li class="power">设置权限</li><li class="delfactory">删除</li></ul></div></span></li>';
 				}
-			}				
+			}
 			$(".vendiv").find(".venul").html(html);
 		}
 	});
@@ -923,10 +914,10 @@ $(function(){
 						var detail = rs[i]["DemoDetail"];//描述
 						html += '<div class="tag" name="'+code+'"><div class="num">'+num+'</div><div class="frame"><div class="imgs"><img src="'+img+'" alt="缩略图"><br/>'+detail+'</div><div class="menu_tab">+<div class="bolpoabs"><ul><li class="viewhue">查看小样</li><li class="down">下载成品</li></ul></div></div></div></div>';
 					}
-				}			
+				}
 				$(".editioninfo").html(html);
 			}
-		});		
+		});
 	}
 	//查看版本小样
 	$(".editioninfo").on("click",".viewhue",function(){
@@ -1212,7 +1203,7 @@ $(function(){
 				var rs = JSON.parse(data.Data);
 				createShotPage(rs,"");
 			}
-		});				
+		});
 	});
 
 	//添加镜头

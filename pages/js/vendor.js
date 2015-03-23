@@ -17,10 +17,67 @@ var project_list_ajax = function(sc, callback){
     );
 }
 
+//项目列表点击查询镜头
+var project_shots_ajax = function(vc, callback){
+	$.post("/vendor_project_shots",
+		JSON.stringify({VendorCode: vc}),
+        function(data) {
+            callback(data);
+        },
+        "json"
+    );
+}
+
+// 项目列表
+var viewList = function(code) {
+	project_shots_ajax(code, function(data){
+		if (data.FeedbackCode == 0) {
+			var rs = JSON.parse(data.Data);
+			createPageList(rs);
+		}
+	});
+}
+
+//创建页面的列表(镜头+需求)
+var createPageList = function (rs) {
+	var html = '';
+	if (rs != null && rs.length >0) {
+		for(var i=0; i<rs.length; i++){
+			//列表镜头的信息
+			var shot = rs[i]["Shot"];
+			var code = shot["ShotCode"];
+			var imgsrc = shot["Picture"];
+			var names = shot["ShotName"];
+			var size = shot["Width"] + " X " + shot["Height"];
+			var speed = shot["ShotFps"] + " fps";
+
+			//列表制作需求的信息
+			var demands = rs[i]["Demands"];
+			var needhtml = "";
+			if (demands != null && demands.length > 0) {
+				for(var j=0; j<demands.length; j++){
+					var need = demands[i]["DemandDetail"];
+					if (need.length >= 15) {
+						needhtml += need.substring(0,15)+"...";
+					}else{
+						needhtml += need;
+					}
+					needhtml += "<br>";
+				}
+			}
+
+			html += '<div class="post"><input type="hidden" class="code" value="'+code+'"><div class="screenshot"><img src="'+imgsrc+'"></div><div class="summary"><table width="100%" height="150" border="0" cellspacing="0" cellpadding="0"><tr height="37"><td>'+names+'</td></tr><tr height="37"><td>'+size+'</td></tr><tr height="37"><td>'+speed+'</td></tr><tr height="37"><td></td></tr></table></div><div class="tag"><h2>制作需求</h2><div class="stage">'+needhtml+'</div></div><div class="view"></div><span href="javascript:void(0);" class="spanfile"><input type="button" class="sample" value="小样"><input type="button" class="product" value="成品"><input type="file" class="updfile" onchange="updatafile(this)"></span></div>';
+		}
+	}
+
+	$(".cont").find(".rightdiv").html(html);
+}
+
 $(function(){
 	//获得地址栏该外包公司code
 	code = getUrlParam("code");
-	// 加载项目列表
+
+	// 加载左侧项目列表
 	project_list_ajax("", function(data){
 		if (data.FeedbackCode == 0){
 			var rs = JSON.parse(data.Data);
@@ -30,49 +87,14 @@ $(function(){
 					html += "<li class='li2' name='"+rs[i]["VendorCode"]+"'><a href='javascript:void(0);'>项目"+rs[i]["VendorName"]+"</li>";
 				}
 			}
-				
+
 			$(".groupul").html(html);
 		}
-		alert(data.FeedbackCode+"");
 	});
-	// 项目列表
-	var viewList = function(code){
-		var length = 0;
-		if(code=="all"){
-			//TODO 取所有数据
-			length = 10;
-			
-		}else{
-			//TODO 取当前code数据
-			length = 5;
-		}
-		//显示所有镜头
-		var html = '';
-		for(var i = 0; i<length; i++){
-			var code = i;
-			var imgsrc = "http://imgserv.jd-app.com/?size=200x150";
-			var names = "素材名"+i;
-			var size = "W"+"x"+"H";
-			var speed = i+"fps";
-			//根据镜头code 查询前几条制作需求
-			var needhtml = "";
-			for(var ii = 0; ii<3; ii ++){
-				var need = "一二三四五六七八九十一"+ii;
-				if(need.length>=15)
-					needhtml += need.substring(0,15)+"...";
-				else
-					needhtml += need;
-					needhtml +="<br>";
-			}
-			html += '<div class="post"><input type="hidden" class="code" value="'+code+'"><div class="screenshot"><img src="'+imgsrc+'"></div><div class="summary"><table width="100%" height="150" border="0" cellspacing="0" cellpadding="0"><tr height="37"><td>'+names+'</td></tr><tr height="37"><td>'+size+'</td></tr><tr height="37"><td>'+speed+'</td></tr><tr height="37"><td></td></tr></table></div><div class="tag"><h2>制作需求</h2><div class="stage">'+needhtml+'</div></div><div class="view"></div><span href="javascript:void(0);" class="spanfile"><input type="button" class="sample" value="小样"><input type="button" class="product" value="成品"><input type="file" class="updfile" onchange="updatafile(this)"></span></div>';
-		}
-		$(".cont").find(".rightdiv").html(html);
-	}
+
 	//初始化右侧需求列表
-	var startTask = function(){
-		viewList("all");
-	}
-	startTask();
+	viewList("all");
+
 	//列表点击
 	$(".leftcontent").on("click","a",function(){
 		//得到当前列表code
@@ -102,7 +124,7 @@ $(function(){
 		$(".float").children(".sourceid").val(code);
 		$(".metadata").children(".basicinfo").css("display","block");
 		//根据code 取该code镜头信息
-		
+
 		//赋值给页面
 		var names = "镜头名";//镜头名
 		var size = "W"+"x"+"H";//尺寸
@@ -138,7 +160,7 @@ $(function(){
 	//基本信息
 	var basic = function(thiscode){
 		//根据code 取该code镜头信息
-		
+
 		//赋值给页面
 		var names = "镜头名";//镜头名
 		var size = "W"+"x"+"H";//尺寸
@@ -193,14 +215,14 @@ $(function(){
 		var input = document.getElementById("fileimg");
 		input.addEventListener('change', readImg, false);
 		$(".noteinfo").find(".chat").html(html);
-		
+
 	}
 	//下载参考素材
 	$(".edittable").on("click",".download",function(){
 		var code = $(this).parent().attr("name");
 		alert(code);
 	});
-	
+
 	//发送消息
 	$(".but").click(function(){
 		//获得图片消息
@@ -223,9 +245,9 @@ $(function(){
 			var srchtml = "<img src='"+imgsrc+"'>";
 			html = "<div class='newinfor'><div class='username'>"+name+"</div><div class='buddy'>"+srchtml+"</div></div>";
 		}
-		
+
 		//TODO 把消息对应该镜头code记录到数据库 图片src为imgsrc 文字消息为txt
-		
+
 		//添加到页面
 		$(".chat").append(html);
 		//初始化文本框

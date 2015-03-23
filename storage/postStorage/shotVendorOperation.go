@@ -45,7 +45,6 @@ func SpecifyShotVendorUser(sv *utility.ShotVendor) error {
 		return err
 	}
 
-	// TODO 关联删除添加的镜头
 	return nil
 }
 

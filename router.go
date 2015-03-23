@@ -93,15 +93,16 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_vendor_addShots", postAction.AddShotVendorShots)
 	http.HandleFunc("/post_shot_vendor_delShots", postAction.DeleteShotVendorShots)
 	http.HandleFunc("/post_shot_vendor_queShots", postAction.QueryShotVendorShots)
+	//外包商项目列表
+	http.HandleFunc("/vendor_project_list", vendorAction.GetVendorProjectList)
+	//外包商项目镜头及需求列表
+	http.HandleFunc("/vendor_project_shots", vendorAction.QueryVendorProjectShots)
 
 	// ---------------------------- 尚未测试 ------------------------------
 	//镜头版本查
 	http.HandleFunc("/post_shot_demo_version", postAction.QueryShotVersion)
 
 	// ---------------------------- 待实现 ------------------------------
-
-	//外包商项目列表
-	http.HandleFunc("/vendor_project_list", vendorAction.GetVendorProjectList)
 
 	//
 	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
