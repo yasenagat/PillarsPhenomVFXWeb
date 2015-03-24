@@ -66,7 +66,7 @@ var createPageList = function (rs) {
 				}
 			}
 
-			html += '<div class="post"><input type="hidden" class="code" value="'+code+'"><input type="hidden" class="pcode" value="'+pcode+'"><div class="screenshot"><img src="'+imgsrc+'"></div><div class="summary"><table width="100%" height="150" border="0" cellspacing="0" cellpadding="0"><tr height="37"><td>'+names+'</td></tr><tr height="37"><td>'+size+'</td></tr><tr height="37"><td>'+speed+'</td></tr><tr height="37"><td></td></tr></table></div><div class="tag"><h2>制作需求</h2><div class="stage">'+needhtml+'</div></div><div class="view"></div><span href="javascript:void(0);" class="spanfile"><input type="button" class="sample" value="小样"><input type="button" class="product" value="成品"><input type="file" class="updfile" onchange="updatafile(this)"></span></div>';
+			html += '<div class="post"><input type="hidden" class="code" value="'+code+'"><input type="hidden" class="pcode" value="'+pcode+'"><div class="screenshot"><img src="'+imgsrc+'"></div><div class="summary"><table width="100%" height="150" border="0" cellspacing="0" cellpadding="0"><tr height="37"><td>'+names+'</td></tr><tr height="37"><td>'+size+'</td></tr><tr height="37"><td>'+speed+'</td></tr><tr height="37"><td></td></tr></table></div><div class="tag"><h2>制作需求</h2><div class="stage">'+needhtml+'</div></div><div class="view"></div><span href="javascript:void(0);" class="spanfile"><input type="button" class="sample" value="小样"><input type="button" class="product" value="成品"><input type="file" class="updfile" id="pro'+code+'" onchange="updatafile(this)"></span></div>';
 		}
 	}
 
@@ -124,10 +124,41 @@ var shot_noteque_ajax = function(sc, callback){
         "json"
     );
 }
-function updatafile(file){
+// 上传成品
+function updatafile(selectFile){
 	var code = $("#cameraCode").val();
-	//TODO 当前镜头code
-	alert(code);
+	var pcode = $("#pcodes").val();
+
+	var filename = selectFile.value;
+	var type = filename.substr(filename.lastIndexOf(".")+1);//文件格式
+	var edlfile = document.getElementById("pro"+code);
+	var files = edlfile.files;
+	var formData = new FormData();
+	for(var i=0; i<files.length; i++){
+		var file = files[i];
+		formData.append("files", file, file.name);
+	}
+	formData.append("ShotCode", code);
+	formData.append("ProjectCode", pcode);
+	formData.append("ProductType", type);
+	//formData.append("ProductDetail", detail);产品暂无描述
+	var xhr = new XMLHttpRequest();
+	xhr.open("POST", "vendor_product_upload", true);
+	xhr.onload = function(){
+		if(xhr.status === 200){
+			var rs = JSON.parse(xhr.responseText);
+			if(rs.FeedbackCode == 0) {
+				$(".outer").click();
+			}else if (rs.FeedbackCode == 202) {
+				alert("要上传的文件服务器已经存在!");
+			}else {
+				alert(rs.FeedbackText);
+			}
+		}else{
+			alert("upload error");
+		}
+	}
+	xhr.send(formData);
 }
 //上传小样
 function upsample(selectFile) {
@@ -153,7 +184,6 @@ function upsample(selectFile) {
 	xhr.onload = function(){
 		if(xhr.status === 200){
 			var rs = JSON.parse(xhr.responseText);
-			alert(rs.FeedbackCode+"");
 			if(rs.FeedbackCode == 0) {
 				$(".outer").click();
 			}else if (rs.FeedbackCode == 202) {
@@ -384,6 +414,7 @@ $(function(){
 	});
 	$(".rightdiv").on("click",".updfile",function(){
 		$("#cameraCode").val($(this).parent().siblings(".code").val());
+		$("#pcodes").val($(this).parent().siblings(".pcode").val());
 	});
 	//上传小样窗口显示
 	$(".rightdiv").on("click",".sample",function(){

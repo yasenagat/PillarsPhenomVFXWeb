@@ -246,13 +246,13 @@ type ShotVersion struct {
 	VersionNum     int
 	Picture        string
 	DemoName       string
-	DemoDetail     string
 	DemoType       string
 	DemoPath       string
+	DemoDetail     string
 	ProductName    string
-	ProductDetail  string
 	ProductType    string
 	ProductPath    string
+	ProductDetail  string
 	ProjectCode    string
 	Status         int
 	InsertDatetime string

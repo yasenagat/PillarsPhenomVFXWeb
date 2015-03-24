@@ -6,12 +6,25 @@ import (
 )
 
 func AddShotDemo(sv *utility.ShotVersion) error {
-	stmt, err := mysqlUtility.DBConn.Prepare("INSERT INTO shot_version(version_code, shot_code, vendor_user, version_num, picture, demo, demo_detail, product, product_detail, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
+	stmt, err := mysqlUtility.DBConn.Prepare("INSERT INTO shot_version(version_code, shot_code, vendor_user, version_num, picture, demo_name, demo_type, demo_path, demo_detail, product_name, product_type, product_path, product_detail, status, insert_datetime, update_datetime) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())")
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
-	_, err = stmt.Exec(sv.VersionCode, sv.ShotCode, sv.VendorUser, sv.VersionNum, sv.Picture, sv.DemoName, sv.DemoDetail, sv.ProductName, sv.ProductDetail, sv.Status)
+	_, err = stmt.Exec(sv.VersionCode, sv.ShotCode, sv.VendorUser, sv.VersionNum, sv.Picture, sv.DemoName, sv.DemoType, sv.DemoPath, sv.DemoDetail, sv.ProductName, sv.ProductType, sv.ProductPath, sv.ProductDetail, sv.Status)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func AddShotProduct(sv *utility.ShotVersion) error {
+	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_version a JOIN (SELECT version_id, MAX(version_num) FROM shot_version WHERE status = 0 AND shot_code = ? AND vendor_user = ?) b ON a.version_id = b.version_id SET product_name = ?, product_type = ?, product_path = ?, product_detail = ?, update_datetime = NOW()")
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+	_, err = stmt.Exec(sv.ShotCode, sv.VendorUser, sv.ProductName, sv.ProductType, sv.ProductPath, sv.ProductDetail)
 	if err != nil {
 		return err
 	}
