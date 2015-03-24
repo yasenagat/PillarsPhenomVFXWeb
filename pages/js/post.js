@@ -198,7 +198,7 @@ var createShotPage = function(rs,flags){
 					shotflag = "<div class='dels'>X</div>";
 				}
 			}
-			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value='回放'><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
+			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value=''><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
 		}
 	}
 	$(".videodiv").html(html);
@@ -309,9 +309,9 @@ var folders_click_ajax = function(pc, fi, callback){
 var li = function(string) {
 	//点击行
 	$("#treeflag").val("1");
-	$(".dtree").find(".dTreeNode").css("background","none");
-	$(".dtree").children("div.dTreeNode").css("background","#E3E3E3");
-	$(".dtree").find("."+string).parent().css("background","#979797");
+	$(".dtree").find(".dTreeNode").css("color","none");
+	$(".dtree").children("div.dTreeNode").siblings(".node").css("color","#b6b6b6");
+	$(".dtree").find("."+string).parent().siblings(".node").css("color","#b6b6b6");
 	// 查找该分组string的素材,返回素材列表
 	folders_click_ajax(projectCode, string, function(data){
 		if(data.FeedbackCode == 0){

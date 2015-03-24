@@ -6,10 +6,10 @@
 |--------------------------------------------------*/
 
 .dtree {
-	font-size: 25px;
+	font-size: 15px;
 	color: #666;
 	white-space: nowrap;
-	width:300px; height:500px;overflow:auto; position:relative;
+	width:180px; height:500px;overflow:auto; position:relative;
 }
 .dtree img {
 	border: 0px;
@@ -51,4 +51,8 @@
 	background:#CCC;
 	display:none;
 	z-index:1;
+}
+.dTreeNode{
+	border-bottom:1px solid #676767;
+}
 }
