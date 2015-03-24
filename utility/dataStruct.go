@@ -245,57 +245,16 @@ type ShotVersion struct {
 	VendorUser     string
 	VersionNum     int
 	Picture        string
-	Demo           string
+	DemoName       string
+	DemoType       string
+	DemoPath       string
 	DemoDetail     string
-	Product        string
+	ProductName    string
+	ProductType    string
+	ProductPath    string
 	ProductDetail  string
 	ProjectCode    string
 	Status         int
 	InsertDatetime string
 	UpdateDatetime string
-}
-
-//---------------------- 华丽分割线以下内容尚未使用 -------------------------
-
-// 存储shot（镜头）的缩略图，一个镜头可能有多个缩略图
-type Thumbnail struct {
-	ThumbnailCode  string
-	ShotCode       string
-	ThumbnailImage string
-	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-type Relation struct {
-	RelationCode   string
-	ParentCode     string
-	ChildCode      string
-	ListName       string
-	IsShot         bool
-	Content        string //miaoasdf
-	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-// 接包方处理完之后上传到文件夹并在Daily里面进行记录
-type Daily struct {
-	DailyCode      string
-	ShotCode       string
-	AwardCode      string
-	TargetPath     string
-	Status         int
-	InsertDatetime string
-	UpdateDatetime string
-}
-
-type Reference struct {
-	ReferenceCode string
-	ShotCode      string
-	ReferenceType string
-	MatName       string
-	MatType       string
-	MatContent    string
-	MatUrl        string
-	Status        int
 }

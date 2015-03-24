@@ -97,6 +97,9 @@ func RouterBinding() {
 	http.HandleFunc("/vendor_project_list", vendorAction.GetVendorProjectList)
 	//外包商项目镜头及需求列表
 	http.HandleFunc("/vendor_project_shots", vendorAction.QueryVendorProjectShots)
+	//外包商小样,成品上传
+	http.HandleFunc("/vendor_demo_upload", vendorAction.UploadDemo)
+	http.HandleFunc("/vendor_product_upload", vendorAction.UploadProduct)
 
 	// ---------------------------- 尚未测试 ------------------------------
 	//镜头版本查
