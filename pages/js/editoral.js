@@ -22,6 +22,8 @@ var librarys_ajax = function(pc){
 				}
 
 				library_click();
+			} else if (data.FeedbackCode == 404){
+				window.location.href = "404.html";
 			}
         },
         "json"

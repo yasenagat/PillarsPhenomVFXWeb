@@ -1,21 +1,21 @@
 .leftdiv{
-	width:300px;
+	width:180px;
+	padding:0 10px;
 	float:left;
 	overflow:hidden;
-	background:#EFEFEF;
-	border-right:5px solid #979797;
+	background:#171717;
 	position:fixed;
 	top:60px;
 }
 .groupdiv{
 	overflow:hidden;
-	font-size:25px;
+	font-size:15px;
 	min-height:100px;
 }
 .grouptit{
-	background:#e3e3e3;
 	height:50px;
 	line-height:50px;
+	border-bottom:1px solid #676767;
 }
 .tit1{
 	margin-left:15px;
@@ -26,6 +26,15 @@
 	margin-right:10px;
 	padding:0 10px 0 10px;
 	color:#7c7c7c;
+}
+.library li{
+	border-bottom:1px solid #676767;
+}
+.ali{
+	border-bottom:1px solid #676767;
+}
+#materialGroup li{
+	border-bottom:1px solid #676767;
 }
 .groupcont{
 }
@@ -59,33 +68,39 @@
 }
 .rightdiv{
 	float:right;
-	width:875px;
+	width:970px;
 	padding-left:20px;
 }
 .tit2{
-	height:80px;
-	line-height:80px;
+	height:35px;
+	margin-top:10px;
 }
-.sp1,.sp2,.sp3,.spsearch{
-	display:inline-block;
-	height:50px;
-	float:left;
+.sp1{
+	float: right;
+    margin-left: 50px;
+    margin-right: 150px;
+}
+.sp2 {
+    border-right: 1px solid #a2a2a2;
+    float: right;
+    padding-right: 50px;
+}
+.sp1 .videobut {
+    background: url("../img/video.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: 17px;
+    width: 17px;
+}
+.sp1 .listbut {
+    background: url("../img/list.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: 17px;
+    margin-left: 30px;
+    width: 17px;
 }
 .tit2 span input{
-	padding:10 20px 10 20px;
-	font-size:20px;
-}
-.sp2{
-	margin-left:100px;
+	font-size:15px;
 }
 .sp3{
 	margin-left:100px;
-}
-.spsearch{
-	margin-left:100px;
-}
-.inpsearch{
-	border:2px solid #979797;
 }
 .bgimgdiv,.strdiv{
 }
@@ -147,17 +162,26 @@
 .videodiv .videostr{
 	height:50px;
 	width:95%;
-	border:2px solid #979797;
-	background:#d8d8d8;
+	border:1px solid #363636;
+	background:#262626;
 	position:relative;
 	margin-bottom:8px;
+	border-radius:5px;
+	color:#BBB;
+}
+.videodiv input[type="button"]{
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
+    padding: 4px;
+    width: 60px;
 }
 .videostr .check{
 	position:absolute;
-	left:5px;
-	top:7px;
-	width:30px;
-	height:30px;
+	left:9px;
+	top:15px;
 }
 .videostr .play{
 	position:absolute;
@@ -330,4 +354,38 @@
 	min-width:280px;
 }
 .treenode1:hover{
+}
+.spsearch {
+    background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-radius: 0;
+    display: block;
+    float: left;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.inpsearch {
+    background-color: #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px;
+    margin: 0;
+    outline-style: none;
+    overflow: hidden;
+    padding: 4px 30px 4px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+}
+.butsearch {
+    background: url("../img/glass.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: 20px;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    width: 20px;
 }

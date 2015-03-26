@@ -112,6 +112,7 @@ func UploadDemo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	var sv u.ShotVersion
+	sv.VendorUser = userCode
 	sv.ShotCode = formData.Value["ShotCode"][0]
 	sv.ProjectCode = formData.Value["ProjectCode"][0]
 	sv.DemoType = formData.Value["DemoType"][0]
@@ -154,12 +155,18 @@ func UploadDemo(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// TODO 文件上传,保存成功,是否需要调用C++对素材抓图及其他信息
+		//获取版本号
+		num, err := ps.GetShotVersionNum(&sv)
+		if num == nil || err != nil {
+			u.OutputJsonLog(w, 18, "Get shot version number failed!", nil, "postAction.AddShotDemo: postStorage.GetShotVersionNum(&version) failed!")
+			return
+		}
+		sv.VersionNum = *num + 1
 		sv.VersionCode = *u.GenerateCode(&userCode)
 		sv.DemoPath = out.Name()
-		sv.VendorUser = userCode
 		err = ps.AddShotDemo(&sv)
 		if err != nil {
-			u.OutputJsonLog(w, 18, err.Error(), nil, "vendorAction.UploadDemo: postStorage.AddShotDemo(&ShotVersion) failed!")
+			u.OutputJsonLog(w, 19, err.Error(), nil, "vendorAction.UploadDemo: postStorage.AddShotDemo(&ShotVersion) failed!")
 			return
 		}
 

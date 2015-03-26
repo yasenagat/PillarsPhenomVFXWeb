@@ -12,29 +12,34 @@
 	</head>
 
 	<body>
-		<div class="menu">
-			<div class="menuall" style="position:relative;">
-				<ul>
-				  <li><a href="#">project</a></li>
-				  <li><a href="#">editoral</a></li>
-				  <li><a href="#" class="postpage">post</a></li>
-				  <li><a href="#">on-set</a></li>
-				  <li><a href="#">playback</a></li>
-				    </ul>
-				<div class="menuab">
-				         <span>加号</span>
-					<div class="menu_tabs">
-					          	<ul>
-						              	<li>
-						                   	<a href="#">
-						                   	退出
-						                   	</a>
-							</li>
-					              </ul>
-					</div>
-				</div>
-			</div>
-		</div>
+<div class="menu">
+    <div class="menuall">
+        <div class="logo"></div>
+            <ul>
+            <li><a href="#">project</a></li>
+            <li><a href="#">editoral</a></li>
+            <li><a href="#" class="postpage">post</a></li>
+            <li><a href="#">on-set</a></li>
+            <li><a href="#">playback</a></li>
+        </ul>
+        <div class="menuab">
+            <span><img src="img/menu.png"></span>
+            <div class="menu_tabs">
+                <ul>
+                    <li>
+                        <a href="#">
+                            退出
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+        
+        
+        
+        
 		<div class="all">
 		    <div class="cont">
 		    	<div class="leftdiv">
@@ -54,7 +59,7 @@
 		                </div>
 		                <div class="groupcont">
 		                	<ul>
-		                    	<li class="li1"><a href="javascript:void(0);">All</a></li>
+		                    	<li class="li1 ali"><a href="javascript:void(0);">All</a></li>
 		                        <li>
 		                            <ul id="materialGroup">
 		                                <!--
@@ -75,25 +80,32 @@
 		            </div>
 		        </div>
 		        <div class="rightdiv">
-		        	<div class="tit2">
-		            	<span class="sp1">
-		                	<input type="button" value="列表">
-		                    <input type="button" value="视图">
-		                </span>
-		                <span class="sp2">
-		                	<input type="button" value="回放">
-		                </span>
-		                <span class="sp3">
-		                	<input type="button" id="butdownloads" value="批量下载">
-		                </span>
-		                <span class="spsearch">
-							<input type="hidden" id="pageflag" value="">
+		        	
+                    
+                    <div class="tit2">
+                        <span class="spsearch">
+	                        <input type="hidden" id="pageflag" value="">
 							<input type="hidden" id="pagecode" value="">
 							<input type="hidden" id="treeflag" value="">
-		                	<input type="text" class="inpsearch" value="">
-		                	<input type="button" class="butsearch" value="搜索">
-		                </span>
-		            </div>
+                            <input type="text" class="inpsearch" value="" placeholder="搜索">
+                            <input type="button" class="butsearch" value="">
+                        </span>
+                        <span class="sp1">
+                <input type="button" class="videobut" value="">
+                <input type="button" class="listbut" value="">
+                        </span>
+                        <span class="sp2">
+                            <input type="button" id="butdownloads" value="批量下载" class="updfile">
+                        </span>
+                        
+                    </div>
+                    
+                    
+                    
+                    
+                    
+                    
+                    
 		            <div class="bgimgdiv">
 		            	<div class="tit3">缩略图形式：</div>
 		                <div class="videodiv">
@@ -207,27 +219,7 @@
 		                列表形式：
 		                </div>
 		                <div class="videodiv">
-		                	<span class="videostr">
-		                    	<input type="hidden" class="sourceid" value="1">
-		                    	<input class="check" name="" type="checkbox" value="1">
-		                        <input class="play" type="button" value="回放">
-		                        <div class="downdiv">
-		                            <input class="downl" type="button" value="下载">
-		                            <span class="disnone">
-		                                <ul>
-		                                    <li>Source</li>
-		                                    <li>DPX</li>
-		                                    <li>JPG</li>
-		                                    <li>Mov</li>
-		                                </ul>
-		                            </span>
-		                        </div>
-		                        <div class="files">
-		                        	<span class="name">素材名</span>
-		                            <span class="format">格式</span>
-		                            <span class="long">长度</span>
-		                        </div>
-		                    </span>
+		                	
 		                </div>
 		            </div>
 		        </div>

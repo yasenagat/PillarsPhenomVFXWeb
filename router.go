@@ -47,7 +47,7 @@ func RouterBinding() {
 	http.HandleFunc("/editoral_folder_countfiles", editoralAction.CountFolderFiles)
 	http.HandleFunc("/editoral_download_file", downloadAction.DownloadFile)
 
-	//上传edl文件
+	// 上传edl文件
 	http.HandleFunc("/post_upload_edl", postAction.LoadEdlFile)
 	// 镜头信息的增删改查
 	http.HandleFunc("/post_shot_add", postAction.AddShot)
@@ -70,7 +70,10 @@ func RouterBinding() {
 	// 镜头NOTE增查
 	http.HandleFunc("/post_shot_note_add", postAction.AddNote)
 	http.HandleFunc("/post_shot_note_que", postAction.QueryNotes)
-	//镜头自定义分组增删改查,添加删除镜头
+	// 镜头版本查,下载
+	http.HandleFunc("/post_shot_demo_version", postAction.QueryShotVersion)
+	http.HandleFunc("/post_shot_product_dow", postAction.DownloadShotProduct)
+	// 镜头自定义分组增删改查,添加删除镜头
 	http.HandleFunc("/post_shot_folder", postAction.GetShotList)
 	http.HandleFunc("/post_shot_folder_shots", postAction.QueryFolderShots)
 	http.HandleFunc("/post_shot_folder_add", postAction.AddFolder)
@@ -80,7 +83,7 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_folder_addfiles", postAction.AddFolderFiles)
 	http.HandleFunc("/post_shot_folder_delfiles", postAction.DeleteFolderFiles)
 	http.HandleFunc("/post_shot_folder_countfiles", postAction.CountFolderFiles)
-	//镜头外包商列表增删改查
+	// 镜头外包商列表增删改查
 	http.HandleFunc("/post_shot_vendor_add", postAction.AddShotVendor)
 	http.HandleFunc("/post_shot_vendor_del", postAction.DeleteShotVendor)
 	http.HandleFunc("/post_shot_vendor_specify", postAction.SpecifyShotVendorUser)
@@ -89,25 +92,23 @@ func RouterBinding() {
 	http.HandleFunc("/post_shot_vendor_que", postAction.QueryShotVendor)
 	http.HandleFunc("/post_shot_vendor_list", postAction.QueryShotVendorList)
 	http.HandleFunc("/user_vendor_list", userAction.GetVendorList)
-	//镜头外包商列表镜头增删查
+	// 镜头外包商列表镜头增删查
 	http.HandleFunc("/post_shot_vendor_addShots", postAction.AddShotVendorShots)
 	http.HandleFunc("/post_shot_vendor_delShots", postAction.DeleteShotVendorShots)
 	http.HandleFunc("/post_shot_vendor_queShots", postAction.QueryShotVendorShots)
-	//外包商项目列表
+	// 外包商项目列表
 	http.HandleFunc("/vendor_project_list", vendorAction.GetVendorProjectList)
-	//外包商项目镜头及需求列表
+	// 外包商项目镜头及需求列表
 	http.HandleFunc("/vendor_project_shots", vendorAction.QueryVendorProjectShots)
-	//外包商小样,成品上传
+	// 外包商小样,成品上传
 	http.HandleFunc("/vendor_demo_upload", vendorAction.UploadDemo)
 	http.HandleFunc("/vendor_product_upload", vendorAction.UploadProduct)
 
 	// ---------------------------- 尚未测试 ------------------------------
-	//镜头版本查
-	http.HandleFunc("/post_shot_demo_version", postAction.QueryShotVersion)
 
 	// ---------------------------- 待实现 ------------------------------
 
-	//
+	// 下载验证,暂未使用
 	http.HandleFunc("/editoral_download_file_check", downloadAction.DownloadFileCheck)
 	//http.HandleFunc("/.*", NotFound) // TODO 想实现未知路由地址访问的404页面跳转
 }

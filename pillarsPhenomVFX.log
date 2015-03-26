@@ -1,1 +1,2 @@
-2015/03/24 09:31:41 /home/pillars/Go/src/PillarsPhenomVFXWeb/utility/outputJson.go:25: postAction.QueryShotVersion: postStorage.QueryShotVersion(&ShotCode) failed!
+2015/03/25 16:38:40 /home/pillars/Go/src/PillarsPhenomVFXWeb/utility/outputJson.go:25: postAction.QueryShotVendorList: Parameters Checked failed!
+2015/03/25 16:38:40 /home/pillars/Go/src/PillarsPhenomVFXWeb/utility/outputJson.go:25: postAction.QueryShots: Parameter ProjectCode failed!

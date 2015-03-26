@@ -112,7 +112,7 @@ func DownloadFile(w http.ResponseWriter, r *http.Request) {
 func DownloadFileCheck(w http.ResponseWriter, r *http.Request) {
 	flag, _ := s.GetAuthorityCode(w, r, "制片")
 	if !flag {
-		u.OutputJsonLog(w, 500, "Authority failed!", nil, "Authority failed!")
+		u.OutputJsonLog(w, 404, "Authority failed!", nil, "Authority failed!")
 		return
 	}
 

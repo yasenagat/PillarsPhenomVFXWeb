@@ -16,7 +16,7 @@ import (
 
 func GetLibrarys(w http.ResponseWriter, r *http.Request) {
 	if !s.CheckAuthority(w, r, "制片") {
-		http.Redirect(w, r, "/404.html", http.StatusFound)
+		u.OutputJsonLog(w, 404, "session error!", nil, "")
 		return
 	}
 

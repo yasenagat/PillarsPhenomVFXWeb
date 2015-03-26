@@ -10,6 +10,11 @@ a:link {color: #676767; text-decoration:none;}
 a:visited {color: #83006f;text-decoration:none;}
 a:hover {color: #bc2931; text-decoration:underline;}
 a:active {color: #bc2931;}
+    /* 设置滚动条的样式 */
+    ::-webkit-scrollbar{ width:15px; margin-right:2px }
+::-webkit-scrollbar-track-piece{background-color:#171717;border:1px solid #676767;}
+::-webkit-scrollbar-thumb{ background:#262626; width:10px;border:1px solid #676767; }
+::-webkit-scrollbar-thumb:hover{ background:#363636; }
 input{
 	border:none;
 }
@@ -40,7 +45,7 @@ body *{
 	float:left;
 }
 .menuall ul li{
-	padding:0px 20px 0px 20px;
+	padding:0px 50px;
 	display:inline-block;
 	height:60px;
 	line-height:60px;

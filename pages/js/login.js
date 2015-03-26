@@ -15,6 +15,14 @@ require.config({
 
 require(['jquery', 'validate', 'md5'], function($) {
     $(function(){
+		//回车登陆
+		document.onkeydown = function (event) {
+			e = event ? event :(window.event ? window.event : null);
+			if(e.keyCode == 13){
+				document.getElementById("loginBtn").click();
+			}
+		}
+
 		var validator = $('#form1').validate({
 			//required:验证规则
 			rules:{

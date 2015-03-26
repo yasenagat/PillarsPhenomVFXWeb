@@ -44,7 +44,7 @@ func GetShotVersionNum(sv *utility.ShotVersion) (*int, error) {
 }
 
 func QueryShotVersion(shotCode *string) (*[]utility.ShotVersion, error) {
-	stmt, err := mysqlUtility.DBConn.Prepare("SELECT version_code, version_num, picture, demo_datail FROM shot_version WHERE status = 0 AND shot_code = ? ORDER BY version_num DESC")
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT version_code, version_num, picture, demo_detail, IF(product_path LIKE '', 'N', 'Y') AS product_path FROM shot_version WHERE status = 0 AND shot_code = ? ORDER BY version_num DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -57,7 +57,7 @@ func QueryShotVersion(shotCode *string) (*[]utility.ShotVersion, error) {
 	var versions []utility.ShotVersion
 	for result.Next() {
 		var version utility.ShotVersion
-		err = result.Scan(&version.VersionCode, &version.VersionNum, &version.Picture, &version.DemoDetail)
+		err = result.Scan(&version.VersionCode, &version.VersionNum, &version.Picture, &version.DemoDetail, &version.ProductPath)
 		if err != nil {
 			return nil, err
 		}
@@ -66,29 +66,17 @@ func QueryShotVersion(shotCode *string) (*[]utility.ShotVersion, error) {
 	return &versions, nil
 }
 
-//func DeleteShotVersion(code *string) error {
-//	stmt, err := mysqlUtility.DBConn.Prepare("UPDATE shot_version SET status = 1 WHERE status = 0 AND version_code = ?")
-//	defer stmt.Close()
-//	if err != nil {
-//		return err
-//	}
-//	_, err = stmt.Exec(code)
-//	if err != nil {
-//		return err
-//	}
-//	return nil
-//}
-
-//func QuerySingleShotVersion(code *string) (*utility.ShotVersion, error) {
-//	stmt, err := mysqlUtility.DBConn.Prepare("SELECT version_code,shot_code,vendor_code,thumbnail,demo,product,status FROM shot_version WHERE version_code=?  AND status=0")
-//	var shot_version utility.ShotVersion
-//	if err != nil {
-//		return nil, err
-//	}
-//	result := stmt.QueryRow(code)
-//	err = result.Scan(&version.VersionCode, &version.ShotCode, &version.VendorCode, &version.Image, &version.Demo, &version.Product, &version.Status)
-//	if err != nil {
-//		return nil, err
-//	}
-//	return &version, nil
-//}
+func QueryShotProduct(versionCode *string) (*utility.ShotVersion, error) {
+	stmt, err := mysqlUtility.DBConn.Prepare("SELECT product_name, product_type, product_path FROM shot_version WHERE status = 0 AND version_code = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	var sv utility.ShotVersion
+	result := stmt.QueryRow(versionCode)
+	err = result.Scan(&sv.ProductName, &sv.ProductType, &sv.ProductPath)
+	if err != nil {
+		return nil, err
+	}
+	return &sv, nil
+}

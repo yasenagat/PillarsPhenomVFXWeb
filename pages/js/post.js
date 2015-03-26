@@ -195,7 +195,7 @@ var createShotPage = function(rs,flags){
 			}
 			if(flags=="1"){
 				if(rs[i]["ShotFlag"] == "1"){
-					shotflag = "<div class='dels'>X</div>";
+					shotflag = "<div class='dels'></div>";
 				}
 			}
 			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value=''><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
@@ -464,6 +464,8 @@ $(function(){
 			}
 
 			$("#factorysel").html(html);
+		} else if (data.FeedbackCode == 404){
+			window.location.href = "404.html";
 		}
 	});
 	projectCode = getUrlParam("code");
@@ -516,12 +518,13 @@ $(function(){
 	$(".metadata").children(".basicinfo").css("display","block");
 	$(".videodiv").on("click",".view",function(){
 		var rightabs = $(".rightdivabs").css("display");
-		if(rightabs=="block"){
-			$(".rightdivabs").css("display","none");
+		//获得当前镜头的id
+		var thiscode = $(this).siblings("#code").attr("value");
+		if(rightabs=="block"&&thiscode==$(".float").find(".sourceid").val()){
+			$(".rightdivabs").hide(500);
 		}else{
-			$(".rightdivabs").css("display","block");
-			//获得当前镜头的id
-			var thiscode = $(this).siblings("#code").attr("value");
+			$(".rightdivabs").show(500);
+			
 			$(".float").find(".sourceid").val(thiscode);
 			//获取img的url
 			$(".roughimg").children("img").attr("src",$(this).siblings(".files").children("img").attr("src"));
@@ -548,8 +551,8 @@ $(function(){
 					//初始化右侧窗口 隐藏
 					$(".metadata").children("div").css("display","none");
 					$(".metadata").find(".basicinfo").css("display","block");
-					$(".withtit").children("li").css("background","#FFF");
-					$(".withtit").find(".basic").css("background","#ccc");
+					/*$(".withtit").children("li").css("background","#FFF");
+					$(".withtit").find(".basic").css("background","#ccc");*/
 					$(".tab1").find(".names").html(names);//镜头名
 					$(".tab1").find(".size").html(size);//尺寸
 					$(".tab1").find(".speed").html(speed);//帧速率
@@ -562,6 +565,9 @@ $(function(){
 	});
 
 	$(".dels").click(function(){
+		if(!confirm("你确信要删除该镜头吗？")){
+			return;
+		}
 		//获得当前选中复选框的id
 		var str = "";
 		$('input[class="check"]:checked').each(function() {
@@ -615,11 +621,11 @@ $(function(){
 		//获得点击元素class
 		var names = $(this).attr("class");
 		//初始化点击按钮
-		$(".withtit").children("li").css("background","none");
-		$(this).css("background","#ccc");
+		//$(".withtit").children("li").css("background","none");
+		//$(this).css("background","#ccc");
 		//初始化右侧窗口 隐藏
 		$(".metadata").children("div").css("display","none");
-		$("."+names+"info").show();
+		$("."+names+"info").show(500);
 		//获取当前选中镜头的id
 		var code = $(".float").find(".sourceid").val();
 		if(names == "basic"){
@@ -914,7 +920,7 @@ $(function(){
 	});
 	//根据镜头code 查询版本列表信息
 	var edition = function(code){
-		//TODO 根据code 获得版本信息
+		// 根据code 获得版本信息
 		shot_demo_version_ajax(code, function(data){
 			if (data.FeedbackCode == 0) {
 				var rs = JSON.parse(data.Data);
@@ -925,7 +931,12 @@ $(function(){
 						var num = "V " + rs[i]["VersionNum"];//版本号
 						var img = rs[i]["Picture"];//缩略图url
 						var detail = rs[i]["DemoDetail"];//描述
-						html += '<div class="tag" name="'+code+'"><div class="num">'+num+'</div><div class="frame"><div class="imgs"><img src="'+img+'" alt="缩略图"><br/>'+detail+'</div><div class="menu_tab">+<div class="bolpoabs"><ul><li class="viewhue">查看小样</li><li class="down">下载成品</li></ul></div></div></div></div>';
+						// 成品标识Y有,N没有
+						var cp = "";
+						if (rs[i]["ProductPath"] == "Y") {
+							cp = '<li class="down">下载成品</li>';
+						}
+						html += '<div class="tag" name="'+code+'"><div class="num">'+num+'</div><div class="frame"><div class="imgs"><img src="'+img+'" alt="缩略图"><br/>'+detail+'</div><div class="menu_tab">+<div class="bolpoabs"><ul><li class="viewhue">查看小样</li>'+cp+'</ul></div></div></div></div>';
 					}
 				}
 				$(".editioninfo").html(html);
@@ -937,12 +948,13 @@ $(function(){
 		//获得该版本的code
 		var code = $(this).parents(".tag").attr("name");
 		alert(code);
+		// TODO 跳转到播放
 	});
 	//下载版本成品
 	$(".editioninfo").on("click",".down",function(){
 		//获得该版本的code
 		var code = $(this).parents(".tag").attr("name");
-		alert(code);
+		window.open("/post_shot_product_dow?VersionCode=" + code);
 	});
 	$(".updfile").click(function(){
 		var height = $(window).height();
@@ -951,6 +963,8 @@ $(function(){
 		$(".formdiv1").css({"left":(width/2)-200+"px","top":(height/2)-200+"px"});
 		$(".outer").show(500);
 		$(".formdiv1").show(500);
+		$("#sizee").find("#sizew").attr("disabled","true");
+		$("#sizee").find("#sizeh").attr("disabled","true");
 	});
 	$(".outer").click(function(){
 		$(".outer").hide(500);
@@ -1314,6 +1328,9 @@ $(function(){
 	});
 	//删除
 	$(".videodiv").on("click",".dels",function(){
+		if(!confirm("你确信要删除该镜头吗？")){
+			return false;
+		}
 		//得到当前镜头code
 		var code = $(this).siblings("#code").val();
 		var temp = $(this);
@@ -1323,6 +1340,34 @@ $(function(){
 			}
 		});
 	});
+	//搜索文本框 失去焦点
+	$(".inpsearch").blur(function(){
+			$(".spsearch").find(".butsearch").css("background","url('../img/glass.png')");
+	});
+	//得到焦点
+	$(".inpsearch").focus(function(){
+		$(".spsearch").find(".butsearch").css("background","url('../img/glass2.png')");
+	});
+	//鼠标滚动
+	var msie6 = $.browser == 'msie' && $.browser.version < 7;
+	
+	if (!msie6) {
+		var top = $('.leftdiv').offset().top - parseFloat($('.leftdiv').css('margin-top').replace(/auto/, 0));
+		$(window).scroll(function (event) {
+			// what the y position of the scroll is
+			var y = $(this).scrollTop();
+		
+			// whether that's below the form
+			if (y >= top) {
+				// if so, ad the fixed class
+				$('.leftdiv').addClass('fixed');
+			} else {
+				// otherwise remove it
+				$('.leftdiv').removeClass('fixed');
+			}
+		});
+	}
+ //鼠标滚动结束
 });
 function selectChange(val){
 	if(val!="自定义"){

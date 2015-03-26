@@ -214,6 +214,8 @@ $(function(){
 			}
 
 			$(".groupul").html(html);
+		} else if (data.FeedbackCode == 404){
+			window.location.href = "404.html";
 		}
 	});
 
