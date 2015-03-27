@@ -488,6 +488,16 @@ $(function(){
 		var thisclass = $(".formdiv2").find(".pid").val();//父ID
 		var names = $(".formdiv2").find(".names").val();//素材组的名称
 		var depict = $(".formdiv2").find(".depict").val();//素材的描述
+		if(names == ""){
+			alert("请输入素材组名");
+			$(".formdiv2").find(".names").focus();
+			return;
+		}
+		if(depict == ""){
+			alert("请输入描述");
+			$(".formdiv2").find(".depict").focus();
+			return;
+		}
 		//根据是否有父id判断是添加还是修改,若父ID不等于空则为添加，若父ID等于空则为修改
 		if(thisclass != ""){//添加
 			var imglength = $(".formdiv2").find(".imgsize").val();//层级关系，界面需要

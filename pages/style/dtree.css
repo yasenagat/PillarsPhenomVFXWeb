@@ -50,7 +50,9 @@
     padding: 0 5px;
     position: absolute;
     right: 20px;
-	background:#CCC;
 	display:none;
 	z-index:1;
+	background: none repeat scroll 0 0 #262626;
+    border: 1px solid #363636;
+    color: #bbb;
 }

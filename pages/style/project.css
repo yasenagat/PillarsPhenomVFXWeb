@@ -1,18 +1,45 @@
 .search{
-	height:100px;
+	height:28px;
 	text-align:center;
 	line-height:100px;
+	width:340px;
+	margin:0 auto;
+	margin-top:20px;
+	margin-bottom:20px;
 }
 .inptext{
-	width:200px;
-	height:40px;
-	font-size:20px;
-	border:1px solid #ccc;
+	background-color: #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 12px;
+    height: 18px;
+    line-height: 18px;
+    margin: 0;
+    outline-style: none;
+    overflow: hidden;
+    padding: 4px 30px 4px 10px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 200px;
+	position:absolute;
+	top:0;
+	left:0;
 }
-
+.inptext:focus{
+	border:1px solid #04a6d1;
+}
 .inpsearch,.inpbutton{
 	width:80px;
-	height:40px;
+	height:28px;
+}
+.inpsearch{
+	background: url("../img/glass.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
+    height: 20px;
+    position: absolute;
+    left: 218px;
+    top: 4px;
+    width: 20px;
 }
 .pro{
 	overflow:hidden;
@@ -26,8 +53,6 @@
 }
 .pro .protab table{
 	margin-bottom:10px;
-	-webkit-box-shadow: 0px 0px 5px #999;
-	box-shadow: 0px 0px 5px #999;
 }
 .protab table img{
 	margin-left:20px;
@@ -39,6 +64,7 @@
 	top:5px;
 	cursor:pointer;
 	display:none;
+	color:#04a6d1;
 }
 .del{
 	position:absolute;
@@ -48,12 +74,13 @@
 	display:none;
 }
 .pro .protab table{
-	-webkit-transition: width .3s, height .3s, color .3s linear, background-color .3s linear, border-color .3s linear, -webkit-transform .3s linear;
-	-moz-transition: width .3s, height .3s, color .3s linear, background-color .3s linear, border-color .3s linear, -moz-transform .3s linear;
-	transition: width .3s, height .3s, color .3s linear, background-color .3s linear, border-color .3s linear, transform .3s linear;
+	background:#262626;
+	border:1px solid #363636;
+	color:#bbb;
+	cursor:pointer;
 }
 .pro .protab table:hover{
-	box-shadow: 0 0 10px #999;
+	box-shadow: 0 0 10px #04a6d1;
 }
 .pro .protab:hover .cz{
 	color:#09C;
@@ -71,10 +98,48 @@
 	overflow:hidden;
 	position: fixed;
     z-index: 9999;
-	background:#FFF;
 	display:none;
+	background: #171717;
+    border: 1px solid #676767;
+    color: #bbb;
 }
 .formtable input[type='text']{
-	border:1px solid #ccc;
-	width:160px;
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
+    padding: 4px;
+    width: 190px;
+}
+.formtable input[type='text']:focus{
+	border:1px solid #04a6d1;
+}
+.spsearch{
+	background: none repeat scroll 0 0 rgba(0, 0, 0, 0);
+    border-radius: 0;
+    display: block;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    position: relative;
+	width:242px;
+	float:left;
+}
+.inpbutton{
+	float:right;
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
+}
+.again,.submit{
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
+    padding: 4px;
+    width: 100px;
 }

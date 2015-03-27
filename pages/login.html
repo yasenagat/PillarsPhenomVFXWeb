@@ -8,24 +8,24 @@
 
 	<body>
 		<form id="form1">
-			<div id="login_indexPage">
-				<div class="login_indexPage_userDiv">
-				    	<img src="img/user.png"/>
-				    <div class="inputNameDiv">
-		            	<input placeholder="用户名" id="userName" name="UserName" value="zhipian@mail.com"/>
-		            </div>
-				</div>
-				<div class="login_indexPage_userDiv">
-				    	<img src="img/passWord.png"/>
-				    <div class="inputNameDiv">
-		            	<input placeholder="密码" id="userPassword" name="UserPassword" type="password" value="123456"/>
-		            </div>
-				</div>
-				<div class="loginPage_loginButton_Div">
-		           <input type="button" id="loginBtn" value="登陆"/>
-				</div>
+            <div id="login_indexPage">
+            <table width="600" height="210" border="0" cellspacing="0" cellpadding="0">
+              <tr height="70">
+                <td width="35%" align="right">用户名：</td>
+                <td width="65%"><input type="text" placeholder="用户名" id="userName" name="UserName" value="zhipian@mail.com"/></td>
+              </tr>
+              <tr height="70">
+                <td align="right">密&nbsp;&nbsp;&nbsp;&nbsp;码：</td>
+                <td><input placeholder="密码" id="userPassword" name="UserPassword" type="password" value="123456"/></td>
+              </tr>
+              <tr height="70">
+                <td colspan="2" align="center">
+	                <input type="button" id="loginBtn" value="登陆"/>
+                </td>
+              </tr>
+            </table>
 			</div>
 		</form>
-		<script data-main="js/login" language="JavaScript" defer async="true" src="jslib/require.js"></script>
+		<script data-main="js/login" language="JavaScript" defer async src="jslib/require.js"></script>
 	</body>
 </html>

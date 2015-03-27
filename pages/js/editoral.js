@@ -132,9 +132,9 @@ var fileList_create = function(rs){
 		var html = '<span class="videostr" id="span'+rs[i]["MaterialCode"]+'">';
 		html += '<input type="hidden" class="sourceid" value="'+rs[i]["MaterialCode"]+'">';
 		html += '<input class="check" name="" type="checkbox" value="'+rs[i]["MaterialCode"]+'">';
-		html += '<input class="play" type="button" value="回放">';
+		html += '<input class="play" type="button" value="">';
 		html += '<div class="downdiv">';
-		html += '<input class="downl" type="button" value="下载">';
+		html += '<input class="downl" type="button" value="">';
 		html += '<span class="disnone">';
 		html += '<ul class="'+rs[i]["MaterialCode"]+'">';
 		html += '<li>Source</li>'+liInfo+'</ul></span>';
@@ -209,6 +209,8 @@ var folders_ajax = function(pc){
 				}
 				$(".tree").html(d + '');
 				$(".dtree").children("div.dTreeNode").addClass("grouptit");
+				$(".dtree").children("div.dTreeNode").find("a").css("color","#9d9d9d");
+				$(".dtree").children("div.dTreeNode").find("span").css("color","#9d9d9d");
 			}
         },
         "json"
@@ -237,8 +239,8 @@ var li = function(string) {
 	//点击行
 	$("#treeflag").val("1");
 	$(".dtree").find(".dTreeNode").css("background","none");
-	$(".dtree").children("div.dTreeNode").css("background","#E3E3E3");
-	$(".dtree").find("."+string).parent().css("background","#979797");
+	$(".dtree").children("div.dTreeNode").find("a").css("color","#9d9d9d");
+	//$(".dtree").find("."+string).parent().css("background","#979797");
 	// 查找该分组string的素材,返回素材列表
 	folders_click_ajax(projectCode, string, function(data){
 		if(data.FeedbackCode == 0){
@@ -264,6 +266,7 @@ var li = function(string) {
 
 $(function(){
 	projectCode = getUrlParam("code");
+
 	if (projectCode !== ""){
 		librarys_ajax(projectCode);
 		filetypes_ajax(projectCode);
@@ -389,9 +392,9 @@ $(function(){
 		var sourceid = $(this).siblings(".sourceid").val();//选中的id
 		var absid = $(".float .sourceid").val();//右边悬浮的id
 		if(rightdivabs == "block" && sourceid == absid) {
-			$(".rightdivabs").css("display","none");
+			$(".rightdivabs").hide(500);
 		} else {
-			$(".rightdivabs").css("display","block");
+			$(".rightdivabs").show(500);
 			$(".float .sourceid").val(sourceid);
 			//根据sourceid从后台查询数据
 			materialInfo_ajax(sourceid, function(data){
@@ -431,16 +434,20 @@ $(function(){
 		$(".formdiv2").find(":text").val("");
 		$(".formdiv2").hide(500);
 	});
-	$(".submit").click(function(){
-		var name = $(".names").val();
-		var url = $(".url").val();
+	$(".libsub").click(function(){
+		var name = $(".formdiv2").find(".names").val();
+		var url = $(".formdiv2").find(".url").val();
 		var transcodingurl = $(".transcodingurl").val();
 		var dpxurl = $(".dpxurl").val();
 		var movurl = $(".movurl").val();
-		if(name==""||url==""){
-			return false;
+		if(name==""){
+			alert("请输入名称");
+			return;
 		}
-
+		if(url==""){
+			alert("请输素材路径");
+			return;
+		}
 		//验证通过，ajax方式提交数据
 		addLibrary_ajax(name, url, dpxurl, transcodingurl, movurl, projectCode, function(data) {
 			if(data.FeedbackCode == 0) {
@@ -520,5 +527,13 @@ $(function(){
 			$("#dd"+cliplength).append(txt);
 		}
 		//ltree("1",inputstr);//参数1目录层级，参数2文字内容
+	});
+	//搜索文本框 失去焦点
+	$(".inpsearch").blur(function(){
+			$(".spsearch").find(".butsearch").css("background","url('../img/glass.png')");
+	});
+	//得到焦点
+	$(".inpsearch").focus(function(){
+		$(".spsearch").find(".butsearch").css("background","url('../img/glass2.png')");
 	});
 });

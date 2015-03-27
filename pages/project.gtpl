@@ -6,39 +6,47 @@
 		<link href="style/css.css" rel="stylesheet" type="text/css">
 		<link href="style/project.css" rel="stylesheet" type="text/css">
 		<script language="JavaScript" src="jslib/laydate/laydate.js"></script>
+		<script>
+		function datatimes(str){
+			var strlength = str.indexOf(" ");
+			return str.substring(0,strlength);
+		}
+		</script>
 	</head>
 
 	<body>
 		<div class="menu">
-			<div class="menuall" style="position:relative;">
-				<ul>
-					<li><a href="#">Project</a></li>
-					<li><a href="#">Editoral</a></li>
-					<li><a href="#">Post</a></li>
-					<li><a href="#">On-Set</a></li>
-					<li><a href="#">Playback</a></li>
-	
-				</ul>
-				<div class="menuab">
-				            <span>加号</span>
+			<div class="menuall">
+			<div class="logo"></div>
+				<!--<ul>
+				  <li><a href="project_list">project</a></li>
+				  <li><a href="#" class="editoralpage">editoral</a></li>
+				  <li><a href="#">post</a></li>
+				  <li><a href="#">on-set</a></li>
+				  <li><a href="#">playback</a></li>
+				</ul>-->
+			</div>
+			<div class="menuab">
+						 <span><img src="img/menu.png"></span>
 					<div class="menu_tabs">
-					            	<ul>
-					                	<li>
-						                    	<a href="#">
-						                    	退出
-						                    	</a>
+								<ul>
+										<li>
+											<a href="login.html">
+											退出
+											</a>
 							</li>
-					                </ul>
+								  </ul>
 					</div>
 				</div>
-			</div>
 		</div>
 		<div class="all">
 			<div class="cont">
 				<div class="search">
-					<input type="text" class="inptext">
-					<input type="hidden" id="searchflag" value="">
-					<input type="button" value="搜索" class="inpsearch">
+					<span class="spsearch">
+						<input type="text" class="inptext" placeholder="搜索">
+						<input type="hidden" id="searchflag" value="">
+						<input type="button" value="" class="inpsearch">
+					</span>
 					<input type="button" value="添加项目" class="inpbutton">
 				</div>
 				<div class="pro">
@@ -69,11 +77,15 @@
 								<tr>
 									<td align="right">开始时间：</td>
 									<td class="StartDatetime_">
-										{{.StartDatetime}}
+									<script type="text/javascript">
+						document.write(datatimes("<div>"+{{.StartDatetime}}+"</div>"));
+									</script>
 									</td>
 									<td align="right">结束时间：</td>
 									<td class="EndDatetime_">
-										{{.EndDatetime}}
+									<script type="text/javascript">				
+						document.write("<div>"+datatimes({{.EndDatetime}})+"</div>");
+									</script>
 									</td>
 								</tr>
 								<tr>

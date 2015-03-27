@@ -13,7 +13,7 @@
 	min-height:100px;
 }
 .grouptit{
-	height:50px;
+	/*height:50px;*/
 	line-height:50px;
 	border-bottom:1px solid #676767;
 }
@@ -23,7 +23,6 @@
 }
 .grouptit .addbtn{
 	float:right;
-	margin-right:10px;
 	padding:0 10px 0 10px;
 	color:#7c7c7c;
 }
@@ -68,7 +67,7 @@
 }
 .rightdiv{
 	float:right;
-	width:970px;
+	width:980px;
 	padding-left:20px;
 }
 .tit2{
@@ -169,14 +168,8 @@
 	border-radius:5px;
 	color:#BBB;
 }
-.videodiv input[type="button"]{
-	background: none repeat scroll 0 0 #171717;
-    border: 1px solid #a2a2a2;
-    box-shadow: none;
-    color: #808080;
-    font-size: 14px;
-    padding: 4px;
-    width: 60px;
+.videodiv .videostr:hover{
+	box-shadow: 0 0 10px #04a6d1;
 }
 .videostr .check{
 	position:absolute;
@@ -188,12 +181,18 @@
 	left:35px;
 	top:10px;
 	font-size:20px;
+	background:url(../img/play30.png);
+	height:30px;
+	width:30px;
 }
 .videostr .downl{
 	position:absolute;
 	right:30px;
 	top:10px;
 	font-size:20px;
+	width:30px;
+	height:30px;
+	background:url(../img/down.png);
 }
 .videostr .disnone{
 	position:absolute;
@@ -201,21 +200,26 @@
 	top:40px;
 	z-index:1;
 	padding:5px;
-	background:#d8d8d8;
-	border:2px solid #979797;
+	background:#262626;
+	border:1px solid #363636;
 	display:none;
 	font-size:15px;
+	color:#bbb;
 }
 .videostr .downl:hover .videostr .disnone{
 	display:block;
 }
 .videostr .disnone ul li:hover{
-	background:#999;
+	background:#04a6d1;
+	color:#FFF;
+	cursor:pointer;
 }
 .videostr .files{
-	width:75%;
-	margin:0 auto;
 	height:50px;
+	padding-left:130px;
+}
+.videostr .files span{
+	font-size:12px;
 }
 .files .name{
 	width:320px;
@@ -246,27 +250,43 @@
 	overflow:hidden;
 	position: absolute;
     z-index: 9999;
-	background:#FFF;
 	display:none;
 	font-size:20px;
+	background: #171717;
+    border: 1px solid #676767;
+    color: #bbb;
 }
 .formdiv2{
 	width:400px;
 	overflow:hidden;
 	position: absolute;
     z-index: 9999;
-	background:#FFF;
 	display:none;
 	font-size:20px;
+	background: #171717;
+    border: 1px solid #676767;
+    color: #bbb;
 }
 .formdiv input[type="text"],.formdiv2 input[type="text"]{
-	width:200px;
-	height:30px;
-	border:2px solid #999;
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
+    padding: 4px;
+    width: 190px;
 }
 .formdiv input[type="button"],.formdiv2 input[type="button"]{
-	width:100px;
-	height:30px;
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
+    padding: 4px;
+    width: 100px;
+}
+.formdiv input[type="text"]:focus,.formdiv2 input[type="text"]:focus{
+	border: 1px solid #04a6d1;
 }
 .float {
 	position: fixed;
@@ -281,8 +301,7 @@
 	top: 0;
 	z-index: 5;
 	padding: 10px;
-	border: 2px solid #ccc;
-	background: #FFF;
+	background: #171717;
 	font-size:20px;
 	display:none;
 }
@@ -297,17 +316,15 @@
 	/*overflow: hidden;
 	overflow-x: hidden;
 	OVERFLOW-y: auto;*/
-	border: 1px solid #999;
-	background: #FFF;
+	background: #171717;
+	color:#bbb;
 }
 .roughimg{
-	border:2px solid #ccc;
 	width:360px;
 	margin:0 auto;
 	height:220px;
 }
 .withtit{
-	border:2px solid #ccc;
 	font-size:20px;
 	padding:10px;
 
@@ -381,6 +398,9 @@
     white-space: nowrap;
     width: 200px;
 }
+.inpsearch:focus {
+    border: 1px solid #13a3c5;
+}
 .butsearch {
     background: url("../img/glass.png") repeat scroll 0 0 rgba(0, 0, 0, 0);
     height: 20px;
@@ -388,4 +408,20 @@
     right: 4px;
     top: 4px;
     width: 20px;
+}
+.addGroup,.removeGroup,.addMaterial,.removeMaterial,.updGroup{
+	padding-left: 10px;
+	padding-right:10px;
+}
+.addGroup:hover,.removeGroup:hover,.addMaterial:hover,.removeMaterial:hover,.updGroup:hover{
+	background:#04a6d1;
+	color:#FFF;
+	cursor:pointer;
+}
+.updfile{
+	background: none repeat scroll 0 0 #171717;
+    border: 1px solid #a2a2a2;
+    box-shadow: none;
+    color: #808080;
+    font-size: 14px;
 }

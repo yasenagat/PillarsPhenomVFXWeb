@@ -592,6 +592,9 @@ padding:0;
 	height:150px;
 	top:0; left:0;
 }
+.videoimg .view:hover{
+box-shadow: 0 0 10px #04a6d1;
+}
 .files img{
     height: 150px;
     width: 200px;
