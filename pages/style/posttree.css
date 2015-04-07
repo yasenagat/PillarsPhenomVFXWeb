@@ -10,7 +10,7 @@
 	color: #666;
 	white-space: nowrap;
 	width:180px; overflow:auto; position:relative;
-	min-height: 300px;
+	min-height: 200px;
 }
 .dtree img {
 	border: 0px;
@@ -41,6 +41,7 @@
 	position:absolute;
 	right:0px;
 	padding:0 5px 0 5px;
+	cursor:pointer;
 }
 .dTreeNode｛{
 	position:relative;

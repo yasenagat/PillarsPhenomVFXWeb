@@ -235,29 +235,37 @@ $(function(){
 		}
 	});
 	$(".rightdiv").on("click",".view",function(){
-		if($(".float").children(".rightdivabs").css("display")=="block"){
+		$(".rightdiv").find(".post").css("box-shadow","");
+		//获得当前镜头code
+		var code = $(this).siblings(".code").val();
+		//当前悬浮div是否已经显示
+		var rightabs = $(".float").children(".rightdivabs").css("display");
+		if(rightabs=="block"&&code==$(".float").children(".sourceid").val()){
 			$(".float").children(".rightdivabs").css("display","none");
 			return;
 		}else{
+			$(this).parent().css("box-shadow","0 0 10px #04a6d1");
 			$(".float").children(".rightdivabs").css("display","block");
 		}
-		//获得当前镜头code
-		var code = $(this).siblings(".code").val();
+		
 		//初始化页面标签
-		$(".withtit").find("li").css("background","#FFF");
-		$(".withtit").find(".basic").css("background","#CCC");
+		/*$(".withtit").find("li").css("background","#FFF");
+		$(".withtit").find(".basic").css("background","#CCC");*/
 		$(".metadata").children("div").hide();
 		//赋值给弹出div
 		$(".float").children(".sourceid").val(code);
 		$(".metadata").children(".basicinfo").css("display","block");
+		//取图片给右侧弹出窗口
+		var srcurl = $(this).siblings(".screenshot").children("img").attr("src");
+		$(".chatdiv").find(".ovhi").find(".roughimg").find("img").attr("src",srcurl);
 		//根据code 取该code镜头信息
 		basic(code);
 	});
 	//点击基本信息 制作需求 素材 note 按钮
 	$(".withtit li").click(function(){
 		var menu = $(this).attr("class");
-		$(this).siblings("li").css("background","#FFF");
-		$(this).css("background","#ccc");
+		/*$(this).siblings("li").css("background","#FFF");
+		$(this).css("background","#ccc");*/
 		var thiscode = $(".float").children(".sourceid").val();
 		if(menu=="basic"){
 			basic(thiscode);
@@ -388,7 +396,6 @@ $(function(){
 			alert("请输入消息内容或图片");
 			return;
 		}
-		alert(code);
 		// 把消息对应该镜头code记录到数据库 图片src为imgsrc 文字消息为txt
 		shot_noteadd_ajax("aaa", code, txt, imgsrc, function(data){
 			if (data.FeedbackCode == 0){
@@ -411,7 +418,6 @@ $(function(){
 				//初始化下拉
 				$(".chat").scrollTop(200000);
 			}
-			alert(data.FeedbackCode+"--->"+data.FeedbackText);
 		});
 	});
 	$(".rightdiv").on("click",".updfile",function(){

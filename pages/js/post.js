@@ -179,6 +179,7 @@ var createShotPage = function(rs,flags){
 			var code = rs[i]["ShotCode"];//镜头id
 			var names = rs[i]["ShotName"];//镜头名
 			var pic = rs[i]["Picture"];//图片
+			var pichtml = "";
 			var liInfo = "";
 			var shotflag = "";
 			if(rs[i]["SourcePath"] == "Y") {
@@ -198,7 +199,13 @@ var createShotPage = function(rs,flags){
 					shotflag = "<div class='dels'></div>";
 				}
 			}
-			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value=''><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value='下载'><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div><div class='files'><img src='"+pic+"'></div>"+shotflag+"</span>";
+			if(pic!=''){
+				pichtml = "<div class='files'><img src='"+pic+"'></div>";
+			}else{
+				var cla = Math.round(Math.random()*5);
+				pichtml = "<div class='files col"+cla+"' name='col"+cla+"'></div>";
+			}
+			html += "<span class='videoimg' id='span"+code+"'><div class='view'></div><input type='hidden' id='code' value='"+code+"'><input class='check' name='checks' type='checkbox' value='"+code+"'><div class='state'></div><input class='play' type='button' value=''><h2 class='names'>"+names+"</h2><div class='downdiv'><input class='downl' type='button' value=''><span class='disnone'><ul class='"+code+"'>"+liInfo+"</ul></span></div>"+pichtml+"</div>"+shotflag+"</span>";
 		}
 	}
 	$(".videodiv").html(html);
@@ -498,14 +505,14 @@ $(function(){
 			}
 			// 有数据,"Load EDL"禁止点击,创建页面镜头视图列表
 			$(".updedl").css("display","none");
-			$(".loadedl").html("Shot List");
+			$(".loadedl").html("All Shots");
 			createShotPage(rs,"1");
 		}
 	});
 
 	$(".dtree").children("div.dTreeNode").css("background","#e3e3e3");
 	$(".loadedl").click(function(){
-		if($(this).html().trim()=="Shot List"){
+		if($(this).html().trim()=="All Shots"){
 			shots_ajax(projectCode, function(data){
 				if(data.FeedbackCode == 0) {
 					var rs = JSON.parse(data.Data);
@@ -517,17 +524,29 @@ $(function(){
 	//初始化右侧窗口 隐藏
 	$(".metadata").children(".basicinfo").css("display","block");
 	$(".videodiv").on("click",".view",function(){
+		$(".videodiv").find("span").css("box-shadow","");
+		
 		var rightabs = $(".rightdivabs").css("display");
 		//获得当前镜头的id
 		var thiscode = $(this).siblings("#code").attr("value");
 		if(rightabs=="block"&&thiscode==$(".float").find(".sourceid").val()){
-			$(".rightdivabs").hide(500);
+			$(".rightdivabs").css("display","none");
 		}else{
-			$(".rightdivabs").show(500);
-			
+			$(this).parent().css("box-shadow","0 0 10px #04a6d1");
+			$(".rightdivabs").css("display","block");
 			$(".float").find(".sourceid").val(thiscode);
 			//获取img的url
-			$(".roughimg").children("img").attr("src",$(this).siblings(".files").children("img").attr("src"));
+			var imgsrcs = $(this).siblings(".files").children("img").attr("src");
+			if(imgsrcs!=null){
+				$(".roughimg").html("<img src='"+imgsrcs+"'>");
+			}else{
+				$(".roughimg").html("");
+				var imgdom = $(".roughimg");
+				for(var i = 0; i<6;i++){
+					$(".roughimg").removeClass("col"+i);
+				}
+				$(".roughimg").addClass($(this).siblings(".files").attr("name"));
+			}
 			// 根据当前选中镜头的id thiscode，查询该镜头id的信息:镜头名 尺寸 帧速率 始码 止码 描述
 			shot_info_ajax(thiscode, function(data){
 				if(data.FeedbackCode == 0) {
@@ -625,7 +644,7 @@ $(function(){
 		//$(this).css("background","#ccc");
 		//初始化右侧窗口 隐藏
 		$(".metadata").children("div").css("display","none");
-		$("."+names+"info").show(500);
+		$("."+names+"info").show();
 		//获取当前选中镜头的id
 		var code = $(".float").find(".sourceid").val();
 		if(names == "basic"){
@@ -984,6 +1003,7 @@ $(function(){
 		$(".formdiv5").find(".modify").val("编辑");
 		$(".formdiv6").hide(500);
 		$(".formdiv7").hide(500);
+		$(".formdiv8").hide(500);
 		$(".formdiv1").find(".size").val("1*2");
 		$(".formdiv1").find("#sizew").attr("disabled","true");
 		$(".formdiv1").find("#sizeh").attr("disabled","true");
@@ -997,7 +1017,6 @@ $(function(){
 			$(".venul").find(".addvgr div").css("display","none");
 			$(this).children("div").css("display","inline-block");
 		}
-
 	});
 	//添加外包商
 	$("#addven").click(function(){
@@ -1283,6 +1302,13 @@ $(function(){
 			$(".formdiv1").find(".speed").focus();
 			return;
 		}
+		//匹配正则表达式
+		var reg = /^[1-9]\d*$/;
+		if(!reg.test(speed)){
+			alert("帧速率请输入数字");
+			$(".formdiv1").find(".speed").focus();
+			return;
+		}
 		//获取类型
 		var types = $(".formdiv1").find(".types").val();
 		//获取描述
@@ -1292,6 +1318,12 @@ $(function(){
 			if (data.FeedbackCode == 0) {
 				$(".outer").click();
 				//TODO 新增镜头添加到页面显示
+				shots_ajax(projectCode, function(data){
+					if(data.FeedbackCode == 0) {
+						var rs = JSON.parse(data.Data);
+						createShotPage(rs,"1");
+					}
+				});
 			}
 		});
 	});
@@ -1340,9 +1372,36 @@ $(function(){
 			}
 		});
 	});
+	//查看制作需求的大图
+	$(".make").on("click",".imgradius img",function(){
+		var src = $(this).attr("src");
+		if(src != "" || src != "#"){
+			$(".formdiv8").find(".imgradiusrc").attr("src",src);
+			//弹窗显示图片
+			var height = $(window).height();
+			var width = $(window).width();
+			$(".outer").css({
+				"height": height + "px",
+				"width": width + "px"
+			});
+			$(".formdiv8").css({
+				"left": (width / 2) - 200 + "px",
+				"top": (height / 2) - 100 + "px"
+			});
+			$(".formdiv8").show(500);
+			$(".outer").show(500);
+		}
+	});
+	$(".blankbut").click(function(){
+		//获得图片src地址
+		var src = $(".formdiv8").find(".imgradiusrc").attr("src");
+		if(src!=""&&src!="#"){
+			window.open(src,"_blank");
+		}
+	});
 	//搜索文本框 失去焦点
 	$(".inpsearch").blur(function(){
-			$(".spsearch").find(".butsearch").css("background","url('../img/glass.png')");
+		$(".spsearch").find(".butsearch").css("background","url('../img/glass.png')");
 	});
 	//得到焦点
 	$(".inpsearch").focus(function(){
@@ -1367,7 +1426,6 @@ $(function(){
 			}
 		});
 	}
- //鼠标滚动结束
 });
 function selectChange(val){
 	if(val!="自定义"){

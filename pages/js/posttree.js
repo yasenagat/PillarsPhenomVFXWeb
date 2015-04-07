@@ -576,7 +576,7 @@ $(function(){
 			}
 		});
 	});
-
+	
 	//添加镜头
 	$(".tree").on("click",".addMaterial",function(){
 		var thiscode = $(this).parents("span").attr("class");//当前镜头组id

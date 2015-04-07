@@ -217,6 +217,7 @@
 .videostr .files{
 	height:50px;
 	padding-left:130px;
+	cursor:pointer;
 }
 .videostr .files span{
 	font-size:12px;
@@ -290,7 +291,7 @@
 }
 .float {
 	position: fixed;
-	top: 60px;
+	top: 105px;
 	right: 0;
 }
 .rightdivabs {
@@ -302,7 +303,7 @@
 	z-index: 5;
 	padding: 10px;
 	background: #171717;
-	font-size:20px;
+	font-size:15px;
 	display:none;
 }
 .rightdivabs .tit{
@@ -322,17 +323,21 @@
 .roughimg{
 	width:360px;
 	margin:0 auto;
-	height:220px;
+	height:200px;
+	text-align:center;
+}
+.roughimg img{
+	height:200px;
+	width:360px;
 }
 .withtit{
 	font-size:20px;
 	padding:10px;
-
 }
 .metadata{
 	line-height:25px;
 	padding:10px;
-	height:300px;
+	height:200px;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
@@ -424,4 +429,16 @@
     box-shadow: none;
     color: #808080;
     font-size: 14px;
+}
+@media all and (max-height: 800px) {
+	.roughimg{
+		height:150px;
+	}
+	.roughimg img{
+		height:150px;
+		width:260px;
+	}
+	.metadata{
+		height:100px;
+	}
 }

@@ -391,11 +391,13 @@ $(function(){
 		var rightdivabs = $(".rightdivabs").css("display");//当前是否悬浮
 		var sourceid = $(this).siblings(".sourceid").val();//选中的id
 		var absid = $(".float .sourceid").val();//右边悬浮的id
+		$(".videodiv").find("span").css("box-shadow","");
 		if(rightdivabs == "block" && sourceid == absid) {
-			$(".rightdivabs").hide(500);
+			$(".rightdivabs").hide();
 		} else {
-			$(".rightdivabs").show(500);
+			$(".rightdivabs").show();
 			$(".float .sourceid").val(sourceid);
+			$(this).parent().css("box-shadow","0 0 10px #04a6d1");
 			//根据sourceid从后台查询数据
 			materialInfo_ajax(sourceid, function(data){
 				if(data.FeedbackCode == 0) {

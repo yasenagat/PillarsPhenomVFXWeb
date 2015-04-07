@@ -14,7 +14,7 @@ func QueryFolders(projectCode *string, userCode *string) (*[]utility.ShotFolder,
 	if num == 0 {
 		//没有数据,插入一条默认数据
 		mf := utility.ShotFolder{
-			FolderName:   "自定义镜头组",
+			FolderName:   "Shot List",
 			FatherCode:   "-1",
 			LeafFlag:     "0",
 			FolderDetail: "root",
